@@ -1,19 +1,13 @@
 "use client";
 import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
 import { auth } from "../../firebase";
-import { signInWithGoogle } from "../../auth";
-import { useState } from "react";
+import { useAuth } from "./hooks";
 
 export default function Home() {
-  const [currUser, setCurrUser] = useState<User | null>();
-  onAuthStateChanged(getAuth(), async (user) => {
-    // console.log("user", user);
-    setCurrUser(user);
-  });
-
+  const { currUser, onSignIn } = useAuth();
   return (
     <div>
-      <button onClick={() => signInWithGoogle()}> Sign in! </button>
+      <button onClick={() => onSignIn()}> Sign in! </button>
       <button
         onClick={() => {
           if (currUser) {
