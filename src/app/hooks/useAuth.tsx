@@ -5,13 +5,14 @@ import {
   User,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { auth, db } from "../../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 
 const useAuth = () => {
   const router = useRouter();
   const [currUser, setCurrUser] = useState<User | null>(null);
+
   const onSignIn = useCallback(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -35,6 +36,7 @@ const useAuth = () => {
         role: "user",
       });
       setCurrUser(user);
+
       console.log("User signed in with Google", user.uid);
     } catch (e) {
       console.error("Error signing in with Google: ", e);
