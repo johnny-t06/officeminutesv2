@@ -12,17 +12,22 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "allowSyntheticDefaultImports": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "baseUrl": "./src/app",
+    "baseUrl": ".",
     "paths": {
       "@hooks": ["./hooks/index.ts"],
       "@components/*": ["./components/*"],
-      "@utils/*": ["./utils/*"]
-    }
+      "@utils/*": ["./utils/*"],
+      "@/types": ["./types/index.ts"],
+      "@/images/*": ["./public/*"],
+      "@/*": ["./src/*"]
+    },
+    "target": "es6"
   },
   "include": [
     "next-env.d.ts",
