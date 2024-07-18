@@ -8,6 +8,7 @@ import { Header } from "./Header";
 import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
 import { Sidebar } from "./Popup";
+import { Button } from "@mui/material";
 // import { useSession } from "next-auth/react";
 // import { Socket } from "socket.io-client";
 // import { WebsocketContext } from "@/context";
@@ -150,12 +151,13 @@ const OfficeHour = (props: OfficeHourProps) => {
           </div>
         }
         headerRight={
-          <div
-            className="bg-[#2196F3] px-6 py-4 rounded uppercase text-sm shadow-sm cursor-pointer"
+          <Button
+            variant="contained"
+            size="large"
             onClick={() => setShowModal(true)}
           >
             Join Queue
-          </div>
+          </Button>
         }
       />
       {showModal && (
