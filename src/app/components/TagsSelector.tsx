@@ -3,23 +3,20 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { type Question } from "@/types";
 
-interface Props {
+interface TagsSelectorProps {
   tags: string[];
-  title: string;
+  title: React.ReactNode;
   question: Question;
   setQuestion: Dispatch<SetStateAction<Question>>;
+  setSelected?: Dispatch<SetStateAction<boolean>>;
   setTagIndex?: Dispatch<SetStateAction<number>>;
   isError?: boolean;
   setIsError?: Dispatch<SetStateAction<boolean>>;
 }
 
-const TagsSelector = ({
-  tags,
-  title,
-  question,
-  setQuestion,
-  setTagIndex,
-}: Props) => {
+const TagsSelector = (props: TagsSelectorProps) => {
+  const { tags, title, question, setQuestion, setSelected, setTagIndex } =
+    props;
   const handleUpdateQuestion = (newTag: string, newTagIndex: number) => {
     const updatedQuestion = { ...question };
 
@@ -49,6 +46,11 @@ const TagsSelector = ({
 
     setQuestion(updatedQuestion);
     if (setTagIndex) setTagIndex(newTagIndex);
+    if (setSelected && tags.some((tag) => updatedQuestion.tags.includes(tag))) {
+      setSelected(true);
+    } else if (setSelected) {
+      setSelected(false);
+    }
   };
 
   return (
