@@ -3,6 +3,7 @@ import { type OfficeHour, type Student, type Question, Status } from "@/types";
 import TagsSelector from "./TagsSelector";
 import TextField from "./TextField";
 import Checkbox from "./Checkbox";
+import { Button } from "@mui/material";
 
 interface ModalProps {
   // ws: any;
@@ -56,6 +57,8 @@ const StageOneModal = ({
       setStage(stage + 1);
     }
   };
+  const [isGenSelected, setIsGenSelected] = useState<boolean>(false);
+  const [isFeelingSelected, setIsFeelingSelected] = useState<boolean>(false);
 
   return (
     <div className="flex absolute left-0 top-0 z-50 w-full h-full items-center justify-center text-left">
@@ -86,8 +89,14 @@ const StageOneModal = ({
         <div className="flex flex-col">
           <TagsSelector
             tags={generalTags}
-            title="General*"
+            title={
+              <>
+                General
+                <span style={{ color: "red" }}>*</span>
+              </>
+            }
             question={question}
+            setSelected={setIsGenSelected}
             setQuestion={setQuestion}
             setTagIndex={setGeneralTagIndex}
           />
@@ -114,19 +123,27 @@ const StageOneModal = ({
           ) : (
             <TagsSelector
               tags={feelingTags}
-              title="How do you feel about this topic?"
+              title={
+                <>
+                  How do you feel about this topic?
+                  <span style={{ color: "red" }}>*</span>
+                </>
+              }
+              setSelected={setIsFeelingSelected}
               question={question}
               setQuestion={setQuestion}
             />
           )}
         </div>
 
-        <button
-          className="px-5 py-2 mt-8 w-full rounded-[4px] text-sm bg-primary text-white hover:bg-gray-300 hover:text-gray-500"
+        <Button
+          variant="contained"
+          disabled={!isFeelingSelected || !isGenSelected}
+          color={isFeelingSelected && isGenSelected ? "primary" : "inherit"}
           onClick={() => handleStageChange()}
         >
           NEXT
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -199,7 +216,9 @@ const StageTwoSubmitModal = ({
         </div>
 
         <div className="flex flex-col">
-          <span className="text-base font-normal">Problem Title*</span>
+          <span className="text-base font-normal">
+            Problem Title <span style={{ color: "red" }}>*</span>
+          </span>
           <TextField
             value={questionText}
             onChange={handleQuestionChange}
@@ -210,7 +229,7 @@ const StageTwoSubmitModal = ({
 
         <div className="flex flex-col">
           <span className="text-base font-normal">
-            Add problem description*
+            Add problem description <span style={{ color: "red" }}>*</span>
           </span>
           <TextField
             value={descriptionText}
@@ -232,15 +251,17 @@ const StageTwoSubmitModal = ({
           </div>
         </div>
 
-        <button
-          className="px-5 py-2 mt-8 w-full rounded-[4px] text-white bg-primary text-sm hover:bg-gray-300 hover:text-black"
+        <Button
+          variant="contained"
+          disabled={questionText === "" || descriptionText === ""}
+          color={questionText && descriptionText ? "primary" : "inherit"}
           onClick={() => {
             handleQuestionUpdate();
-            // ws.current?.emit("join_queue", question);
+            // Backend Student Join Queue
           }}
         >
           SUBMIT
-        </button>
+        </Button>
       </div>
     </div>
   );

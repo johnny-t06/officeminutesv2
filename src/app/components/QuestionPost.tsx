@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { type OfficeHour, Status, Question, Student } from "@/types";
 import { trimName } from "../utils";
+import { Button } from "@mui/material";
 
 interface QuestionPostProps {
   question: OfficeHour["questions"][number];
@@ -21,7 +22,6 @@ export const QuestionPost = (props: QuestionPostProps) => {
     setOnJoined(!joined);
   };
 
-  console.log(props.question);
   const style =
     status === Status.WAITING
       ? ""
@@ -64,16 +64,13 @@ export const QuestionPost = (props: QuestionPostProps) => {
       </div>
       <div className="justify-center flex">
         {props.question != props.currQuestion && (
-          <button
-            className={`w-full uppercase py-4 text-sm rounded shadow-md ${
-              joined
-                ? "border-[#0288D1] border-2 text-[#0288D1]"
-                : "bg-[#1E88E5] text-white"
-            }`}
+          <Button
+            className={"w-full"}
+            variant={joined ? "outlined" : "contained"}
             onClick={onClickJoin}
           >
-            {joined ? "Joined" : "Join group"}
-          </button>
+            {joined ? "Joined" : "Join group"}{" "}
+          </Button>
         )}
       </div>
       {/* {props.question && props.question.status == Status.IN_PROGRESS}
