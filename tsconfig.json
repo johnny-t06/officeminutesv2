@@ -17,8 +17,11 @@
         "name": "next"
       }
     ],
+    "baseUrl": "./src/app",
     "paths": {
-      "@/*": ["./src/*"]
+      "@hooks": ["./hooks/index.ts"],
+      "@components/*": ["./components/*"],
+      "@utils/*": ["./utils/*"]
     }
   },
   "include": [
