@@ -1,5 +1,3 @@
-import { CollectionReference } from "firebase/firestore";
-
 //  TODO (lnguyen2693) - discuss and complete User interface and converter
 export interface User {
   name: string;
@@ -28,7 +26,6 @@ export interface Course {
   TAs: string[];
   onDuty: string[];
   tags: Tags;
-  questions?: CollectionReference;
 }
 
 export interface Question {
@@ -38,6 +35,6 @@ export interface Question {
   // should state be enum or boolean or string?
   state: string;
   timestamp: Date;
-  group: [string];
-  tags: [{ choice: string; color: string; colorFill: boolean }];
+  group: string[];
+  tags: TagOption[];
 }
