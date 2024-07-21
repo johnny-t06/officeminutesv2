@@ -65,7 +65,7 @@ const STATE: OfficeHour = {
       ],
       description: "I love alcohol",
       private: false,
-      status: Status.WAITING,
+      status: Status.DONE,
       time: "2:22pm",
     },
   ],
@@ -181,10 +181,7 @@ const TaOfficeHour = (props: OfficeHourProps) => {
           <div className="h-full grid grid-cols-1 gap-6">
             {officeHourState.questions.map((question: Question, idx) => (
               <div key={`${question.question}-${idx}`} className="col-span-1">
-                <TAQuestionPost
-                  question={question}
-                  //  ws={ws}
-                />
+                <TAQuestionPost question={question} />
               </div>
             ))}
           </div>

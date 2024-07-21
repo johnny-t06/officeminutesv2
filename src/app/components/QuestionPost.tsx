@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { type OfficeHour, Status, Question, Student } from "@/types";
 import { trimName } from "../utils";
 import { Button } from "@mui/material";
@@ -31,7 +31,7 @@ export const QuestionPost = (props: QuestionPostProps) => {
 
   return (
     <div
-      className={`flex flex-col justify-between shadow-question rounded-xl h-72 p-5 ${style}`}
+      className={`flex flex-col justify-between shadow-lg rounded-xl h-72 p-5 ${style}`}
     >
       <div className="flex flex-col gap-y-3">
         <div className="flex justify-between">
@@ -55,7 +55,7 @@ export const QuestionPost = (props: QuestionPostProps) => {
             </div>
           ))}
         </div>
-        <p className="max-h-32 overflow-scroll">{props.question.description}</p>
+        <p className="max-h-32 overflow-auto">{props.question.description}</p>
         <div className="flex justify-end">
           <div className="text-[#393939] text-xs">
             Asked at {props.question.time}
@@ -73,27 +73,6 @@ export const QuestionPost = (props: QuestionPostProps) => {
           </Button>
         )}
       </div>
-      {/* {props.question && props.question.status == Status.IN_PROGRESS}
-      <div className="bg-[#0288D1] text-white text-sm px-2 py-1 rounded-3xl items-center">
-        In progress!
-      </div> */}
-      {/* <div className="justify-end">
-        <button
-          className={`w-full uppercase py-4 text-sm rounded shadow-md ${
-            status === Status.WAITING
-              ? "bg-[#1E88E5] text-white"
-              : status === Status.IN_PROGRESS
-              ? "border-[#0288D1] border-2 text-[#0288D1]"
-              : "border-[#D32F2F] border-2 text-[#D32F2F]"
-          }`}
-        >
-          {status === Status.WAITING
-            ? "Start helping"
-            : status === Status.IN_PROGRESS
-            ? "Mark as done"
-            : "Done"}
-        </button>
-      </div> */}
     </div>
   );
 };

@@ -1,30 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { type OfficeHour, Status } from "@/types";
-// import { WebsocketContext } from "@/context";
+import { Button } from "@mui/material";
 
 interface QuestionPostProps {
   question: OfficeHour["questions"][number];
-  //   ws: any;
 }
 
 export const TAQuestionPost = (props: QuestionPostProps) => {
-  //   const { ws } = props;
-
-  //   const onStart = () => {
-  //     ws.current.emit("in_progress", {
-  //       ...props.question,
-  //       status: Status.IN_PROGRESS,
-  //     });
-  //   };
-
-  //   const onDone = () => {
-  //     ws.current.emit("done", { ...props.question });
-  //   };
-
   return (
-    <div className="flex flex-col justify-between shadow-question rounded-xl h-70 p-5">
+    <div className="flex flex-col justify-between shadow-lg rounded-xl h-70 p-5">
       <div className="flex flex-col gap-y-3">
         <div className="flex justify-between">
           <div className="font-bold text-2xl text-[#393939]">
@@ -46,7 +32,7 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
             </div>
           ))}
         </div>
-        <p className="max-h-32 overflow-scroll">{props.question.description}</p>
+        <p className="max-h-32 overflow-auto">{props.question.description}</p>
         <div className="flex justify-end">
           <div className="text-[#393939] text-xs pb-3">
             Asked at {props.question.time}
@@ -66,7 +52,7 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
         </div>
       )}
       <div className="justify-end">
-        <button
+        {/* <button
           className={`w-full uppercase py-4 text-sm rounded shadow-md ${
             props.question.status === Status.WAITING
               ? "bg-[#1E88E5] text-white"
@@ -87,24 +73,20 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
             : props.question.status === Status.IN_PROGRESS
             ? "Mark as done"
             : "Done"}
-        </button>
-
-        {/* IN CASE WE WANT MORE BUTTONS /*}
-
-        {/* {started && (
-          <div>
-            <button
-              className={`w-full uppercase py-4 text-sm rounded shadow-md ${
-                started
-                  ? "border-[#0288D1] border-2 text-[#0288D1]"
-                  : "bg-[#1E88E5] text-white"
-              }`}
-              onClick={onClick}
-            >
-              {started ? "Mark as done" : "Start helping"}
-            </button>
-          </div>
-        )} */}
+        </button> */}
+        <Button
+          variant={
+            props.question.status === Status.WAITING ? "contained" : "outlined"
+          }
+          className="w-full"
+        >
+          {" "}
+          {props.question.status === Status.WAITING
+            ? "Start helping"
+            : props.question.status === Status.IN_PROGRESS
+            ? "Mark as done"
+            : "Done"}
+        </Button>
       </div>
     </div>
   );

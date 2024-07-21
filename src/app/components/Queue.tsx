@@ -10,7 +10,7 @@ export default function Queue({ state }: Props) {
   const now = Date.now();
 
   return (
-    <div className="flex flex-col gap-3 py-3">
+    <div className="flex flex-col gap-3 py-3 ">
       <div className="flex flex-row justify-between text-center items-center">
         <span className="font-bold text-2xl">Queue</span>
         <span className=" font-medium text-[#BDBDBD] text-sm leading-6">
