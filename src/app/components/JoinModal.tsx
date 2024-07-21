@@ -6,7 +6,6 @@ import Checkbox from "./Checkbox";
 import { Button } from "@mui/material";
 
 interface ModalProps {
-  // ws: any;
   state: OfficeHour;
   showModal: boolean;
   student: Student;
@@ -30,7 +29,6 @@ interface ModalStageOneProps {
 interface ModalStageTwoProps {
   question: Question;
   setQuestion: Dispatch<SetStateAction<Question>>;
-  // ws: any;
   state: OfficeHour;
   tagIndex: number;
   setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -152,7 +150,6 @@ const StageOneModal = ({
 const StageTwoSubmitModal = ({
   question,
   setQuestion,
-  // ws,
   state,
   tagIndex,
   setShowModal,
@@ -270,7 +267,6 @@ const StageTwoSubmitModal = ({
 const StageTwoFollowUpModal = ({
   question,
   setQuestion,
-  // ws,
   state,
   tagIndex,
   setShowModal,
@@ -374,13 +370,7 @@ const StageTwoFollowUpModal = ({
   );
 };
 
-const JoinModal = ({
-  // ws,
-  state,
-  showModal,
-  setShowModal,
-  student,
-}: ModalProps) => {
+const JoinModal = ({ state, showModal, setShowModal, student }: ModalProps) => {
   const options = { timeZone: "America/New_York" };
   const [stage, setStage] = useState<number>(1);
   const [generalTagIndex, setGeneralTagIndex] = useState<number>(-1);
@@ -425,7 +415,6 @@ const JoinModal = ({
         <StageTwoSubmitModal
           question={question}
           setQuestion={setQuestion}
-          // ws={ws}
           state={state}
           tagIndex={generalTagIndex}
           setShowModal={setShowModal}

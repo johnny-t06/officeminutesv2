@@ -92,13 +92,6 @@ const STATE: OfficeHour = {
 interface OfficeHourProps {}
 
 const OfficeHour = (props: OfficeHourProps) => {
-  //   const {
-  //     course,
-  //     state: officeHourState,
-  //     ws,
-  //     student,
-  //   } = React.useContext(WebsocketContext);
-
   const [officeHourState, setOfficeHourState] = React.useState(STATE);
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [clickedLeaveQueue, setClickedLeaveQueue] = React.useState(false);
@@ -162,7 +155,6 @@ const OfficeHour = (props: OfficeHourProps) => {
       />
       {showModal && (
         <JoinModal
-          //   ws={ws}
           state={officeHourState}
           showModal={showModal}
           setShowModal={setShowModal}
@@ -242,7 +234,7 @@ const OfficeHour = (props: OfficeHourProps) => {
               ))}
           </div>
         </div>
-        <div className="lg:col-span-3 h-full w-full lg:border-l-2 px-6 py-8 sticky overflow-x-hidden overflow-y-scroll lg:block hidden">
+        <div className="lg:col-span-3 h-full w-full lg:border-l-2 px-6 py-8 sticky overflow-x-hidden lg:block hidden">
           <CurrentGroup
             state={officeHourState}
             clickedConfirm={setClickedLeaveQueue}
