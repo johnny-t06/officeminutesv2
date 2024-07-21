@@ -23,9 +23,13 @@ export interface Course {
   location: string;
   professors: string[];
   students: string[];
-  TAs: string[];
+  tas: string[];
   onDuty: string[];
   tags: Tags;
+}
+enum QuestionState{
+  "pending" = 1,
+  "resolved",
 }
 
 export interface Question {
@@ -33,7 +37,7 @@ export interface Question {
   description: string;
   public: boolean;
   // should state be enum or boolean or string?
-  state: string;
+  state: QuestionState;
   timestamp: Date;
   group: string[];
   tags: TagOption[];

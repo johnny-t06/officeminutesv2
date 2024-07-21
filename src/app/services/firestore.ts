@@ -1,14 +1,18 @@
 import { Course, Question } from "../types/db";
-import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+import {
+  DocumentData,
+  QueryDocumentSnapshot,
+  PartialWithFieldValue,
+} from "firebase/firestore";
 
 export const courseConverter = {
-  toFirestore(course: Course): DocumentData {
+  toFirestore(course: PartialWithFieldValue<Course>): DocumentData {
     return {
       name: course.name,
       location: course.location,
       professors: course.professors,
       students: course.students,
-      TAs: course.TAs,
+      tas: course.tas,
       onDuty: course.onDuty,
       tags: course.tags,
       // questions: course.questions,
@@ -24,16 +28,16 @@ export const courseConverter = {
       location: data.location,
       professors: data.professors,
       students: data.students,
-      TAs: data.TAs,
+      tas: data.TAs,
       onDuty: data.onDuty,
       tags: data.tags,
       // questions: data.questions,
-    };
+    } as Course;
   },
 };
 
 export const questionConverter = {
-  toFirestore(question: Question): DocumentData {
+  toFirestore(question: PartialWithFieldValue<Question>): DocumentData {
     return {
       title: question.title,
       description: question.description,
@@ -57,6 +61,6 @@ export const questionConverter = {
       timestamp: data.timestamp,
       group: data.group,
       tags: data.tags,
-    }
-  }
+    } as Question;
+  },
 };
