@@ -9,6 +9,7 @@ export const courseConverter = {
   toFirestore(course: PartialWithFieldValue<Course>): DocumentData {
     return {
       name: course.name,
+      courseId: course.courseId,
       location: course.location,
       professors: course.professors,
       students: course.students,
@@ -25,10 +26,11 @@ export const courseConverter = {
     }
     return {
       name: data.name,
+      courseId: data.courseId,
       location: data.location,
       professors: data.professors,
       students: data.students,
-      tas: data.TAs,
+      tas: data.tas,
       onDuty: data.onDuty,
       tags: data.tags,
       // questions: data.questions,
@@ -40,6 +42,7 @@ export const questionConverter = {
   toFirestore(question: PartialWithFieldValue<Question>): DocumentData {
     return {
       title: question.title,
+      id: question.id,
       description: question.description,
       public: question.public,
       state: question.state,
@@ -55,6 +58,7 @@ export const questionConverter = {
     }
     return {
       title: data.title,
+      id: data.id,
       description: data.description,
       public: data.public,
       state: data.state,

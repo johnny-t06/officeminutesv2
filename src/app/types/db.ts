@@ -20,20 +20,22 @@ interface TagOption {
 
 export interface Course {
   name: string;
+  courseId: string;
   location: string;
-  professors: string[];
-  students: string[];
-  tas: string[];
-  onDuty: string[];
-  tags: Tags;
+  professors?: string[];
+  students?: string[];
+  tas?: string[];
+  onDuty?: string[];
+  tags?: Tags;
 }
-enum QuestionState{
-  "pending" = 1,
-  "resolved",
+export enum QuestionState{
+  Pending = 1,
+  Resolved,
 }
 
 export interface Question {
   title: string;
+  id: string;
   description: string;
   public: boolean;
   // should state be enum or boolean or string?
