@@ -48,7 +48,6 @@ export const updateCourse = async (
     await updateDoc(courseDoc, course);
 
     console.log("Course information updated");
-
   } catch (error) {
     console.log(error);
   }

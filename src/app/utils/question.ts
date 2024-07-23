@@ -48,10 +48,16 @@ export const updateQuestion = async (
   courseId: string,
   questionId: string
 ) => {
-  const questionDoc: DocumentReference = doc(
-    db,
-    `courses/${courseId}/questions/${questionId}`
-  );
+  try {
+    const questionDoc: DocumentReference = doc(
+      db,
+      `courses/${courseId}/questions/${questionId}`
+    );
 
-  await updateDoc(questionDoc, question);
+    await updateDoc(questionDoc, question);
+
+    console.log("question updated");
+  } catch (error) {
+    console.log(error);
+  }
 };
