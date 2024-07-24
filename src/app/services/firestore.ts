@@ -1,4 +1,4 @@
-import { Course, Question } from "../types/db";
+import { Course, Question } from "@interfaces/db";
 import {
   DocumentData,
   QueryDocumentSnapshot,
