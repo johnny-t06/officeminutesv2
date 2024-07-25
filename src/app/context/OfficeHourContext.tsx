@@ -11,9 +11,6 @@ interface OfficeHourProviderProps {
   children?: React.ReactNode;
 }
 
-/**
- * Getter and setter should only be used by hooks
- */
 interface OfficeHourContext {
   course: Course;
   questions: Questions;
