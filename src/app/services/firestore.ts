@@ -42,7 +42,6 @@ export const questionConverter = {
   toFirestore(question: PartialWithFieldValue<Question>): DocumentData {
     return {
       title: question.title,
-      id: question.id,
       description: question.description,
       public: question.public,
       state: question.state,
@@ -58,7 +57,6 @@ export const questionConverter = {
     }
     return {
       title: data.title,
-      id: data.id,
       description: data.description,
       public: data.public,
       state: data.state,

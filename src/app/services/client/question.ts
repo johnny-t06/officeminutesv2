@@ -1,6 +1,6 @@
-import { db } from "../../../firebase";
-import { Question, QuestionState } from "../types/db";
-import { questionConverter } from "../services/firestore";
+import { db } from "../../../../firebase";
+import { Question, QuestionState } from "../../types/db";
+import { questionConverter } from "../firestore";
 import {
   doc,
   DocumentReference,
@@ -11,10 +11,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-export const addQuestion = async (
-  question: PartialWithFieldValue<Question>,
-  courseId: string
-) => {
+export const addQuestion = async (question: Question, courseId: string) => {
   try {
     const questionsColection: CollectionReference = collection(
       db,
@@ -23,21 +20,18 @@ export const addQuestion = async (
 
     const newQuestion = {
       title: question.title,
-      id: "",
       description: question.description,
       public: question.public,
-      state: QuestionState.Pending,
+      state: QuestionState.PENDING,
       timestamp: question.timestamp,
       group: question.group,
       tags: question.tags,
     };
 
     const questionDoc = await addDoc(questionsColection, newQuestion);
-
-    const questionId = questionDoc.id;
-    await updateDoc(questionDoc, { id: questionId });
-
     console.log("New question added");
+
+    return questionDoc;
   } catch (error) {
     console.log(error);
   }
@@ -54,9 +48,10 @@ export const updateQuestion = async (
       `courses/${courseId}/questions/${questionId}`
     );
 
-    await updateDoc(questionDoc, question);
+    const updatedDoc = await updateDoc(questionDoc, question);
 
     console.log("question updated");
+    return updatedDoc;
   } catch (error) {
     console.log(error);
   }

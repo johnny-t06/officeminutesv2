@@ -22,23 +22,22 @@ export interface Course {
   name: string;
   courseId: string;
   location: string;
-  professors?: string[];
+  professors: string[];
   students?: string[];
   tas?: string[];
   onDuty?: string[];
   tags?: Tags;
 }
+
 export enum QuestionState{
-  Pending = 1,
-  Resolved,
+  PENDING,
+  RESOLVED,
 }
 
 export interface Question {
   title: string;
-  id: string;
   description: string;
   public: boolean;
-  // should state be enum or boolean or string?
   state: QuestionState;
   timestamp: Date;
   group: string[];

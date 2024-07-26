@@ -1,6 +1,6 @@
-import { db } from "../../../firebase";
-import { Course } from "../types/db";
-import { courseConverter } from "../services/firestore";
+import { db } from "../../../../firebase";
+import { Course } from "../../types/db";
+import { courseConverter } from "../firestore";
 import {
   doc,
   DocumentReference,
@@ -9,7 +9,10 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-export const addCourse = async (course: PartialWithFieldValue<Course>) => {
+export const addCourse = async (
+  course: Pick<Course, "name" | "courseId" | "location" | "professors"> &
+    PartialWithFieldValue<Course>
+) => {
   try {
     const courseDoc: DocumentReference = doc(
       db,
@@ -20,16 +23,17 @@ export const addCourse = async (course: PartialWithFieldValue<Course>) => {
       name: course.name,
       courseId: course.courseId,
       location: course.location,
-      professors: course.professors || [],
-      students: course.students || [],
-      tas: course.tas || [],
-      onDuty: course.onDuty || [],
-      tags: course.tags || {},
+      professors: course.professors,
+      students: course.students ?? [],
+      tas: course.tas ?? [],
+      onDuty: course.onDuty ?? [],
+      tags: course.tags ?? {},
     };
 
     await setDoc(courseDoc, newCourse);
 
     console.log("New course created: ");
+    return courseDoc;
   } catch (error) {
     console.log(error);
   }
@@ -45,9 +49,23 @@ export const updateCourse = async (
       `courses/${courseId}`
     ).withConverter(courseConverter);
 
-    await updateDoc(courseDoc, course);
+    const updatedDoc = await updateDoc(courseDoc, course);
 
     console.log("Course information updated");
+    return updatedDoc;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getCourse = async (courseId: String) => {
+  try {
+    const courseDoc: DocumentReference = doc(
+      db,
+      `courses/${courseId}`
+    ).withConverter(courseConverter);
+
+    return courseDoc;
   } catch (error) {
     console.log(error);
   }
