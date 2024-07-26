@@ -19,6 +19,7 @@ interface TagOption {
 }
 
 export interface Course {
+  courseId: string;
   name: string;
   location: string;
   professors: string[];
@@ -27,9 +28,10 @@ export interface Course {
   onDuty: string[];
   tags: Tags;
 }
-enum QuestionState{
-  "pending" = 1,
-  "resolved",
+
+export enum QuestionState {
+  PENDING = 1,
+  RESOLVED,
 }
 
 export interface Question {
@@ -42,3 +44,5 @@ export interface Question {
   group: string[];
   tags: TagOption[];
 }
+
+export type Questions = Question[];

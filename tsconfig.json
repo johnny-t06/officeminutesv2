@@ -20,8 +20,11 @@
     "baseUrl": "./src/app",
     "paths": {
       "@hooks": ["./hooks/index.ts"],
+      "@hooks/*": ["./hooks/*"],
       "@components/*": ["./components/*"],
-      "@utils/*": ["./utils/*"]
+      "@utils/*": ["./utils/*"],
+      "@interfaces/*": ["./interfaces/*"],
+      "@context/*": ["./context/*"]
     }
   },
   "include": [
