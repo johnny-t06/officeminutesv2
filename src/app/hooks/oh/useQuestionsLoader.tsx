@@ -1,5 +1,5 @@
 import { Questions, QuestionState } from "@interfaces/db";
-import { useLoadingValue } from "hooks/utils/useLoadingValue";
+import { useLoadingValue } from "@hooks/utils/useLoadingValue";
 import React from "react";
 
 interface UseQuestionsLoaderProps {

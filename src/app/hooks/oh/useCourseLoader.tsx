@@ -1,5 +1,5 @@
 import { Course } from "@interfaces/db";
-import { State, useLoadingValue } from "hooks/utils/useLoadingValue";
+import { State, useLoadingValue } from "@hooks/utils/useLoadingValue";
 import React from "react";
 
 interface UseCourseLoaderProps {

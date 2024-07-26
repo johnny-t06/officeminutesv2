@@ -1,9 +1,9 @@
 "use client";
 
 import { Course, Questions } from "@interfaces/db";
-import { useCourseLoader } from "hooks/oh/useCourseLoader";
-import { useQuestionsLoader } from "hooks/oh/useQuestionsLoader";
-import { State } from "hooks/utils/useLoadingValue";
+import { useCourseLoader } from "@hooks/oh/useCourseLoader";
+import { useQuestionsLoader } from "@hooks/oh/useQuestionsLoader";
+import { State } from "@hooks/utils/useLoadingValue";
 import React from "react";
 
 interface OfficeHourProviderProps {
