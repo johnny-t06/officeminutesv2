@@ -9,6 +9,7 @@ import {
   CollectionReference,
   PartialWithFieldValue,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 export const addQuestion = async (question: Question, courseId: string) => {
@@ -54,5 +55,33 @@ export const updateQuestion = async (
     return updatedDoc;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const getQuestion = async (courseId: string, questionId: string) => {
+  try {
+    const questionDoc: DocumentReference = doc(
+      db,
+      `courses/${courseId}/questions/${questionId}`
+    );
+
+    console.log("Question: ", questionDoc.id);
+    return questionDoc;
+  } catch (error) {
+    console.log("Error getting question", error);
+  }
+};
+
+export const deleteQuestion = async (courseId: string, questionId: string) => {
+  try {
+    const questionDoc: DocumentReference = doc(
+      db,
+      `courses/${courseId}/questions/${questionId}`
+    );
+
+    await deleteDoc(questionDoc);
+    console.log("Question deleted");
+  } catch (error) {
+    console.log("Error deleting question", error);
   }
 };

@@ -2,6 +2,7 @@ import { db } from "../../../../firebase";
 import { Course } from "../../interfaces/db";
 import { courseConverter } from "../firestore";
 import {
+  deleteDoc,
   doc,
   DocumentReference,
   PartialWithFieldValue,
@@ -68,5 +69,19 @@ export const getCourse = async (courseId: String) => {
     return courseDoc;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const deletingCourse = async (courseId: String) => {
+  try {
+    const courseDoc: DocumentReference = doc(
+      db,
+      `courses/${courseId}`
+    ).withConverter(courseConverter);
+
+    await deleteDoc(courseDoc);
+    console.log("Course deleted");
+  } catch (error) {
+    console.log("Error deleting course: ", error);
   }
 };
