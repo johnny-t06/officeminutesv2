@@ -19,18 +19,18 @@ interface TagOption {
 }
 
 export interface Course {
-  name: string;
   courseId: string;
+  name: string;
   location: string;
   professors: string[];
-  students?: string[];
-  tas?: string[];
-  onDuty?: string[];
-  tags?: Tags;
+  students: string[];
+  tas: string[];
+  onDuty: string[];
+  tags: Tags;
 }
 
-export enum QuestionState{
-  PENDING,
+export enum QuestionState {
+  PENDING = 1,
   RESOLVED,
 }
 
@@ -38,8 +38,11 @@ export interface Question {
   title: string;
   description: string;
   public: boolean;
+  // should state be enum or boolean or string?
   state: QuestionState;
   timestamp: Date;
   group: string[];
   tags: TagOption[];
 }
+
+export type Questions = Question[];
