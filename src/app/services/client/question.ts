@@ -1,5 +1,5 @@
 import { db } from "../../../../firebase";
-import { Question, QuestionState } from "../../types/db";
+import { Question, QuestionState } from "../../interfaces/db";
 import { questionConverter } from "../firestore";
 import {
   doc,
