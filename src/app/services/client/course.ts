@@ -1,5 +1,5 @@
 import { db } from "../../../../firebase";
-import { Course } from "../../interfaces/db";
+import { Course } from "@interfaces/db";
 import { courseConverter } from "../firestore";
 import {
   deleteDoc,
