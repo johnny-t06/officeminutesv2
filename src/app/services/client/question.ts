@@ -12,14 +12,20 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-export const addQuestion = async (question: Question, courseId: string) => {
+type addQuestion = Pick<
+  Question,
+  "title" | "description" | "public" | "timestamp" | "group" | "tags"
+> &
+  PartialWithFieldValue<Question>;
+
+export const addQuestion = async (question: addQuestion, courseId: string) => {
   try {
     const questionsColection: CollectionReference = collection(
       db,
       `courses/${courseId}/questions`
     ).withConverter(questionConverter);
 
-    const newQuestion = {
+    const newQuestion: addQuestion = {
       title: question.title,
       description: question.description,
       public: question.public,

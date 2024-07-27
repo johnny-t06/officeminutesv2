@@ -10,19 +10,21 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
+type addCourse = Pick<Course, "name" | "location" | "professors"> &
+PartialWithFieldValue<Course>
+
 export const addCourse = async (
-  course: Pick<Course, "name" | "courseId" | "location" | "professors"> &
-    PartialWithFieldValue<Course>
+  course: addCourse,
+  courseID: string,
 ) => {
   try {
     const courseDoc: DocumentReference = doc(
       db,
-      `courses/${course.courseId}`
+      `courses/${courseID}`
     ).withConverter(courseConverter);
 
-    const newCourse = {
+    const newCourse: addCourse = {
       name: course.name,
-      courseId: course.courseId,
       location: course.location,
       professors: course.professors,
       students: course.students ?? [],
@@ -42,12 +44,12 @@ export const addCourse = async (
 
 export const updateCourse = async (
   course: PartialWithFieldValue<Course>,
-  courseId: String
+  courseID: String
 ) => {
   try {
-    const courseDoc: DocumentReference = doc(
+    const courseDoc = doc(
       db,
-      `courses/${courseId}`
+      `courses/${courseID}`
     ).withConverter(courseConverter);
 
     const updatedDoc = await updateDoc(courseDoc, course);
@@ -59,11 +61,11 @@ export const updateCourse = async (
   }
 };
 
-export const getCourse = async (courseId: String) => {
+export const getCourse = async (courseID: String) => {
   try {
-    const courseDoc: DocumentReference = doc(
+    const courseDoc = doc(
       db,
-      `courses/${courseId}`
+      `courses/${courseID}`
     ).withConverter(courseConverter);
 
     return courseDoc;
@@ -72,11 +74,11 @@ export const getCourse = async (courseId: String) => {
   }
 };
 
-export const deletingCourse = async (courseId: String) => {
+export const deletingCourse = async (courseID: String) => {
   try {
-    const courseDoc: DocumentReference = doc(
+    const courseDoc = doc(
       db,
-      `courses/${courseId}`
+      `courses/${courseID}`
     ).withConverter(courseConverter);
 
     await deleteDoc(courseDoc);

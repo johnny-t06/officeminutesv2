@@ -19,7 +19,6 @@ interface TagOption {
 }
 
 export interface Course {
-  courseId: string;
   name: string;
   location: string;
   professors: string[];
