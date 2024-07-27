@@ -74,7 +74,7 @@ export const getCourse = async (courseID: String) => {
   }
 };
 
-export const deletingCourse = async (courseID: String) => {
+export const deleteCourse = async (courseID: String) => {
   try {
     const courseDoc = doc(
       db,
