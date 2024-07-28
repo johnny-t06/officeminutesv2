@@ -53,7 +53,7 @@ export const updateQuestion = async (
     const questionDoc: DocumentReference = doc(
       db,
       `courses/${courseId}/questions/${questionId}`
-    );
+    ).withConverter(questionConverter);;
 
     const updatedDoc = await updateDoc(questionDoc, question);
 
@@ -69,7 +69,7 @@ export const getQuestion = async (courseId: string, questionId: string) => {
     const questionDoc: DocumentReference = doc(
       db,
       `courses/${courseId}/questions/${questionId}`
-    );
+    ).withConverter(questionConverter);;
 
     console.log("Question: ", questionDoc.id);
     return questionDoc;
@@ -83,7 +83,7 @@ export const deleteQuestion = async (courseId: string, questionId: string) => {
     const questionDoc: DocumentReference = doc(
       db,
       `courses/${courseId}/questions/${questionId}`
-    );
+    ).withConverter(questionConverter);
 
     await deleteDoc(questionDoc);
     console.log("Question deleted");
