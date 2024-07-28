@@ -28,7 +28,7 @@ export const courseConverter = {
       location: data.location,
       professors: data.professors,
       students: data.students,
-      tas: data.TAs,
+      tas: data.tas,
       onDuty: data.onDuty,
       tags: data.tags,
       // questions: data.questions,
