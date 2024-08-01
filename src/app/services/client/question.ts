@@ -10,7 +10,10 @@ import {
   PartialWithFieldValue,
   updateDoc,
   deleteDoc,
+  getDoc,
+  getDocs,
 } from "firebase/firestore";
+import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 
 type addQuestion = Pick<
   Question,
@@ -19,75 +22,65 @@ type addQuestion = Pick<
   PartialWithFieldValue<Question>;
 
 export const addQuestion = async (question: addQuestion, courseId: string) => {
-  try {
-    const questionsColection: CollectionReference = collection(
-      db,
-      `courses/${courseId}/questions`
-    ).withConverter(questionConverter);
+  const questionsColection: CollectionReference = collection(
+    db,
+    `courses/${courseId}/questions`
+  ).withConverter(questionConverter);
 
-    const newQuestion: addQuestion = {
-      title: question.title,
-      description: question.description,
-      public: question.public,
-      state: QuestionState.PENDING,
-      timestamp: question.timestamp,
-      group: question.group,
-      tags: question.tags,
-    };
+  const questionDoc = await addDoc(questionsColection, question);
 
-    const questionDoc = await addDoc(questionsColection, newQuestion);
-    console.log("New question added");
-
-    return questionDoc;
-  } catch (error) {
-    console.log(error);
-  }
+  return { id: questionDoc.id, ...question } as IdentifiableQuestion;
 };
 
 export const updateQuestion = async (
-  question: PartialWithFieldValue<Question>,
-  courseId: string,
-  questionId: string
+  question: IdentifiableQuestion,
+  courseId: string
+  // questionId: string
 ) => {
-  try {
-    const questionDoc: DocumentReference = doc(
-      db,
-      `courses/${courseId}/questions/${questionId}`
-    ).withConverter(questionConverter);;
+  const questionDoc: DocumentReference = doc(
+    db,
+    `courses/${courseId}/questions/${question.id}`
+  ).withConverter(questionConverter);
 
-    const updatedDoc = await updateDoc(questionDoc, question);
+  const { id, ...res } = question;
 
-    console.log("question updated");
-    return updatedDoc;
-  } catch (error) {
-    console.log(error);
-  }
+  const updatedDoc = await updateDoc(questionDoc, res);
+
+  return question;
 };
 
 export const getQuestion = async (courseId: string, questionId: string) => {
-  try {
-    const questionDoc: DocumentReference = doc(
-      db,
-      `courses/${courseId}/questions/${questionId}`
-    ).withConverter(questionConverter);;
+  const questionDoc = await getDoc(
+    doc(db, `courses/${courseId}/questions/${questionId}`).withConverter(
+      questionConverter
+    )
+  );
 
-    console.log("Question: ", questionDoc.id);
-    return questionDoc;
-  } catch (error) {
-    console.log("Error getting question", error);
-  }
+  return { id: questionDoc.id, ...questionDoc.data() } as IdentifiableQuestion;
+};
+
+export const getQuestions = async (courseId: string) => {
+  const snapshot = await getDocs(
+    collection(db, `courses/${courseId}/questions`).withConverter(
+      questionConverter
+    )
+  );
+  const questionsDocs: IdentifiableQuestions = snapshot.docs.map(
+    (doc) =>
+      ({
+        id: doc.id,
+        ...doc.data(),
+      } as IdentifiableQuestion)
+  );
+
+  return questionsDocs;
 };
 
 export const deleteQuestion = async (courseId: string, questionId: string) => {
-  try {
-    const questionDoc: DocumentReference = doc(
-      db,
-      `courses/${courseId}/questions/${questionId}`
-    ).withConverter(questionConverter);
+  const questionDoc: DocumentReference = doc(
+    db,
+    `courses/${courseId}/questions/${questionId}`
+  ).withConverter(questionConverter);
 
-    await deleteDoc(questionDoc);
-    console.log("Question deleted");
-  } catch (error) {
-    console.log("Error deleting question", error);
-  }
+  await deleteDoc(questionDoc);
 };

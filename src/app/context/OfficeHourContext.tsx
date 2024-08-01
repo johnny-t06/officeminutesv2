@@ -1,9 +1,9 @@
 "use client";
 
-import { Course, Questions } from "@interfaces/db";
 import { useCourseLoader } from "@hooks/oh/useCourseLoader";
 import { useQuestionsLoader } from "@hooks/oh/useQuestionsLoader";
 import { State } from "@hooks/utils/useLoadingValue";
+import { IdentifiableCourse, IdentifiableQuestions } from "@interfaces/type";
 import React from "react";
 
 interface OfficeHourProviderProps {
@@ -12,8 +12,8 @@ interface OfficeHourProviderProps {
 }
 
 interface OfficeHourContext {
-  course: Course;
-  questions: Questions;
+  course: IdentifiableCourse;
+  questions: IdentifiableQuestions;
 }
 
 export const officeHourContext = React.createContext({} as OfficeHourContext);

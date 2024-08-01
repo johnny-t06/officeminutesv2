@@ -5,85 +5,60 @@ import {
   deleteDoc,
   doc,
   DocumentReference,
+  getDoc,
   PartialWithFieldValue,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+import { defaultCourse } from "services/utils/defaultValue";
+import { IdentifiableCourse } from "@interfaces/type";
+
 
 type addCourse = Pick<Course, "name" | "location" | "professors"> &
-PartialWithFieldValue<Course>
+  PartialWithFieldValue<Course>;
 
-export const addCourse = async (
-  course: addCourse,
-  courseID: string,
-) => {
-  try {
-    const courseDoc: DocumentReference = doc(
-      db,
-      `courses/${courseID}`
-    ).withConverter(courseConverter);
+export const addCourse = async (course: Course, courseID: string) => {
+  const courseDoc: DocumentReference = doc(
+    db,
+    `courses/${courseID}`
+  ).withConverter(courseConverter);
 
-    const newCourse: addCourse = {
-      name: course.name,
-      location: course.location,
-      professors: course.professors,
-      students: course.students ?? [],
-      tas: course.tas ?? [],
-      onDuty: course.onDuty ?? [],
-      tags: course.tags ?? {},
-    };
+  // const newCourse = defaultCourse(course);
 
-    await setDoc(courseDoc, newCourse);
+  await setDoc(courseDoc, course);
 
-    console.log("New course created: ");
-    return courseDoc;
-  } catch (error) {
-    console.log(error);
-  }
+  console.log("New course created: ");
+
+  return { id: courseID, ...course } as IdentifiableCourse;
 };
 
-export const updateCourse = async (
-  course: PartialWithFieldValue<Course>,
-  courseID: String
-) => {
-  try {
-    const courseDoc = doc(
-      db,
-      `courses/${courseID}`
-    ).withConverter(courseConverter);
+export const updateCourse = async (course: IdentifiableCourse) => {
+  const courseDoc = doc(db, `courses/${course.id}`).withConverter(
+    courseConverter
+  );
+  // const updatedCourse = defaultCourse(course);
 
-    const updatedDoc = await updateDoc(courseDoc, course);
+  const { id, ...res } = course;
 
-    console.log("Course information updated");
-    return updatedDoc;
-  } catch (error) {
-    console.log(error);
-  }
+  const updatedDoc = await updateDoc(courseDoc, res);
+
+  console.log("Course information updated");
+  return course;
 };
 
 export const getCourse = async (courseID: String) => {
-  try {
-    const courseDoc = doc(
-      db,
-      `courses/${courseID}`
-    ).withConverter(courseConverter);
+  const courseDoc = await getDoc(
+    doc(db, `courses/${courseID}`).withConverter(courseConverter)
+  );
 
-    return courseDoc;
-  } catch (error) {
-    console.log(error);
-  }
+  return { id: courseID, ...courseDoc.data()} as IdentifiableCourse;
 };
 
 export const deleteCourse = async (courseID: String) => {
-  try {
-    const courseDoc = doc(
-      db,
-      `courses/${courseID}`
-    ).withConverter(courseConverter);
+  const courseDoc = doc(db, `courses/${courseID}`).withConverter(
+    courseConverter
+  );
 
-    await deleteDoc(courseDoc);
-    console.log("Course deleted");
-  } catch (error) {
-    console.log("Error deleting course: ", error);
-  }
+  await deleteDoc(courseDoc);
+  console.log("Course deleted");
 };
