@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { type OfficeHour, Status, Question, Student } from "@/types";
+import React, { useEffect, useState } from "react";
+// import { type OfficeHour, Status, Question, Student } from "../../";
 import Queue from "./Queue";
 import { QuestionPost } from "./QuestionPost";
 import { Header } from "./Header";
@@ -9,138 +9,48 @@ import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
 import { Sidebar } from "./Popup";
 import { Button } from "@mui/material";
-// import { useSession } from "next-auth/react";
-// import { Socket } from "socket.io-client";
-// import { WebsocketContext } from "@/context";
-
-const STATE: OfficeHour = {
-  questions: [
-    {
-      question: "Fibonacci Heaps",
-      tags: ["HW Help", "Bro Help"],
-      students: [
-        {
-          name: "Won Kim",
-          id: "",
-        },
-
-        {
-          name: "Won Kim",
-          id: "",
-        },
-      ],
-      description:
-        "Could someone explain why node 17 becomes the child of 15? I understand that we cannot have 2 trees with degree 2, but I was inclined to make 20 the child of 15.",
-      private: false,
-      status: Status.IN_PROGRESS,
-      time: "4:44pm",
-    },
-    {
-      question: "Kruskal's Runtime",
-      tags: ["HW Help", "Conceptual Help"],
-      students: [
-        {
-          name: "Johnny Tan",
-          id: "",
-        },
-        {
-          name: "Nicky Doan",
-          id: "65d1790107173f4ac5868a49",
-        },
-      ],
-      description: "I love math",
-      private: false,
-      status: Status.WAITING,
-      time: "3:33pm",
-    },
-    {
-      question: "Recursion Tree",
-      tags: ["HW Help", "Conceptual Help"],
-      students: [
-        {
-          name: "Fa Taepaisitphongse",
-          id: "",
-        },
-        {
-          name: "Won Kim",
-          id: "",
-        },
-        {
-          name: "Jack Zhang",
-          id: "65d178ab07173f4ac5868a46",
-        },
-      ],
-      description: "I love programming",
-      private: false,
-      status: Status.WAITING,
-      time: "2:22pm",
-    },
-  ],
-  location: "JCC 3rd Floor",
-  tas: [
-    {
-      name: "Nick Doan",
-      id: "",
-    },
-    {
-      name: "Jack Zhang",
-      id: "",
-    },
-  ],
-};
+import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
+import { officeHourContext } from "@context/OfficeHourContext";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { getUser } from "@services/client/user";
 
 interface OfficeHourProps {}
 
 const OfficeHour = (props: OfficeHourProps) => {
-  const [officeHourState, setOfficeHourState] = React.useState(STATE);
+  const { course, questions } = useOfficeHour();
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [clickedLeaveQueue, setClickedLeaveQueue] = React.useState(false);
   const [hoverStyle, setHoverStyle] = React.useState(false);
-  const [currQuestion, setCurrQuestion] = React.useState<Question | null>(null);
-  const [currIndex, setCurrIndex] = React.useState<number | null>(null);
 
-  //Hard Code Student
-  const student: Student = {
-    name: "Nicky Doan",
-    id: "abc123",
-  };
+  // const [currQuestion, setCurrQuestion] = useState<IdentifiableQuestion | null>(
+  //   null
+  // );
+  // const [currIndex, setCurrIndex] = useState<number | null>(null);
+  const [onDuty, setOnDuty] = useState<IdentifiableUser[]>([]);
+
   const onHover = () => {
     setHoverStyle(!hoverStyle);
   };
-
-  //   const { data: session } = useSession();
-
-  //   React.useEffect(() => {
-  //     let found = false;
-  //     let q: any;
-  //     let index: any;
-  //     officeHourState.questions.forEach((q, index) => {
-  //       q.students.forEach((element) => {
-  //         if (session !== null && element.id === session.user.id) {
-  //           found = true;
-  //           setCurrQuestion(q);
-  //           setCurrIndex(index);
-  //         }
-  //       });
-  //     });
-
-  //     if (!found) {
-  //       setCurrQuestion(null);
-  //       setCurrIndex(null);
-  //     }
-  //   }, [session, officeHourState]);
-
-  // if (officeHourState === null) {
-  //   return <></>;
-  // }
+  useEffect(() => {
+    console.log(course);
+    const fetchOnDuty = async () => {
+      try {
+        const promises = course.onDuty.map((onDuty) => getUser(onDuty));
+        const data = await Promise.all(promises);
+        setOnDuty(data);
+      } catch (e) {
+        throw e;
+      }
+    };
+    fetchOnDuty();
+  }, [course.onDuty]);
 
   return (
     <div className="h-full w-full relative">
       <Header
         headerLeft={
           <div className="text-4xl font-bold">
-            {/* {course.code.toUpperCase()} */}
-            CS-160 Office Hours
+            {course.id.toUpperCase()} Office Hours
           </div>
         }
         headerRight={
@@ -153,14 +63,14 @@ const OfficeHour = (props: OfficeHourProps) => {
           </Button>
         }
       />
-      {showModal && (
+      {/* {showModal && (
         <JoinModal
           state={officeHourState}
           showModal={showModal}
           setShowModal={setShowModal}
           student={student}
         />
-      )}
+      )} */}
       <div className="h-full w-full lg:grid lg:grid-cols-12 gap-x-4 lg:pl-12 lg:pr-4 px-4">
         <div className="lg:col-span-9 col-span-12 flex flex-col gap-y-4 py-6">
           <div className="w-full border border-[#0288D1] rounded py-1 px-2 flex gap-x-3">
@@ -191,8 +101,8 @@ const OfficeHour = (props: OfficeHourProps) => {
               TAs on Duty
             </div>
             <div className="flex gap-x-2.5 lg:col-span-10 col-span-9">
-              {["johnny, won kim"].map((ta, idx) => (
-                <span key={idx}>{ta}</span>
+              {onDuty.map((ta, idx) => (
+                <span key={idx}>{ta.name ?? course.onDuty[idx]}</span>
               ))}
             </div>
           </div>
@@ -221,27 +131,22 @@ const OfficeHour = (props: OfficeHourProps) => {
             </div>
           </div>
           <div className="h-full grid grid-cols-2 gap-6">
-            {officeHourState.questions
-              .filter((question) => question.private === false)
+            {questions
+              .filter((question) => question.public)
               .map((question, idx) => (
                 <div key={idx} className="lg:col-span-1 col-span-2">
-                  <QuestionPost
-                    question={question}
-                    currQuestion={currQuestion}
-                    student={student}
-                  />
+                  <QuestionPost question={question} />
                 </div>
               ))}
           </div>
         </div>
         <div className="lg:col-span-3 h-full w-full lg:border-l-2 px-6 py-8 sticky overflow-x-hidden lg:block hidden">
-          <CurrentGroup
-            state={officeHourState}
+          {/* <CurrentGroup
             clickedConfirm={setClickedLeaveQueue}
-            currQuestion={currQuestion}
+            // currQuestion={currQuestion}
             currIndex={currIndex}
-          />
-          <Queue state={officeHourState} />
+          /> */}
+          <Queue questions={questions} />
         </div>
       </div>
       {clickedLeaveQueue && (

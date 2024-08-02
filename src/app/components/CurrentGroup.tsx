@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { type OfficeHour, Status, Question } from "@/types";
+import { type OfficeHour, Status, Question } from "../../../types";
 // import { useSession } from "next-auth/react";
 import { trimName } from "../utils";
 
 interface Props {
-  state: OfficeHour;
+  // state: OfficeHour;
   clickedConfirm: React.Dispatch<React.SetStateAction<boolean>>;
   currQuestion: Question | null;
   currIndex: number | null;

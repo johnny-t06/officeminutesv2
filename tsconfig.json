@@ -18,7 +18,7 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",
+    "baseUrl": "./src/app",
     "paths": {
       "@hooks": ["./hooks/index.ts"],
       "@hooks/*": ["./hooks/*"],
@@ -27,8 +27,9 @@
       "@interfaces/*": ["./interfaces/*"],
       "@context/*": ["./context/*"],
       "@/types": ["./types/index.ts"],
-      "@/images/*": ["./public/*"],
-      "@/*": ["./src/*"]
+      "@/images/*": ["../../public/*"],
+      "@services/*": ["./services/*"],
+      "@/*": ["./src*"]
     },
     "target": "es6"
   },

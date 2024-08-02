@@ -2,6 +2,8 @@
 export interface User {
   name: string;
   tufts_username: string;
+  email: string;
+  role: string;
 }
 
 interface Tags {
@@ -30,6 +32,7 @@ export interface Course {
 
 export enum QuestionState {
   PENDING = 1,
+  IN_PROGRESS,
   RESOLVED,
 }
 

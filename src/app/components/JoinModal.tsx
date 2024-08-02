@@ -1,9 +1,10 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { type OfficeHour, type Student, type Question, Status } from "@/types";
+// import { type OfficeHour, type Student, type Question, Status } from "@/types";
 import TagsSelector from "./TagsSelector";
 import TextField from "./TextField";
 import Checkbox from "./Checkbox";
 import { Button } from "@mui/material";
+import { IdentifiableQuestion } from "@interfaces/type";
 
 interface ModalProps {
   state: OfficeHour;
@@ -13,8 +14,8 @@ interface ModalProps {
 }
 
 interface ModalStageOneProps {
-  question: Question;
-  setQuestion: Dispatch<SetStateAction<Question>>;
+  question: IdentifiableQuestion;
+  setQuestion: Dispatch<SetStateAction<IdentifiableQuestion>>;
   state: OfficeHour;
   stage: number;
   setStage: Dispatch<SetStateAction<number>>;
@@ -27,7 +28,8 @@ interface ModalStageOneProps {
 }
 
 interface ModalStageTwoProps {
-  question: Question;
+  question: IdentifiableQuestion;
+  ;
   setQuestion: Dispatch<SetStateAction<Question>>;
   state: OfficeHour;
   tagIndex: number;
