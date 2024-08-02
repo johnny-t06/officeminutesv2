@@ -1,5 +1,6 @@
-import OfficeHourProvider from "@context/OfficeHourContext";
-
+import OfficeHourWrapper from "@/app/components/OfficeHourWrapper";
+import OfficeHourProvider from "@/app/context/OfficeHourContext";
+import React from "react";
 interface PageProps {
   params: {
     courseId: string;
@@ -13,7 +14,7 @@ const Page = (props: PageProps) => {
 
   return (
     <OfficeHourProvider courseId={courseId}>
-      {/* TODO(nickbar01234) - Display UI */}
+      <OfficeHourWrapper />;
     </OfficeHourProvider>
   );
 };
