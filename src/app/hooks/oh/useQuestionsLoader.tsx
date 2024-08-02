@@ -3,7 +3,7 @@ import { State, useLoadingValue } from "@hooks/utils/useLoadingValue";
 import React from "react";
 import { IdentifiableQuestions } from "@interfaces/type";
 import { getQuestion, getQuestions } from "services/client/question";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { questionConverter } from "services/firestore";
 
@@ -18,6 +18,7 @@ interface UseQuestionsLoaderProps {
 export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
   const { state, setValue, setError } =
     useLoadingValue<IdentifiableQuestions>();
+  const unsubscriber = React.useRef<Unsubscribe | null>(null);
 
   React.useEffect(() => {
     getQuestions(props.courseId).then((value) => {
@@ -27,6 +28,10 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
 
   React.useEffect(() => {
     if (state.state !== State.SUCCESS) {
+      if (unsubscriber.current !== null) {
+        unsubscriber.current();
+      }
+      unsubscriber.current = null;
       return;
     }
 
@@ -45,8 +50,10 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
       }
     );
 
+    unsubscriber.current = unsubscribe;
+
     return () => unsubscribe();
-  }, []);
+  }, [state.state]);
 
   // TODO(lnguyen2693) - handle setError
 
