@@ -35,7 +35,6 @@ export const addQuestion = async (question: addQuestion, courseId: string) => {
 export const updateQuestion = async (
   question: IdentifiableQuestion,
   courseId: string
-  // questionId: string
 ) => {
   const questionDoc: DocumentReference = doc(
     db,
@@ -44,7 +43,7 @@ export const updateQuestion = async (
 
   const { id, ...res } = question;
 
-  const updatedDoc = await updateDoc(questionDoc, res);
+  await updateDoc(questionDoc, res);
 
   return question;
 };
@@ -65,13 +64,10 @@ export const getQuestions = async (courseId: string) => {
       questionConverter
     )
   );
-  const questionsDocs: IdentifiableQuestions = snapshot.docs.map(
-    (doc) =>
-      ({
-        id: doc.id,
-        ...doc.data(),
-      } as IdentifiableQuestion)
-  );
+  const questionsDocs: IdentifiableQuestions = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 
   return questionsDocs;
 };
