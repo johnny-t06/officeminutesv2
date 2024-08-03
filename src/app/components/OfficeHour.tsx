@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 // import { type OfficeHour, Status, Question, Student } from "../../";
 import Queue from "./Queue";
 import { QuestionPost } from "./QuestionPost";
@@ -13,30 +13,44 @@ import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import { officeHourContext } from "@context/OfficeHourContext";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getUser } from "@services/client/user";
+import { useUserSession } from "@context/UserSessionContext";
+import { getQuestion } from "@services/client/question";
+import { compareQuestions } from "@utils/index";
 
 interface OfficeHourProps {}
 
 const OfficeHour = (props: OfficeHourProps) => {
   const { course, questions } = useOfficeHour();
+  const { user } = useUserSession();
+  console.log("course", course);
+  console.log("user", user);
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [clickedLeaveQueue, setClickedLeaveQueue] = React.useState(false);
   const [hoverStyle, setHoverStyle] = React.useState(false);
 
-  // const [currQuestion, setCurrQuestion] = useState<IdentifiableQuestion | null>(
-  //   null
-  // );
-  // const [currIndex, setCurrIndex] = useState<number | null>(null);
+  const [questionsByTime, setQuestionsByTime] = useState<
+    IdentifiableQuestion[]
+  >([]);
+  const [privateQuestion, setPrivateQuestion] = useState<{
+    question: IdentifiableQuestion;
+    index: number;
+  } | null>(null);
+  const [publicQuestion, setPublicQuestion] = useState<{
+    question: IdentifiableQuestion;
+    index: number;
+  } | null>(null);
+
   const [onDuty, setOnDuty] = useState<IdentifiableUser[]>([]);
 
   const onHover = () => {
     setHoverStyle(!hoverStyle);
   };
+
   useEffect(() => {
-    console.log(course);
     const fetchOnDuty = async () => {
       try {
         const promises = course.onDuty.map((onDuty) => getUser(onDuty));
-        const data = await Promise.all(promises);
+        const data = (await Promise.all(promises)).filter((x) => x !== null);
         setOnDuty(data);
       } catch (e) {
         throw e;
@@ -44,6 +58,27 @@ const OfficeHour = (props: OfficeHourProps) => {
     };
     fetchOnDuty();
   }, [course.onDuty]);
+
+  useEffect(() => {
+    if (questions && user) {
+      const questionsByTime = questions.sort(compareQuestions);
+      setQuestionsByTime(questionsByTime);
+
+      const currentQuestions = user.currentQuestions[course.id];
+
+      if (currentQuestions) {
+        currentQuestions.map(async (questionID) => {
+          const question = await getQuestion(course.id, questionID);
+          const index = questionsByTime.indexOf(question);
+          if (question.public) {
+            setPublicQuestion({ question, index });
+          } else {
+            setPrivateQuestion({ question, index });
+          }
+        });
+      }
+    }
+  }, [questions, user]);
 
   return (
     <div className="h-full w-full relative">
@@ -132,7 +167,7 @@ const OfficeHour = (props: OfficeHourProps) => {
             </div>
           </div>
           <div className="h-full grid grid-cols-2 gap-6">
-            {questions
+            {questionsByTime
               .filter((question) => question.public)
               .map((question, idx) => (
                 <div key={idx} className="lg:col-span-1 col-span-2">
@@ -142,12 +177,12 @@ const OfficeHour = (props: OfficeHourProps) => {
           </div>
         </div>
         <div className="lg:col-span-3 h-full w-full lg:border-l-2 px-6 py-8 sticky overflow-x-hidden lg:block hidden">
-          {/* <CurrentGroup
+          <CurrentGroup
             clickedConfirm={setClickedLeaveQueue}
-            // currQuestion={currQuestion}
-            currIndex={currIndex}
-          /> */}
-          <Queue questions={questions} />
+            currQuestion={publicQuestion?.question}
+            currIndex={publicQuestion?.index}
+          />
+          <Queue questions={questionsByTime} />
         </div>
       </div>
       {clickedLeaveQueue && (

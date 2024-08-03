@@ -10,12 +10,17 @@ import CurrentGroup from "./CurrentGroup";
 import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getUser } from "@services/client/user";
+import { compareQuestions } from "@utils/index";
 
 interface OfficeHourProps {}
 
 const TaOfficeHour = (props: OfficeHourProps) => {
   const { course, questions } = useOfficeHour();
   const [onDuty, setOnDuty] = useState<IdentifiableUser[]>([]);
+
+  const [questionsByTime, setQuestionsByTime] = useState<
+    IdentifiableQuestion[]
+  >([]);
 
   useEffect(() => {
     const fetchOnDuty = async () => {
@@ -29,6 +34,11 @@ const TaOfficeHour = (props: OfficeHourProps) => {
     };
     fetchOnDuty();
   }, [course.onDuty]);
+
+  useEffect(() => {
+    const questionsByTime = questions.sort(compareQuestions);
+    setQuestionsByTime(questionsByTime);
+  }, []);
 
   return (
     <div className="h-full w-full relative">
@@ -79,11 +89,11 @@ const TaOfficeHour = (props: OfficeHourProps) => {
 
           <div className="flex justify-between">
             <div className="font-bold text-3xl text-[#393939]">
-              Queue ({questions.length} People)
+              Queue ({questionsByTime.length} People)
             </div>
           </div>
           <div className="h-full grid grid-cols-1 gap-6">
-            {questions.map((question: IdentifiableQuestion, idx) => (
+            {questionsByTime.map((question: IdentifiableQuestion, idx) => (
               <div key={`${question.title}-${idx}`} className="col-span-1">
                 <TAQuestionPost question={question} />
               </div>
@@ -91,7 +101,7 @@ const TaOfficeHour = (props: OfficeHourProps) => {
           </div>
         </div>
         <div className="col-span-3 h-full w-full border-l-2 sticky overflow-x-hidden overflow-y-scroll px-6 py-8">
-          <Queue questions={questions} />
+          <Queue questions={questionsByTime} />
         </div>
       </div>
     </div>

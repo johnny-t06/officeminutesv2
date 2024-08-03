@@ -59,7 +59,7 @@ export const UserSessionContextProvider = ({
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      if (getUser(user.uid) === null) {
+      if ((await getUser(user.uid)) === null) {
         await addUser({
           id: user.uid,
           name: user.displayName ?? "",
@@ -100,6 +100,4 @@ export const UserSessionContextProvider = ({
   );
 };
 
-export const useUserSession = () => {
-  React.useContext(UserSessionContext);
-};
+export const useUserSession = () => React.useContext(UserSessionContext);

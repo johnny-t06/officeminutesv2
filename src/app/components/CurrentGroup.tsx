@@ -1,19 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { type OfficeHour, Status, Question } from "../../../types";
-// import { useSession } from "next-auth/react";
 import { trimName } from "../utils";
+import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
+import { getUser } from "@services/client/user";
 
 interface Props {
-  // state: OfficeHour;
   clickedConfirm: React.Dispatch<React.SetStateAction<boolean>>;
-  currQuestion: Question | null;
-  currIndex: number | null;
+  currQuestion: IdentifiableQuestion | undefined;
+  currIndex: number | undefined;
 }
 
 export default function CurrentGroup({
-  //   state,
   currQuestion,
   currIndex,
   clickedConfirm,
@@ -23,7 +21,20 @@ export default function CurrentGroup({
   const [hoverStyle, setHoverStyle] = useState(false);
   const [hoverStyle2, setHoverStyle2] = useState(false);
   //   const [showConfirm, setShowConfirm] = useState(false);
-  const [found, setFound] = useState(false);
+  // const [found, setFound] = useState(false);
+  const [group, setGroup] = useState<IdentifiableUser[]>([]);
+
+  React.useEffect(() => {
+    if (currQuestion) {
+      const promises = currQuestion.group.map(async (studentID) =>
+        getUser(studentID)
+      );
+
+      Promise.all(promises).then((data) =>
+        setGroup(data.filter((x) => x !== null))
+      );
+    }
+  }, []);
 
   const onHover = () => {
     setHoverStyle(!hoverStyle);
@@ -60,7 +71,7 @@ export default function CurrentGroup({
             <div className="grid grid-cols-8">
               <div className="flex flex-col lg:col-span-3 col-span-8 items-center">
                 <div className="font-bold text-5xl">
-                  {currIndex !== null && currIndex + 1}
+                  {currIndex !== undefined && currIndex + 1}
                 </div>
                 <div className="py-3 text-xs">On Queue</div>
               </div>
@@ -90,15 +101,13 @@ export default function CurrentGroup({
                 </button>
               </div>
             </div>
-            {!currQuestion.private ? (
+            {currQuestion?.public ? (
               <>
                 <div className="w-full h-0.5 bg-[#0000001F]" />
-                <div className="font-bold text-lg">
-                  {currQuestion?.question}:
-                </div>
-                {currQuestion?.students.map((Student, index) => (
+                <div className="font-bold text-lg">{currQuestion?.title}:</div>
+                {group.map((student, index) => (
                   <span className="font-normal text-base" key={index}>
-                    {index + 1}. {trimName(Student.name)}
+                    {index + 1}. {trimName(student.name)}
                   </span>
                 ))}
               </>

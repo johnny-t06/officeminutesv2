@@ -17,11 +17,28 @@ export const addUser = async (user: IdentifiableUser) => {
   return user;
 };
 
-export const getUser = async (userID: String) => {
-  const userDoc = await getDoc(
-    doc(db, `users/${userID}`).withConverter(userConverter)
-  );
-  return { id: userID, ...userDoc.data() } as IdentifiableUser;
+// export const getUser = async (userID: String) => {
+//   const userDoc = await getDoc(
+//     doc(db, `users/${userID}`).withConverter(userConverter)
+//   );
+//   return { id: userID, ...userDoc.data() } as IdentifiableUser;
+// };
+
+export const getUser = async (
+  userID: string
+): Promise<IdentifiableUser | null> => {
+  try {
+    const userDoc = await getDoc(
+      doc(db, `users/${userID}`).withConverter(userConverter)
+    );
+    if (!userDoc.exists()) {
+      return null;
+    }
+    return { id: userID, ...userDoc.data() } as IdentifiableUser;
+  } catch (error) {
+    console.error("Error getting user:", error);
+    return null;
+  }
 };
 
 export const updateUser = async (user: IdentifiableUser) => {
