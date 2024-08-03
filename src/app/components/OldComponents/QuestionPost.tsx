@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { formatTimeDifference } from "../utils";
+import { formatTimeDifference } from "@utils/index";
 import { Button } from "@mui/material";
 import { IdentifiableQuestion } from "@interfaces/type";
 import { QuestionState } from "@interfaces/db";

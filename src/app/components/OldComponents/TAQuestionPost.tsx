@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { type OfficeHour, Status } from "../../../types";
 import { Button } from "@mui/material";
 import { IdentifiableQuestion } from "@interfaces/type";
 import { QuestionState } from "@interfaces/db";
+import { formatTimeDifference } from "@utils/index";
 
 interface QuestionPostProps {
   question: IdentifiableQuestion;
@@ -37,7 +37,7 @@ export const TAQuestionPost = (props: QuestionPostProps) => {
         <p className="max-h-32 overflow-auto">{question.description}</p>
         <div className="flex justify-end">
           <div className="text-[#393939] text-xs pb-3">
-            Asked at {question.timestamp.toString()}
+            {formatTimeDifference(question.timestamp)}
           </div>
         </div>
       </div>

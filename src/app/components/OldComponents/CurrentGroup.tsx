@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { trimName } from "../utils";
+import { trimName } from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import { getUser } from "@services/client/user";
 import { Button } from "@mui/material";

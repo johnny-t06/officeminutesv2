@@ -1,10 +1,8 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-// import { type OfficeHour, type Student, type Question, Status } from "@/types";
 import TagsSelector from "./TagsSelector";
 import TextField from "./TextField";
 import Checkbox from "./Checkbox";
 import { Button } from "@mui/material";
-import { IdentifiableQuestion } from "@interfaces/type";
 import { useUserSession } from "@context/UserSessionContext";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Question, QuestionState } from "@interfaces/db";

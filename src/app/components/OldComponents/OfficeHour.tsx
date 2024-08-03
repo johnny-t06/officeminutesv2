@@ -1,13 +1,12 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
-// import { type OfficeHour, Status, Question, Student } from "../../";
+import React, { useEffect, useState } from "react";
 import Queue from "./Queue";
 import { QuestionPost } from "./QuestionPost";
 import { Header } from "./Header";
 import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
-import { Sidebar } from "./Popup";
+import { Sidebar } from "../Popup";
 import { Button } from "@mui/material";
 import {
   IdentifiableQuestion,
@@ -93,7 +92,7 @@ const OfficeHour = (props: OfficeHourProps) => {
       <Header
         headerLeft={
           <div className="text-4xl font-bold">
-            {course.id.toUpperCase()} Office Hours
+            {course.id.toUpperCase()} Student Office Hours
           </div>
         }
         headerRight={
@@ -215,23 +214,6 @@ const OfficeHour = (props: OfficeHourProps) => {
                 This won&apos;t remove other people from your group.
               </div>
             )}
-            {/* <button
-              onMouseEnter={onHover}
-              onMouseLeave={onHover}
-              className={`w-full uppercase py-4 text-sm rounded shadow-md ${
-                hoverStyle
-                  ? "border-[#0288D1] border-2 text-[#0288D1]"
-                  : "bg-[#1E88E5] border-2 border-[#0288D1] text-white"
-              }`}
-              //       onClick={() => {
-              //         setCurrQuestion(null);
-              //         setCurrIndex(null);
-              //         setClickedLeaveQueue(false);
-              //         ws.current?.emit("leave_queue", student);
-              //       }}
-            >
-              CONFIRM
-            </button> */}
             <Button variant="contained" onClick={onLeave}>
               CONFIRM
             </Button>

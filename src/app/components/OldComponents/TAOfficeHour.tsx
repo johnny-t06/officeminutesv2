@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import { type OfficeHour, Question, Status, Student } from "../../../types";
+import { type OfficeHour, Question, Status, Student } from "../../../../types";
 import Queue from "./Queue";
 import { TAQuestionPost } from "./TAQuestionPost";
 import { Header } from "./Header";
@@ -11,12 +11,14 @@ import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getUser } from "@services/client/user";
 import { compareQuestions } from "@utils/index";
+import { useUserSession } from "@context/UserSessionContext";
 
 interface OfficeHourProps {}
 
 const TaOfficeHour = (props: OfficeHourProps) => {
   const { course, questions } = useOfficeHour();
   const [onDuty, setOnDuty] = useState<IdentifiableUser[]>([]);
+  const { user } = useUserSession();
 
   const [questionsByTime, setQuestionsByTime] = useState<
     IdentifiableQuestion[]
@@ -25,8 +27,8 @@ const TaOfficeHour = (props: OfficeHourProps) => {
   useEffect(() => {
     const fetchOnDuty = async () => {
       try {
-        const promises = course.onDuty.map(async (onDuty) => getUser(onDuty));
-        const data = await Promise.all(promises);
+        const promises = course.onDuty.map((onDuty) => getUser(onDuty));
+        const data = (await Promise.all(promises)).filter((x) => x !== null);
         setOnDuty(data);
       } catch (e) {
         throw e;
@@ -51,7 +53,7 @@ const TaOfficeHour = (props: OfficeHourProps) => {
       <Header
         headerLeft={
           <div className="text-4xl font-bold">
-            {course.id.toUpperCase()} Office Hours
+            {course.id.toUpperCase()} TA Office Hours
           </div>
         }
       />
@@ -64,7 +66,7 @@ const TaOfficeHour = (props: OfficeHourProps) => {
             <div className="flex gap-x-2.5 lg:col-span-10 col-span-9">
               {onDuty.map((ta, idx) => (
                 //remove the nullary once out of dev
-                <span key={idx}>{ta.name ?? course.onDuty[idx]}</span>
+                <span key={idx}>{ta.name}</span>
               ))}
             </div>
           </div>

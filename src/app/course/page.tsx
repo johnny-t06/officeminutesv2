@@ -1,6 +1,6 @@
 import { getCourses } from "@services/client/course";
-import { Header } from "../components/Header";
-import CourseSelection from "@components/CourseSelection";
+import { Header } from "../components/OldComponents/Header";
+import CourseSelection from "@components/OldComponents/CourseSelection";
 
 const Page = async () => {
   const courses = await getCourses();
