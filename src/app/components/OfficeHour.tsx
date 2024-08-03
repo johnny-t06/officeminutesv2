@@ -102,6 +102,7 @@ const OfficeHour = (props: OfficeHourProps) => {
             </div>
             <div className="flex gap-x-2.5 lg:col-span-10 col-span-9">
               {onDuty.map((ta, idx) => (
+                //remove the nullary once out of dev
                 <span key={idx}>{ta.name ?? course.onDuty[idx]}</span>
               ))}
             </div>
@@ -172,11 +173,11 @@ const OfficeHour = (props: OfficeHourProps) => {
             <div className="font-bold text-xl tracking-wider">
               Are you sure you want to leave the queue?
             </div>
-            {currQuestion && (
+            {/* {currQuestion && (
               <div className={"text-[#393939] text-sm tracking-wide"}>
                 This won&apos;t remove other people from your group.
               </div>
-            )}
+            )} */}
             <button
               onMouseEnter={onHover}
               onMouseLeave={onHover}

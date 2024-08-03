@@ -4,6 +4,9 @@ export interface User {
   tufts_username: string;
   email: string;
   role: string;
+  currentQuestions: {
+    [key: string]: string[];
+  };
 }
 
 interface Tags {
