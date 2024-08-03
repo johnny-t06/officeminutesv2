@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { trimName } from "../utils";
 import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import { getUser } from "@services/client/user";
+import { Button } from "@mui/material";
 
 interface Props {
   clickedConfirm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,8 +17,6 @@ export default function CurrentGroup({
   currIndex,
   clickedConfirm,
 }: Props) {
-  // const [currQuestion, setCurrQuestion] = useState<Question | null>(null);
-  // const [currIndex, setCurrIndex] = useState<number | null>(null);
   const [hoverStyle, setHoverStyle] = useState(false);
   const [hoverStyle2, setHoverStyle2] = useState(false);
   //   const [showConfirm, setShowConfirm] = useState(false);
@@ -36,14 +35,6 @@ export default function CurrentGroup({
     }
   }, []);
 
-  const onHover = () => {
-    setHoverStyle(!hoverStyle);
-  };
-
-  const onHover2 = () => {
-    setHoverStyle2(!hoverStyle2);
-  };
-
   const clickShowConfirm = () => {
     clickedConfirm(true);
   };
@@ -51,7 +42,7 @@ export default function CurrentGroup({
   return (
     <div>
       <div className="flex flex-col gap-3">
-        {currQuestion !== null ? (
+        {currQuestion ? (
           <>
             <div className="flex gap-x-2 w-full bg-[#EDF7ED] py-3 px-2.5 justify-center items-center">
               <svg
@@ -76,35 +67,22 @@ export default function CurrentGroup({
                 <div className="py-3 text-xs">On Queue</div>
               </div>
               <div className="flex gap-y-1 flex-col lg:col-span-5 col-span-8 text-center">
-                <button
-                  onMouseEnter={onHover}
-                  onMouseLeave={onHover}
-                  className={`text-sm px-2 py-2 rounded shadow-md ${
-                    hoverStyle
-                      ? "bg-[#1E88E5] text-white"
-                      : "border-[#2196F3] border-2 text-[#2196F3]"
-                  }`}
-                >
+                <Button variant="contained" size="medium">
                   EDIT SUBMISSION
-                </button>
-                <button
-                  onMouseEnter={onHover2}
-                  onMouseLeave={onHover2}
+                </Button>
+                <Button
+                  variant="contained"
+                  size="medium"
                   onClick={clickShowConfirm}
-                  className={`text-sm px-2 py-2 rounded shadow-md ${
-                    hoverStyle2
-                      ? "bg-[#1E88E5] text-white"
-                      : "border-[#2196F3] border-2 text-[#2196F3]"
-                  }`}
                 >
                   LEAVE QUEUE
-                </button>
+                </Button>
               </div>
             </div>
-            {currQuestion?.public ? (
+            {currQuestion && currQuestion.public ? (
               <>
                 <div className="w-full h-0.5 bg-[#0000001F]" />
-                <div className="font-bold text-lg">{currQuestion?.title}:</div>
+                <div className="font-bold text-lg">{currQuestion.title}:</div>
                 {group.map((student, index) => (
                   <span className="font-normal text-base" key={index}>
                     {index + 1}. {trimName(student.name)}

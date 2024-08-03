@@ -51,6 +51,7 @@ export const UserSessionContextProvider = ({
       } else {
         setUser(null);
         setSession({ isAuthenticated: false, isLoading: false, error: null });
+        router.push("/");
       }
     });
 
@@ -62,14 +63,13 @@ export const UserSessionContextProvider = ({
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      if ((await getUser(user.uid)) === null) {
+      if ((await getUser(user.uid)) == null) {
         await addUser({
           id: user.uid,
           name: user.displayName ?? "",
           tufts_username: "",
           email: user.email ?? "",
           role: "user",
-          currentQuestions: {},
         });
       }
 

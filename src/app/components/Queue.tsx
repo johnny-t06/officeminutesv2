@@ -1,6 +1,4 @@
 import React from "react";
-import { type OfficeHour, Status } from "../../../types";
-import { trimName } from "../utils";
 import { IdentifiableQuestions } from "@interfaces/type";
 
 interface Props {

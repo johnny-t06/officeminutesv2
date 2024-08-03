@@ -9,12 +9,16 @@ import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
 import { Sidebar } from "./Popup";
 import { Button } from "@mui/material";
-import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
+import {
+  IdentifiableQuestion,
+  IdentifiableQuestions,
+  IdentifiableUser,
+} from "@interfaces/type";
 import { officeHourContext } from "@context/OfficeHourContext";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getUser } from "@services/client/user";
 import { useUserSession } from "@context/UserSessionContext";
-import { getQuestion } from "@services/client/question";
+import { getQuestion, updateQuestion } from "@services/client/question";
 import { compareQuestions } from "@utils/index";
 
 interface OfficeHourProps {}
@@ -22,15 +26,13 @@ interface OfficeHourProps {}
 const OfficeHour = (props: OfficeHourProps) => {
   const { course, questions } = useOfficeHour();
   const { user } = useUserSession();
-  console.log("course", course);
-  console.log("user", user);
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [clickedLeaveQueue, setClickedLeaveQueue] = React.useState(false);
-  const [hoverStyle, setHoverStyle] = React.useState(false);
 
-  const [questionsByTime, setQuestionsByTime] = useState<
-    IdentifiableQuestion[]
-  >([]);
+  const [questionsByTime, setQuestionsByTime] = useState<IdentifiableQuestions>(
+    []
+  );
+
   const [privateQuestion, setPrivateQuestion] = useState<{
     question: IdentifiableQuestion;
     index: number;
@@ -41,10 +43,6 @@ const OfficeHour = (props: OfficeHourProps) => {
   } | null>(null);
 
   const [onDuty, setOnDuty] = useState<IdentifiableUser[]>([]);
-
-  const onHover = () => {
-    setHoverStyle(!hoverStyle);
-  };
 
   useEffect(() => {
     const fetchOnDuty = async () => {
@@ -60,26 +58,36 @@ const OfficeHour = (props: OfficeHourProps) => {
   }, [course.onDuty]);
 
   useEffect(() => {
-    if (questions && user) {
-      const questionsByTime = questions.sort(compareQuestions);
-      setQuestionsByTime(questionsByTime);
-
-      const currentQuestions = user.currentQuestions[course.id];
-
-      if (currentQuestions) {
-        currentQuestions.map(async (questionID) => {
-          const question = await getQuestion(course.id, questionID);
-          const index = questionsByTime.indexOf(question);
+    const sortedQuestions = questions.sort(compareQuestions);
+    setQuestionsByTime(sortedQuestions);
+    if (user) {
+      sortedQuestions.map((question, index) => {
+        if (question.group.includes(user.id)) {
           if (question.public) {
             setPublicQuestion({ question, index });
           } else {
             setPrivateQuestion({ question, index });
           }
-        });
-      }
+          return question;
+        }
+      });
     }
-  }, [questions, user]);
-
+  }, []);
+  const onLeave = () => {
+    if (privateQuestion) {
+      const { question } = privateQuestion;
+      question.group = question.group.filter((id) => id !== user?.id);
+      updateQuestion(question, course.id);
+      setPrivateQuestion(null);
+    }
+    if (publicQuestion) {
+      const { question } = publicQuestion;
+      question.group = question.group.filter((id) => id !== user?.id);
+      updateQuestion(question, course.id);
+      setPublicQuestion(null);
+    }
+    setClickedLeaveQueue(false);
+  };
   return (
     <div className="h-full w-full relative">
       <Header
@@ -98,14 +106,9 @@ const OfficeHour = (props: OfficeHourProps) => {
           </Button>
         }
       />
-      {/* {showModal && (
-        <JoinModal
-          state={officeHourState}
-          showModal={showModal}
-          setShowModal={setShowModal}
-          student={student}
-        />
-      )} */}
+      {showModal && (
+        <JoinModal showModal={showModal} setShowModal={setShowModal} />
+      )}
       <div className="h-full w-full lg:grid lg:grid-cols-12 gap-x-4 lg:pl-12 lg:pr-4 px-4">
         <div className="lg:col-span-9 col-span-12 flex flex-col gap-y-4 py-6">
           <div className="w-full border border-[#0288D1] rounded py-1 px-2 flex gap-x-3">
@@ -137,8 +140,7 @@ const OfficeHour = (props: OfficeHourProps) => {
             </div>
             <div className="flex gap-x-2.5 lg:col-span-10 col-span-9">
               {onDuty.map((ta, idx) => (
-                //remove the nullary once out of dev
-                <span key={idx}>{ta.name ?? course.onDuty[idx]}</span>
+                <span key={idx}>{ta.name}</span>
               ))}
             </div>
           </div>
@@ -208,12 +210,12 @@ const OfficeHour = (props: OfficeHourProps) => {
             <div className="font-bold text-xl tracking-wider">
               Are you sure you want to leave the queue?
             </div>
-            {/* {currQuestion && (
+            {publicQuestion && (
               <div className={"text-[#393939] text-sm tracking-wide"}>
                 This won&apos;t remove other people from your group.
               </div>
-            )} */}
-            <button
+            )}
+            {/* <button
               onMouseEnter={onHover}
               onMouseLeave={onHover}
               className={`w-full uppercase py-4 text-sm rounded shadow-md ${
@@ -229,7 +231,10 @@ const OfficeHour = (props: OfficeHourProps) => {
               //       }}
             >
               CONFIRM
-            </button>
+            </button> */}
+            <Button variant="contained" onClick={onLeave}>
+              CONFIRM
+            </Button>
           </div>
         </div>
       )}

@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-// import { type OfficeHour, Status, Question, Student } from "../../../types";
 
-import { trimName } from "../utils";
+import { formatTimeDifference } from "../utils";
 import { Button } from "@mui/material";
 import { IdentifiableQuestion } from "@interfaces/type";
 import { QuestionState } from "@interfaces/db";
+import { getUser } from "@services/client/user";
 
 interface QuestionPostProps {
   question: IdentifiableQuestion;
@@ -15,8 +15,18 @@ interface QuestionPostProps {
 export const QuestionPost = (props: QuestionPostProps) => {
   const { question } = props;
   const [joined, setOnJoined] = React.useState(false);
+  const [askedBy, setAskedBy] = React.useState<string>("");
   const status = question.state;
 
+  React.useEffect(() => {
+    const fetchAskedBy = async () => {
+      const student = await getUser(question.group[0]);
+      if (student) {
+        setAskedBy(student.name);
+      }
+    };
+    fetchAskedBy();
+  }, [question.group]);
   const onClickJoin = () => {
     //Student joins public question post
     setOnJoined(!joined);
@@ -38,9 +48,7 @@ export const QuestionPost = (props: QuestionPostProps) => {
           <div className="font-bold text-2xl text-[#393939]">
             {question.title}
           </div>
-          <div className="text-[#393939]">
-            {question.group.length > 0 ? trimName(question.group[0]) : ""}
-          </div>
+          <div className="text-[#393939]">{askedBy}</div>
         </div>
 
         <div className="flex gap-2">
@@ -56,7 +64,7 @@ export const QuestionPost = (props: QuestionPostProps) => {
         <p className="max-h-32 overflow-auto">{props.question.description}</p>
         <div className="flex justify-end">
           <div className="text-[#393939] text-xs">
-            Asked at {question.timestamp.toString()}
+            {formatTimeDifference(question.timestamp)}
           </div>
         </div>
       </div>

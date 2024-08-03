@@ -48,6 +48,20 @@ export const updateUser = async (user: IdentifiableUser) => {
   return user;
 };
 
+export const userJoinedQuestion = async (
+  user: IdentifiableUser,
+  questionID: string,
+  courseId: string
+) => {
+  await updateUser({
+    ...user,
+    currentQuestions: {
+      ...user.currentQuestions,
+      [courseId]: [...user.currentQuestions[courseId], questionID],
+    },
+  });
+  return user;
+};
 export const deleteUser = async (userID: String) => {
   const userDoc = doc(db, `users/${userID}`).withConverter(userConverter);
   await deleteDoc(userDoc);

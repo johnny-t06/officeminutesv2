@@ -1,3 +1,7 @@
+"use client";
+import { useUserSession } from "@context/UserSessionContext";
+import { Button } from "@mui/material";
+
 interface HeaderProps {
   headerLeft?: React.ReactNode;
   headerRight?: React.ReactNode;
@@ -5,7 +9,7 @@ interface HeaderProps {
 
 export const Header = (props: HeaderProps) => {
   const { headerLeft, headerRight } = props;
-
+  const { onSignOut } = useUserSession();
   return (
     <div className="flex justify-between items-center py-4 px-12 bg-[#393939] text-white">
       <div className="flex gap-x-2.5 items-center">
@@ -23,6 +27,10 @@ export const Header = (props: HeaderProps) => {
             />
           </svg>
           <div>OfficeMinutes</div>
+          <Button variant="contained" size="small" onClick={onSignOut}>
+            {" "}
+            Sign Out{" "}
+          </Button>
         </div>
         <div>{headerLeft ?? null}</div>
       </div>
