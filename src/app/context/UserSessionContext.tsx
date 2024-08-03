@@ -9,6 +9,7 @@ import {
 import React from "react";
 import { auth } from "../../../firebase";
 import { addUser, getUser } from "@services/client/user";
+import { useRouter } from "next/navigation";
 
 interface Session {
   isAuthenticated: boolean;
@@ -38,6 +39,7 @@ export const UserSessionContextProvider = ({
     isLoading: true,
     error: null,
   });
+  const router = useRouter();
 
   React.useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -45,6 +47,7 @@ export const UserSessionContextProvider = ({
         const currUser = await getUser(firebaseUser?.uid);
         setUser(currUser);
         setSession({ isAuthenticated: true, isLoading: false, error: null });
+        router.push("/course");
       } else {
         setUser(null);
         setSession({ isAuthenticated: false, isLoading: false, error: null });
