@@ -16,6 +16,7 @@ interface UseQuestionsLoaderProps {
  * metadata.
  */
 export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
+  const { courseId } = props;
   const { state, setValue, setError } =
     useLoadingValue<IdentifiableQuestions>();
   const unsubscriber = React.useRef<Unsubscribe | null>(null);
@@ -37,7 +38,7 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
 
     // listener for list of questions
     const unsubscribe = onSnapshot(
-      collection(db, `courses/${props.courseId}/questions`).withConverter(
+      collection(db, `courses/${courseId}/questions`).withConverter(
         questionConverter
       ),
       (snapshot) => {
@@ -52,7 +53,7 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
 
     unsubscriber.current = unsubscribe;
 
-    return () => unsubscribe();
+    return unsubscriber.current();
   }, [state.state]);
 
   // TODO(lnguyen2693) - handle setError

@@ -14,6 +14,7 @@ interface UseCourseLoaderProps {
  * Fetch course from database and implement logic to update course metadata.
  */
 export const useCourseLoader = (props: UseCourseLoaderProps) => {
+  const { courseId } = props;
   const { state, setValue, setError } = useLoadingValue<IdentifiableCourse>();
   const unsubscriber = React.useRef<Unsubscribe | null>(null);
 
@@ -27,7 +28,7 @@ export const useCourseLoader = (props: UseCourseLoaderProps) => {
     // set up listener to handle new changes
     if (state.state !== State.SUCCESS) {
       if (unsubscriber.current !== null) {
-        unsubscriber.current()
+        unsubscriber.current();
       }
       unsubscriber.current = null;
       return;
@@ -35,7 +36,7 @@ export const useCourseLoader = (props: UseCourseLoaderProps) => {
 
     // listener for course
     const unsubscribe = onSnapshot(
-      doc(db, `courses/${props.courseId}`).withConverter(courseConverter),
+      doc(db, `courses/${courseId}`).withConverter(courseConverter),
       (snapshot) => {
         if (snapshot.exists()) {
           setValue({ id: snapshot.id, ...snapshot.data() });
@@ -45,7 +46,7 @@ export const useCourseLoader = (props: UseCourseLoaderProps) => {
 
     unsubscriber.current = unsubscribe;
 
-    return () => unsubscribe();
+    return unsubscriber.current();
   }, [state.state]);
 
   // TODO(lnguyen2693) - handle setError
