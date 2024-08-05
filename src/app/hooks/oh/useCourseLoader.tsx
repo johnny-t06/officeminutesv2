@@ -1,7 +1,7 @@
 import { State, useLoadingValue } from "@hooks/utils/useLoadingValue";
 import { IdentifiableCourse } from "@interfaces/type";
 import React from "react";
-import { getCourse } from "services/client/course";
+import { getCourse } from "@services/client/course";
 
 interface UseCourseLoaderProps {
   courseId: string;
@@ -38,6 +38,5 @@ export const useCourseLoader = (props: UseCourseLoaderProps) => {
   //     tags: {},
   //   });
   // }, []);
-
   return { course: state };
 };

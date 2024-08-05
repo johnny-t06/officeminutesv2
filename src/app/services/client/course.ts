@@ -1,14 +1,16 @@
 import { db } from "../../../../firebase";
+import { IdentifiableCourse, IdentifiableCourses } from "@interfaces/type";
 import { courseConverter } from "../firestore";
 import {
+  collection,
   deleteDoc,
   doc,
   DocumentReference,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { IdentifiableCourse } from "@interfaces/type";
 
 export const addCourse = async (course: IdentifiableCourse) => {
   const courseDoc: DocumentReference = doc(
@@ -27,7 +29,6 @@ export const updateCourse = async (course: IdentifiableCourse) => {
   const courseDoc = doc(db, `courses/${course.id}`).withConverter(
     courseConverter
   );
-  // const updatedCourse = defaultCourse(course);
 
   const { id, ...res } = course;
 
@@ -41,8 +42,19 @@ export const getCourse = async (courseID: String) => {
   const courseDoc = await getDoc(
     doc(db, `courses/${courseID}`).withConverter(courseConverter)
   );
+  return { id: courseID, ...courseDoc.data() } as IdentifiableCourse;
+};
 
-  return { id: courseID, ...courseDoc.data()} as IdentifiableCourse;
+export const getCourses = async () => {
+  const snapshot = await getDocs(
+    collection(db, `courses`).withConverter(courseConverter)
+  );
+  const coursesDocs: IdentifiableCourses = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return coursesDocs;
 };
 
 export const deleteCourse = async (courseID: String) => {

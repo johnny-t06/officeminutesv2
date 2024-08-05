@@ -1,6 +1,7 @@
-import { Questions, QuestionState } from "@interfaces/db";
-import { useLoadingValue } from "@hooks/utils/useLoadingValue";
+import { State, useLoadingValue } from "@hooks/utils/useLoadingValue";
 import React from "react";
+import { IdentifiableQuestions } from "@interfaces/type";
+import { getQuestions } from "@services/client/question";
 
 interface UseQuestionsLoaderProps {
   courseId: string;
@@ -11,20 +12,20 @@ interface UseQuestionsLoaderProps {
  * metadata.
  */
 export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
-  const { state, setValue, setError } = useLoadingValue<Questions>();
+  const { state, setValue, setError } =
+    useLoadingValue<IdentifiableQuestions>();
 
   React.useEffect(() => {
-    setValue([
-      {
-        title: "How to do amortization?",
-        description: "Help moi",
-        public: true,
-        state: QuestionState.PENDING,
-        timestamp: new Date(),
-        group: ["nickbar01234"],
-        tags: [],
-      },
-    ]);
+    getQuestions(props.courseId).then((value) => {
+      setValue(value);
+    });
+  }, []);
+
+  React.useEffect(() => {
+    // set up listener to handle new changes
+    if (state.state !== State.SUCCESS) {
+      return;
+    }
   }, []);
 
   return { questions: state };

@@ -12,6 +12,7 @@ import {
   deleteDoc,
   getDoc,
   getDocs,
+  serverTimestamp,
 } from "firebase/firestore";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 
@@ -26,9 +27,7 @@ export const addQuestion = async (question: addQuestion, courseId: string) => {
     db,
     `courses/${courseId}/questions`
   ).withConverter(questionConverter);
-
   const questionDoc = await addDoc(questionsColection, question);
-
   return { id: questionDoc.id, ...question } as IdentifiableQuestion;
 };
 
@@ -42,8 +41,11 @@ export const updateQuestion = async (
   ).withConverter(questionConverter);
 
   const { id, ...res } = question;
-
-  await updateDoc(questionDoc, res);
+  if (res.group.length === 0) {
+    await deleteDoc(questionDoc);
+  } else {
+    await updateDoc(questionDoc, res);
+  }
 
   return question;
 };

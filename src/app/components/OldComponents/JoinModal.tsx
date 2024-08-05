@@ -1,0 +1,432 @@
+import React, { Dispatch, SetStateAction, useState } from "react";
+import TagsSelector from "./TagsSelector";
+import TextField from "./TextField";
+import Checkbox from "./Checkbox";
+import { Button } from "@mui/material";
+import { useUserSession } from "@context/UserSessionContext";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { Question, QuestionState } from "@interfaces/db";
+import { addQuestion } from "@services/client/question";
+import { serverTimestamp } from "firebase/firestore";
+
+interface ModalProps {
+  showModal: boolean;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+}
+
+interface ModalStageOneProps {
+  question: Question;
+  setQuestion: Dispatch<SetStateAction<Question>>;
+  stage: number;
+  setStage: Dispatch<SetStateAction<number>>;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  generalTagIndex: number;
+  setGeneralTagIndex: Dispatch<SetStateAction<number>>;
+  generalTags: string[];
+  issueTags: string[];
+  feelingTags: string[];
+}
+
+interface ModalStageTwoProps {
+  question: Question;
+  setQuestion: Dispatch<SetStateAction<Question>>;
+  tagIndex: number;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  feelingTags: string[];
+}
+
+const StageOneModal = ({
+  question,
+  setQuestion,
+  stage,
+  setStage,
+  setShowModal,
+  generalTagIndex,
+  setGeneralTagIndex,
+  generalTags,
+  issueTags,
+  feelingTags,
+}: ModalStageOneProps) => {
+  const handleStageChange = () => {
+    if (stage === 2) {
+      setStage(1);
+    } else {
+      setStage(stage + 1);
+    }
+  };
+  const [isGenSelected, setIsGenSelected] = useState<boolean>(false);
+  const [isFeelingSelected, setIsFeelingSelected] = useState<boolean>(false);
+
+  return (
+    <div className="flex absolute left-0 top-0 z-50 w-full h-full items-center justify-center text-left">
+      <div className="p-6 bg-white flex flex-col shadow-2xl rounded-lg gap-6 w-[650px]">
+        <div className="flex flex-col">
+          <div className="flex flex-row justify-between">
+            <span className="text-base font-bold">Join Queue</span>
+            <button onClick={() => setShowModal(false)}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
+                  fill="#393939"
+                />
+              </svg>
+            </button>
+          </div>
+          <span className="text-2xl font-bold mt-2.5">
+            What do you need help with?
+          </span>
+        </div>
+
+        <div className="flex flex-col">
+          <TagsSelector
+            tags={generalTags}
+            title={
+              <>
+                General
+                <span style={{ color: "red" }}>*</span>
+              </>
+            }
+            question={question}
+            setSelected={setIsGenSelected}
+            setQuestion={setQuestion}
+            setTagIndex={setGeneralTagIndex}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <TagsSelector
+            tags={issueTags}
+            title="Issues (if applicable)"
+            question={question}
+            setQuestion={setQuestion}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          {generalTagIndex === 2 ? (
+            <TagsSelector
+              // Fetch tags from state
+              // tags={state.tas.map((ta) => ta.name)}
+              tags={["tag1", "tag2", "tag3"]}
+              title="Who did you receive help from?"
+              question={question}
+              setQuestion={setQuestion}
+            />
+          ) : (
+            <TagsSelector
+              tags={feelingTags}
+              title={
+                <>
+                  How do you feel about this topic?
+                  <span style={{ color: "red" }}>*</span>
+                </>
+              }
+              setSelected={setIsFeelingSelected}
+              question={question}
+              setQuestion={setQuestion}
+            />
+          )}
+        </div>
+
+        <Button
+          variant="contained"
+          disabled={!isFeelingSelected || !isGenSelected}
+          color={isFeelingSelected && isGenSelected ? "primary" : "inherit"}
+          onClick={() => handleStageChange()}
+        >
+          NEXT
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const StageTwoSubmitModal = ({
+  question,
+  setQuestion,
+  tagIndex,
+  setShowModal,
+  feelingTags,
+}: ModalStageTwoProps) => {
+  const { course } = useOfficeHour();
+  const [questionText, setQuestionText] = useState<string>("");
+  const [descriptionText, setDescriptionText] = useState<string>("");
+  const [isGroup, setIsGroup] = useState<boolean>(false);
+
+  const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuestionText(event.target.value);
+  };
+
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setDescriptionText(event.target.value);
+  };
+
+  const handleQuestionUpdate = async () => {
+    const updatedQuestion = { ...question };
+
+    if (questionText === "" || descriptionText === "") {
+      alert("Please fill out the required fields");
+    } else {
+      updatedQuestion.title = questionText;
+      updatedQuestion.description = descriptionText;
+      updatedQuestion.public = isGroup;
+      setQuestion(updatedQuestion);
+      await addQuestion(updatedQuestion, course.id);
+
+      setShowModal(false);
+    }
+  };
+
+  const onChecked = () => {
+    setIsGroup(!isGroup);
+  };
+
+  return (
+    <div className="flex absolute left-0 top-0 z-50 w-full h-full items-center justify-center text-left">
+      <div className="p-6 bg-white flex flex-col shadow-2xl rounded-lg gap-6 w-[650px]">
+        <div className="flex flex-row justify-between">
+          <span className="text-base font-bold">Join Queue</span>
+          <button onClick={() => setShowModal(false)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+            >
+              <path
+                d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
+                fill="#393939"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div className="flex flex-col">
+          <span className="text-base font-normal">
+            Problem Title <span style={{ color: "red" }}>*</span>
+          </span>
+          <TextField
+            value={questionText}
+            onChange={handleQuestionChange}
+            placeholder="Explain your problem in less than 5 words"
+            required={true}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <span className="text-base font-normal">
+            Add problem description <span style={{ color: "red" }}>*</span>
+          </span>
+          <TextField
+            value={descriptionText}
+            onChange={handleDescriptionChange}
+            placeholder="Tell us what you want to go over during the session"
+            required={true}
+          />
+        </div>
+
+        <div className="flex flex-row">
+          <Checkbox checked={isGroup} onChange={onChecked} />
+          <div className="flex flex-col ml-2.5">
+            <span className="text-base font-normal">Make question public</span>
+            <span className=" text-xs font-normal text-gray-500 mt-1">
+              Your question will be posted on the Group Question Board. This
+              will allow up to 5 people to join your TA session if they have
+              similar questions. Your queue name will be your Problem Title.{" "}
+            </span>
+          </div>
+        </div>
+
+        <Button
+          variant="contained"
+          disabled={questionText === "" || descriptionText === ""}
+          color={questionText && descriptionText ? "primary" : "inherit"}
+          onClick={() => {
+            handleQuestionUpdate();
+          }}
+        >
+          SUBMIT
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+// const StageTwoFollowUpModal = ({
+//   question,
+//   setQuestion,
+//   tagIndex,
+//   setShowModal,
+//   feelingTags,
+// }: ModalStageTwoProps) => {
+//   const { course } = useOfficeHour();
+//   const { user } = useUserSession();
+//   const [questionText, setQuestionText] = useState<string>("");
+//   const [descriptionText, setDescriptionText] = useState<string>("");
+
+//   const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     setQuestionText(event.target.value);
+//   };
+
+//   const handleDescriptionChange = (
+//     event: React.ChangeEvent<HTMLInputElement>
+//   ) => {
+//     setDescriptionText(event.target.value);
+//   };
+
+//   const handleQuestionUpdate = async () => {
+//     const updatedQuestion = { ...question };
+
+//     if (questionText === "" || descriptionText === "") {
+//       alert("Please fill out the required fields");
+//     } else {
+//       updatedQuestion.title = questionText;
+//       updatedQuestion.description = descriptionText;
+//       updatedQuestion.public = question.public;
+
+//       setQuestion(updatedQuestion);
+
+//       // Update the question in the queue
+//       // ws.current?.emit("join_queue", updatedQuestion);
+
+//       setShowModal(false);
+//     }
+//   };
+
+//   return (
+//     <div className="flex absolute left-0 top-0 z-50 w-full h-full items-center justify-center text-left">
+//       <div className="p-6 bg-white flex flex-col shadow-2xl rounded-lg gap-6 w-[650px]">
+//         <div className="flex flex-row justify-between">
+//           <span className="text-base font-bold">Join Queue</span>
+//           <button onClick={() => setShowModal(false)}>
+//             <svg
+//               xmlns="http://www.w3.org/2000/svg"
+//               width="14"
+//               height="14"
+//               viewBox="0 0 14 14"
+//               fill="none"
+//             >
+//               <path
+//                 d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
+//                 fill="#393939"
+//               />
+//             </svg>
+//           </button>
+//         </div>
+
+//         <div className="flex flex-col">
+//           <TagsSelector
+//             tags={feelingTags}
+//             title="How do you feel about this topic now?*"
+//             question={question}
+//             setQuestion={setQuestion}
+//           />
+//         </div>
+
+//         <div className="flex flex-col">
+//           <span className="text-base font-normal">Problem Title*</span>
+//           <TextField
+//             value={questionText}
+//             onChange={handleQuestionChange}
+//             placeholder="Explain your problem in less than 5 words"
+//             required={true}
+//           />
+//         </div>
+
+//         <div className="flex flex-col">
+//           <span className="text-base font-normal">
+//             Add problem description*
+//           </span>
+//           <TextField
+//             value={descriptionText}
+//             onChange={handleDescriptionChange}
+//             placeholder="Tell us what you want to go over during the session"
+//             required={true}
+//           />
+//         </div>
+
+//         <button
+//           className="px-5 py-2 mt-8 w-full rounded-[4px] text-white bg-primary text-sm hover:bg-gray-300 hover:text-black"
+//           onClick={() => {
+//             handleQuestionUpdate();
+//           }}
+//         >
+//           SUBMIT
+//         </button>
+//       </div>
+//     </div>
+// );
+// };
+
+const JoinModal = ({ showModal, setShowModal }: ModalProps) => {
+  const { user } = useUserSession();
+  const [stage, setStage] = useState<number>(1);
+  const [generalTagIndex, setGeneralTagIndex] = useState<number>(-1);
+  const [isError, setIsError] = useState<boolean>(false);
+  // @TODO: fetch server-side from course
+  const generalTags = ["HW Help", "Conceptual Help", "Follow-up Question"];
+  const issueTags = ["Proof Writing", "Master Method", "Induction", "Big O"];
+  const feelingTags = [
+    "Good - I have a quick question",
+    "Confused - I need some help",
+    "I'm lost (that's okay)",
+  ];
+  const [question, setQuestion] = useState<Question>({
+    title: "",
+    tags: [],
+    group: [user?.id ?? ""],
+    description: "",
+    public: false,
+    state: QuestionState.PENDING,
+    timestamp: serverTimestamp(),
+  });
+
+  return (
+    <>
+      {showModal && stage === 1 && (
+        <StageOneModal
+          question={question}
+          setQuestion={setQuestion}
+          stage={stage}
+          setStage={setStage}
+          setShowModal={setShowModal}
+          generalTagIndex={generalTagIndex}
+          setGeneralTagIndex={setGeneralTagIndex}
+          generalTags={generalTags}
+          issueTags={issueTags}
+          feelingTags={feelingTags}
+        />
+      )}
+      {/* @TODO */}
+      {showModal && stage === 2 && generalTagIndex !== 2 && (
+        <StageTwoSubmitModal
+          question={question}
+          setQuestion={setQuestion}
+          tagIndex={generalTagIndex}
+          setShowModal={setShowModal}
+          feelingTags={feelingTags}
+        />
+      )}
+      {/* {showModal && stage === 2 && generalTagIndex === 2 && (
+        <StageTwoFollowUpModal
+          question={question}
+          setQuestion={setQuestion}
+          tagIndex={generalTagIndex}
+          setShowModal={setShowModal}
+          feelingTags={feelingTags}
+        />
+      )} */}
+    </>
+  );
+};
+
+export default JoinModal;
