@@ -3,7 +3,7 @@ import { FieldValue, Timestamp } from "firebase/firestore";
 
 export const trimName = (name: string) => {
   const [firstName, lastName] = name.split(" ");
-  return firstName + " " + lastName + ".";
+  return firstName + " " + lastName[0] + ".";
 };
 
 export const compareDate = (date1: Date, date2: Date) => {

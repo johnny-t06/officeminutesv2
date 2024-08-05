@@ -1,12 +1,9 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
-import { type OfficeHour, Question, Status, Student } from "../../../../types";
+import React, { useEffect, useState } from "react";
 import Queue from "./Queue";
 import { TAQuestionPost } from "./TAQuestionPost";
 import { Header } from "./Header";
-import JoinModal from "./JoinModal";
-import CurrentGroup from "./CurrentGroup";
 import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getUser } from "@services/client/user";
