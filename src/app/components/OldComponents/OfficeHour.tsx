@@ -6,7 +6,6 @@ import { QuestionPost } from "./QuestionPost";
 import { Header } from "./Header";
 import JoinModal from "./JoinModal";
 import CurrentGroup from "./CurrentGroup";
-import { Sidebar } from "../Popup";
 import { Button } from "@mui/material";
 import {
   IdentifiableQuestion,
