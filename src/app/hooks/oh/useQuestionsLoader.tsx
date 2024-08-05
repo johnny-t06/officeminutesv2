@@ -2,10 +2,10 @@ import { Questions, QuestionState } from "@interfaces/db";
 import { State, useLoadingValue } from "@hooks/utils/useLoadingValue";
 import React from "react";
 import { IdentifiableQuestions } from "@interfaces/type";
-import { getQuestion, getQuestions } from "services/client/question";
+import { getQuestions } from "services/client/question";
 import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
-import { db } from "../../../../firebase";
-import { questionConverter } from "services/firestore";
+import { db } from "@project/firebase";
+import { questionConverter } from "@services/firestore";
 
 interface UseQuestionsLoaderProps {
   courseId: string;

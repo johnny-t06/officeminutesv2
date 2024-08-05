@@ -2,9 +2,9 @@ import { State, useLoadingValue } from "@hooks/utils/useLoadingValue";
 import { IdentifiableCourse } from "@interfaces/type";
 import { doc, onSnapshot, Unsubscribe } from "firebase/firestore";
 import React from "react";
-import { getCourse } from "services/client/course";
-import { db } from "../../../../firebase";
-import { courseConverter } from "services/firestore";
+import { getCourse } from "@services/client/course";
+import { db } from "@project/firebase";
+import { courseConverter } from "@services/firestore";
 
 interface UseCourseLoaderProps {
   courseId: string;
