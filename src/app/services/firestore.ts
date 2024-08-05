@@ -1,9 +1,5 @@
-import { Course, Question } from "@interfaces/db";
-import {
-  DocumentData,
-  QueryDocumentSnapshot,
-  PartialWithFieldValue,
-} from "firebase/firestore";
+import { Course, Question, User } from "@interfaces/db";
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
 export const courseConverter = {
   toFirestore(course: Course): DocumentData {
@@ -20,5 +16,14 @@ export const questionConverter = {
   },
   fromFirestore(snapshot: QueryDocumentSnapshot, options: any): Question {
     return snapshot.data(options) as Question;
+  },
+};
+
+export const userConverter = {
+  toFirestore(user: User): DocumentData {
+    return user;
+  },
+  fromFirestore(snapshot: QueryDocumentSnapshot, options: any): User {
+    return snapshot.data(options) as User;
   },
 };
