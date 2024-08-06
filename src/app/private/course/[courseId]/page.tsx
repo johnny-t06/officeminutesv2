@@ -1,4 +1,4 @@
-import OfficeHourProvider from "@context/OfficeHourContext";
+import OfficeHourProvider from "../../../context/OfficeHourContext";
 
 interface PageProps {
   params: {
