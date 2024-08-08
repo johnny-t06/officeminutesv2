@@ -1,7 +1,20 @@
+import Header from "@components/Header";
+import { Button, Typography } from "@mui/material";
+
 const Page = () => {
   return (
     <div>
-      <text> this is the board! </text>
+      <Header
+        title="Board"
+        rightIcon={
+          <Button style={{ textTransform: "none" }}>
+            <Typography variant="subtitle2" fontWeight={500}>
+              View History
+            </Typography>
+          </Button>
+        }
+      />
+      <text> This is the board! </text>
     </div>
   );
 };

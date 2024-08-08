@@ -1,3 +1,4 @@
+"use client";
 import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
@@ -9,12 +10,10 @@ const theme = createTheme({
     secondary: {
       main: "#ECEDF4", // Gray color
     },
-    background: {},
     text: {
       primary: "#000000", // Black text
     },
   },
-  typography: {},
 });
 
 export default theme;

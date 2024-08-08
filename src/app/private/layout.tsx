@@ -3,6 +3,7 @@ import StickyNote2OutlinedIcon from "@mui/icons-material/StickyNote2Outlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { NavBarContainer } from "@components/container";
+import HeaderContainer from "@components/container/HeaderContainer";
 interface ILayout {
   children: React.ReactNode;
 }
