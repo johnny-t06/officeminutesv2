@@ -15,7 +15,7 @@ const useAuth = () => {
   const onSignIn = useCallback(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.push("/course");
+        router.push("/private/course");
       } else {
         signInWithGoogle();
       }

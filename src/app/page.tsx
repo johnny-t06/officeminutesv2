@@ -1,5 +1,5 @@
 "use client";
-import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useAuth } from "./hooks";
 
