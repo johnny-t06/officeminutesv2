@@ -22,7 +22,7 @@ export const useCourseLoader = (props: UseCourseLoaderProps) => {
     getCourse(props.courseId).then((value) => {
       setValue(value);
     });
-  }, []);
+  }, [props.courseId]);
 
   React.useEffect(() => {
     // set up listener to handle new changes
@@ -47,7 +47,7 @@ export const useCourseLoader = (props: UseCourseLoaderProps) => {
     unsubscriber.current = unsubscribe;
 
     return unsubscriber.current();
-  }, [state.state]);
+  }, [state.state, courseId]);
 
   // TODO(lnguyen2693) - handle setError
 
