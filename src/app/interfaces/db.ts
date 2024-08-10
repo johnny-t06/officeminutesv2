@@ -41,7 +41,7 @@ export interface Question {
   state: QuestionState;
   timestamp: Date;
   group: string[];
-  tags: TagOption[];
+  tags: string[];
 }
 
 export type Questions = Question[];
