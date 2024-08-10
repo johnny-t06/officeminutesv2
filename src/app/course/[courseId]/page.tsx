@@ -11,11 +11,7 @@ const Page = (props: PageProps) => {
     params: { courseId },
   } = props;
 
-  return (
-    <OfficeHourProvider courseId={courseId}>
-      {/* TODO(nickbar01234) - Display UI */}
-    </OfficeHourProvider>
-  );
+  return null;
 };
 
 export default Page;
