@@ -8,7 +8,6 @@ interface INavBarItem {
   label: string;
   icon: React.ReactElement<SvgIconComponent>;
   href: string;
-  // active: boolean;
 }
 
 export interface INavBar {
