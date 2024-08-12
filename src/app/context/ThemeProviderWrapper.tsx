@@ -1,5 +1,4 @@
-// components/ThemeProviderWrapper.js
-"use client"; // This is a client component
+"use client";
 
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../theme"; // Import the theme
@@ -14,7 +13,6 @@ const ThemeProviderWrapper = ({ children }: ThemeProviderWrapperProps) => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        {/* <CssBaseline /> */}
         <ScopedCssBaseline>{children}</ScopedCssBaseline>
       </ThemeProvider>
     </StyledEngineProvider>
