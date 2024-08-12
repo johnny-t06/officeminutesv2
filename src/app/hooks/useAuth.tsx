@@ -5,7 +5,7 @@ import {
   User,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { auth, db } from "../../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 
@@ -15,7 +15,7 @@ const useAuth = () => {
   const onSignIn = useCallback(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.push("/private/course");
+        router.push("/private/course/cs160");
       } else {
         signInWithGoogle();
       }

@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Box,
   Button,
   IconButton,
   SxProps,
@@ -16,41 +17,20 @@ interface IHeader {
 }
 
 const Header = (props: IHeader) => {
-  const { leftIcon, title, rightIcon, alignCenter } = props;
-  const titleStyles: SxProps = {
-    position: alignCenter ? "absolute" : "static",
-    left: alignCenter ? "50%" : "auto",
-    transform: alignCenter ? "translateX(-50%)" : "none",
-    marginRight: rightIcon ? "auto" : "0",
-  };
-  const isButtonElement = (element: React.ReactNode) => {
-    return (
-      React.isValidElement(element) &&
-      (element.type === "button" || element.type === Button)
-    );
-  };
+  const { title, leftIcon, rightIcon, alignCenter } = props;
   return (
     <AppBar position="static" elevation={0} color="inherit">
       <Toolbar>
-        {leftIcon &&
-          (isButtonElement(leftIcon) ? (
-            leftIcon
-          ) : (
-            <IconButton edge="start" color="inherit" aria-label="left icon">
-              {leftIcon}
-            </IconButton>
-          ))}
-        <Typography variant="h6" component="div" sx={titleStyles}>
+        {leftIcon}
+        <Typography
+          variant="h6"
+          component="div"
+          className={`flex-grow ${alignCenter ? "text-center" : "text-start"}`}
+        >
           {title}
         </Typography>
-        {rightIcon &&
-          (isButtonElement(rightIcon) ? (
-            rightIcon
-          ) : (
-            <IconButton edge="end" color="inherit" aria-label="right icon">
-              {rightIcon}
-            </IconButton>
-          ))}
+
+        {alignCenter && !rightIcon ? <Box className="w-[40px]" /> : rightIcon}
       </Toolbar>
     </AppBar>
   );

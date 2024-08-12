@@ -16,7 +16,7 @@ export interface INavBar {
 
 export const NavBar = ({ buttons }: INavBar) => {
   return (
-    <BottomNavigation showLabels style={{ backgroundColor: "#ECEDF4" }}>
+    <BottomNavigation showLabels className="bg-gray">
       {buttons.map((button) => (
         <BottomNavigationAction
           key={button.label}

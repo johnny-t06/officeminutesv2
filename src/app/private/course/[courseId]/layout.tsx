@@ -5,9 +5,14 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import { NavBarContainer } from "@components/container";
 interface ILayout {
   children: React.ReactNode;
+  params: {
+    courseId: string;
+  };
 }
 
-const Layout = ({ children }: ILayout) => {
+const Layout = (props: ILayout) => {
+  const { children } = props;
+  const { courseId } = props.params;
   /* TODO(johnnyt-06) */
   // Call user context here
   // Perform role and class validation here
@@ -16,22 +21,22 @@ const Layout = ({ children }: ILayout) => {
     {
       label: "Home",
       icon: <HomeOutlinedIcon />,
-      href: "/private/course",
+      href: `/private/course/${courseId}`,
     },
     {
       label: "Board",
       icon: <StickyNote2OutlinedIcon />,
-      href: "/private/board",
+      href: `/private/course/${courseId}/board`,
     },
     {
       label: "Queue",
       icon: <PeopleAltOutlinedIcon />,
-      href: "/private/queue",
+      href: `/private/course/${courseId}/queue`,
     },
     {
       label: "Profile",
       icon: <PersonOutlineOutlinedIcon />,
-      href: "/private/profile",
+      href: `/private/course/${courseId}/profile`,
     },
   ];
 
