@@ -1,12 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  SxProps,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import React from "react";
 
 interface IHeader {
