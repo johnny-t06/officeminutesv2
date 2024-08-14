@@ -1,23 +1,19 @@
 "use client";
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase";
-import { useAuth } from "./hooks";
+import { useUserSession } from "@context/UserSessionContext";
 
 export default function Home() {
-  const { currUser, onSignIn } = useAuth();
+  const { onSignIn, onSignOut, user } = useUserSession();
   return (
     <div>
       <button onClick={() => onSignIn()}> Sign in! </button>
       <button
         onClick={() => {
-          if (currUser) {
-            signOut(auth);
-          }
+          onSignOut();
         }}
       >
         Sign Out{" "}
       </button>
-      <div> Logged In: {currUser?.displayName}</div>
+      <div> Logged In: {user?.name}</div>
     </div>
   );
 }

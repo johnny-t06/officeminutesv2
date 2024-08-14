@@ -1,7 +1,11 @@
+import { FieldValue } from "firebase/firestore";
+
 //  TODO (lnguyen2693) - discuss and complete User interface and converter
 export interface User {
   name: string;
   tufts_username: string;
+  email: string;
+  role: string;
 }
 
 interface Tags {
@@ -30,6 +34,7 @@ export interface Course {
 
 export enum QuestionState {
   PENDING = 1,
+  IN_PROGRESS,
   RESOLVED,
 }
 
@@ -37,9 +42,8 @@ export interface Question {
   title: string;
   description: string;
   public: boolean;
-  // should state be enum or boolean or string?
   state: QuestionState;
-  timestamp: Date;
+  timestamp: FieldValue;
   group: string[];
   tags: TagOption[];
 }
