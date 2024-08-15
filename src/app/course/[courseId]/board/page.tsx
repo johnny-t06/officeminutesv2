@@ -37,8 +37,10 @@ const Page = (props: PageProps) => {
     setSelectedTopics((topics) => {
       if (topics.includes(topic)) {
         return topics.filter((other) => other !== topic);
+      } else if (topic === SELECT_ALL) {
+        return [SELECT_ALL];
       } else {
-        return [...topics, topic];
+        return [...topics.filter((other) => other !== SELECT_ALL), topic];
       }
     });
   };
