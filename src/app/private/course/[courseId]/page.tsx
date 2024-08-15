@@ -1,6 +1,6 @@
 import Header from "@components/Header";
 import OfficeHourProvider from "../../../context/OfficeHourContext";
-import { IconButton } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 interface PageProps {
   params: {

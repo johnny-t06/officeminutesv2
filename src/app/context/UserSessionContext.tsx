@@ -47,7 +47,7 @@ export const UserSessionContextProvider = ({
         const currUser = await getUser(firebaseUser?.uid);
         setUser(currUser);
         setSession({ isAuthenticated: true, isLoading: false, error: null });
-        router.push("/course");
+        router.push("/private/course/cs160");
       } else {
         setUser(null);
         setSession({ isAuthenticated: false, isLoading: false, error: null });

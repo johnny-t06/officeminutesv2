@@ -16,14 +16,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <UserSessionContextProvider>
-      <ThemeProviderWrapper>
-        <html lang="en">
-          <body className={inter.className} id="root">
-            <div id="__next">{children}</div>
-          </body>
-        </html>
-      </ThemeProviderWrapper>
-    </UserSessionContextProvider>
+    <html lang="en">
+      <body className={inter.className} id="root">
+        <div id="__next">
+          <UserSessionContextProvider>
+            <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+          </UserSessionContextProvider>
+        </div>
+      </body>
+    </html>
   );
 }
