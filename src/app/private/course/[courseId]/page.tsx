@@ -26,7 +26,6 @@ const Page = (props: PageProps) => {
           title="Course Name"
           alignCenter
         />
-        <text>{`this is the ${courseId} page`}</text>
       </div>
     </OfficeHourProvider>
   );

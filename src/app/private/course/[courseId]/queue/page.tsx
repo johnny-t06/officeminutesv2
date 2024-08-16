@@ -14,8 +14,6 @@ const Page = () => {
         title="Course Name"
         alignCenter
       />
-
-      <text> this is the queue! </text>
     </div>
   );
 };

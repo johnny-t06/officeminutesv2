@@ -1,5 +1,6 @@
 import { IdentifiableQuestion } from "@interfaces/type";
 import { Box, Button, Typography } from "@mui/material";
+import { formatTimeDifference, trimName } from "@utils/index";
 import React from "react";
 
 interface QuestionProps {
@@ -20,7 +21,17 @@ const Question = (props: QuestionProps) => {
             fontWeight: 600,
           }}
         >
-          {question.group[0] ?? ""}
+          {trimName(question.group[0]) ?? ""}
+        </Typography>
+        <Typography
+          style={{
+            marginTop: "8px",
+            color: "#43474E",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+          }}
+        >
+          {formatTimeDifference(question.timestamp)}
         </Typography>
       </Box>
 
