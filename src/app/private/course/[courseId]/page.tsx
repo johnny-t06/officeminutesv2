@@ -1,5 +1,5 @@
 import Header from "@components/Header";
-import OfficeHourProvider from "../../../context/OfficeHourContext";
+import OfficeHourProvider from "@context/OfficeHourContext";
 import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 interface PageProps {
@@ -19,14 +19,13 @@ const Page = (props: PageProps) => {
       <div>
         <Header
           leftIcon={
-            <IconButton>
+            <IconButton edge="start">
               <MenuIcon />
             </IconButton>
           }
           title="Course Name"
           alignCenter
         />
-        <text>{`this is the ${courseId} page`}</text>
       </div>
     </OfficeHourProvider>
   );

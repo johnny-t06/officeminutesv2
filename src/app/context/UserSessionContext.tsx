@@ -1,8 +1,10 @@
 "use client";
 import { IdentifiableUser } from "@interfaces/type";
 import {
+  browserLocalPersistence,
   GoogleAuthProvider,
   onAuthStateChanged,
+  setPersistence,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -20,7 +22,7 @@ interface Session {
 interface IUserSessionContext {
   user: IdentifiableUser | null;
   session: Session;
-  onSignIn: () => Promise<void>;
+  onSignIn: () => void;
   onSignOut: () => Promise<void>;
 }
 
@@ -47,20 +49,22 @@ export const UserSessionContextProvider = ({
         const currUser = await getUser(firebaseUser?.uid);
         setUser(currUser);
         setSession({ isAuthenticated: true, isLoading: false, error: null });
-        router.push("/course");
       } else {
         setUser(null);
         setSession({ isAuthenticated: false, isLoading: false, error: null });
+
         router.push("/");
       }
     });
 
     return () => unsub();
-  }, []);
+  }, [user]);
 
   const onSignIn = async () => {
-    const provider = new GoogleAuthProvider();
     try {
+      await setPersistence(auth, browserLocalPersistence);
+      const provider = new GoogleAuthProvider();
+
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       if ((await getUser(user.uid)) == null) {
@@ -72,8 +76,10 @@ export const UserSessionContextProvider = ({
           role: "user",
         });
       }
-
-      setSession((prev) => ({ ...prev, isLoading: true }));
+      setSession((prev) => ({
+        ...prev,
+        isLoading: true,
+      }));
     } catch (e: any) {
       setSession({
         isAuthenticated: false,
@@ -86,14 +92,17 @@ export const UserSessionContextProvider = ({
   const onSignOut = async () => {
     try {
       setSession((prev) => ({ ...prev, isLoading: true }));
-      signOut(auth);
+      await signOut(auth);
+      setUser(null);
       setSession({ isAuthenticated: false, isLoading: false, error: null });
+      router.push("/");
     } catch (e: any) {
       setSession({
         isAuthenticated: false,
         isLoading: false,
         error: e.message,
       });
+      console.error(e);
     }
   };
   return (

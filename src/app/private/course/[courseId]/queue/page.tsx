@@ -7,15 +7,13 @@ const Page = () => {
     <div>
       <Header
         leftIcon={
-          <IconButton>
+          <IconButton edge="start">
             <MenuIcon />
           </IconButton>
         }
         title="Course Name"
         alignCenter
       />
-
-      <text> this is the queue! </text>
     </div>
   );
 };

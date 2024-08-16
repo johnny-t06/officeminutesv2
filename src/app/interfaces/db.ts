@@ -45,7 +45,7 @@ export interface Question {
   state: QuestionState;
   timestamp: FieldValue;
   group: string[];
-  tags: TagOption[];
+  tags: string[];
 }
 
 export type Questions = Question[];
