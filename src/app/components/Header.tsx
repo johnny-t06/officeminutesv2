@@ -12,7 +12,7 @@ const Header = (props: IHeader) => {
   const { title, leftIcon, rightIcon, alignCenter } = props;
   return (
     <AppBar position="static" elevation={0} color="inherit">
-      <Toolbar>
+      <Toolbar disableGutters>
         {leftIcon}
         <Typography
           variant="h6"
