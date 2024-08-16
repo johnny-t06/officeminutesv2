@@ -17,7 +17,7 @@ const Header = (props: IHeader) => {
         <Typography
           variant="h6"
           component="div"
-          className={`flex-grow ${alignCenter ? "text-center" : "text-start"}`}
+          sx={{ flexGrow: 1, textAlign: alignCenter ? "center" : "start" }}
         >
           {title}
         </Typography>
