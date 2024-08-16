@@ -1,5 +1,5 @@
 import { IdentifiableQuestion } from "@interfaces/type";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 
 interface QuestionProps {
@@ -11,36 +11,40 @@ const Question = (props: QuestionProps) => {
   return (
     <Box sx={{ backgroundColor: "#F2F3FA" }} padding="16px" borderRadius="8px">
       <Box height="48px">
-        <p
+        <Typography
+          variant="h6"
           style={{
             color: "#191C20",
-            fontSize: "24px",
-            overflow: "hidden",
             textOverflow: "ellipsis",
+            overflow: "hidden",
+            fontWeight: 600,
           }}
         >
           {question.group[0] ?? ""}
-        </p>
+        </Typography>
       </Box>
+
       <Box marginTop="16px" fontWeight={400}>
-        <h2
+        <Typography
+          variant="h6"
           style={{
-            fontSize: "24px",
+            color: "#191C20",
             textOverflow: "ellipsis",
             overflow: "hidden",
-            color: "#191C20",
           }}
         >
           {question.title}
-        </h2>
-        <p
+        </Typography>
+        <Typography
           style={{
             marginTop: "8px",
             color: "#43474E",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
           }}
         >
           {question.description}
-        </p>
+        </Typography>
       </Box>
       <Box marginTop="32px">
         <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
@@ -49,12 +53,12 @@ const Question = (props: QuestionProps) => {
               key={tag}
               border={1}
               borderColor="#73777F"
-              borderRadius="8px"
-              paddingY="6px"
-              paddingX="16px"
+              borderRadius="10px"
+              paddingY="4px"
+              paddingX="12px"
               color="#43474E"
             >
-              {tag}
+              <Typography sx={{ fontWeight: "bold" }}> {tag}</Typography>
             </Box>
           ))}
         </Box>

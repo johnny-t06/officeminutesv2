@@ -3,6 +3,8 @@ import StickyNote2OutlinedIcon from "@mui/icons-material/StickyNote2Outlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { NavBarContainer } from "@components/container";
+import OfficeHourProvider from "@context/OfficeHourContext";
+import { Box } from "@mui/material";
 interface ILayout {
   children: React.ReactNode;
   params: {
@@ -11,12 +13,14 @@ interface ILayout {
 }
 
 const Layout = (props: ILayout) => {
-  const { children } = props;
-  const { courseId } = props.params;
+  const {
+    children,
+    params: { courseId },
+  } = props;
   /* TODO(johnnyt-06) */
   // Call user context here
   // Perform role and class validation here
-  // Loading indicator
+
   const buttons = [
     {
       label: "Home",
@@ -40,7 +44,21 @@ const Layout = (props: ILayout) => {
     },
   ];
 
-  return <NavBarContainer buttons={buttons}>{children}</NavBarContainer>;
+  return (
+    <OfficeHourProvider courseId={courseId}>
+      <NavBarContainer buttons={buttons}>
+        <Box
+          paddingX="16px"
+          display="flex"
+          flexDirection="column"
+          rowGap="16px"
+          height="100vh"
+        >
+          {children}
+        </Box>
+      </NavBarContainer>
+    </OfficeHourProvider>
+  );
 };
 
 export default Layout;

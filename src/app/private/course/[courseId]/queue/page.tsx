@@ -7,7 +7,7 @@ const Page = () => {
     <div>
       <Header
         leftIcon={
-          <IconButton>
+          <IconButton edge="start">
             <MenuIcon />
           </IconButton>
         }
