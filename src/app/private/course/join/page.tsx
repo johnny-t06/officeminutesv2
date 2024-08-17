@@ -14,11 +14,36 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { getCourses, updateCourse } from "services/client/course";
+import { useAuth } from "@hooks";
 
 const Page = () => {
   const router = useRouter();
+  const { currUser } = useAuth();
 
+  const [code, setCode] = React.useState("");
   const [errorModal, setErrorModal] = React.useState(false);
+
+  const joinClicked = () => {
+    if (code.length < 6 || code.length > 8) {
+      alert("Please input a code of 6-8 characters");
+    }
+
+    getCourses().then(async (courses) => {
+      const course = courses.find((course) => course.code === code);
+
+      if (course && currUser) {
+        console.log("course found!");
+
+        course.students.push(currUser.uid);
+        await updateCourse(course);
+
+        // currUser.courses.push(course.id);
+      } else {
+        console.log("course not found!");
+      }
+    });
+  };
 
   return (
     <div>
@@ -49,6 +74,8 @@ const Page = () => {
           label="Class code"
           variant="outlined"
           className="w-full mt-4"
+          value={code}
+          onChange={(event) => setCode(event.target.value)}
         />
         <ul className="ps-5 text-[#545F70]">
           <li>
