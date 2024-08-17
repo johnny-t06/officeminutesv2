@@ -1,19 +1,21 @@
-"use client";
 import Header from "@components/Header";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import theme from "theme";
+import { getCourse } from "@services/client/course";
+import { getUsers } from "@services/client/user";
+import DisplayCourse from "@components/DisplayCourse";
 interface PageProps {
   params: {
     courseId: string;
   };
 }
 
-const Page = (props: PageProps) => {
+const Page = async (props: PageProps) => {
   const {
     params: { courseId },
   } = props;
-  // const theme = useTheme();
+  const course = await getCourse(courseId);
+  const tas = await getUsers(course.tas);
   return (
     <div>
       <Header
@@ -25,23 +27,7 @@ const Page = (props: PageProps) => {
         title={courseId.toUpperCase()}
         alignCenter
       />
-      <Box>
-        <Typography variant="h6" color={theme.palette.text.primary}>
-          Announcement{" "}
-        </Typography>
-        <Box
-          sx={{
-            padding: "16px 16px",
-            bgcolor: "#F8F9FF",
-            borderRadius: "16px",
-            marginTop: "16px",
-          }}
-        >
-          <Typography variant="body2" color={theme.palette.text.secondary}>
-            No announcement yet
-          </Typography>
-        </Box>
-      </Box>
+      <DisplayCourse tas={tas} />
     </div>
   );
 };

@@ -13,3 +13,5 @@ export type IdentifiableQuestion = Identifiable<Question>;
 export type IdentifiableQuestions = IdentifiableQuestion[];
 
 export type IdentifiableUser = Identifiable<User>;
+
+export type IdentifiableUsers = Identifiable<User>[];
