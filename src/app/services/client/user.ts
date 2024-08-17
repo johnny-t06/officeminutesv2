@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@project/firebase";
 import { userConverter } from "@services/firestore";
-import { IdentifiableUser } from "@interfaces/type";
+import { IdentifiableUser, IdentifiableUsers } from "@interfaces/type";
 
 export const addUser = async (user: IdentifiableUser) => {
   const userDoc: DocumentReference = doc(db, `users/${user.id}`).withConverter(
@@ -32,6 +32,13 @@ export const getUser = async (
     console.error("Error getting user:", error);
     return null;
   }
+};
+
+export const getUsers = async (
+  userIds: string[]
+): Promise<IdentifiableUsers> => {
+  const users = await Promise.all(userIds.map((id) => getUser(id)));
+  return users.filter((user) => user !== null) as IdentifiableUser[];
 };
 
 export const updateUser = async (user: IdentifiableUser) => {
