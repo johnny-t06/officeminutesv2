@@ -1,4 +1,4 @@
-import { FieldValue } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 
 //  TODO (lnguyen2693) - discuss and complete User interface and converter
 export interface User {
@@ -43,7 +43,7 @@ export interface Question {
   description: string;
   public: boolean;
   state: QuestionState;
-  timestamp: FieldValue;
+  timestamp: Timestamp;
   group: string[];
   tags: string[];
 }
