@@ -4,6 +4,7 @@ import theme from "theme";
 import DisplayTas from "./tas";
 import { IdentifiableUsers } from "@interfaces/type";
 import { usePathname, useRouter } from "next/navigation";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 
 interface DisplayCourseProps {
   tas: IdentifiableUsers;
@@ -12,6 +13,8 @@ const DisplayCourse = (props: DisplayCourseProps) => {
   const { tas } = props;
   const router = useRouter();
   const pathname = usePathname();
+  const { course } = useOfficeHour();
+
   return (
     <Box
       sx={{
@@ -39,7 +42,7 @@ const DisplayCourse = (props: DisplayCourseProps) => {
           }}
         >
           <Typography variant="body2" color={theme.palette.text.secondary}>
-            No announcement yet
+            {course.announcement}
           </Typography>
         </Box>
       </Box>
