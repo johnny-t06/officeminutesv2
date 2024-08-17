@@ -136,7 +136,7 @@ const Page = () => {
         title="Join class"
         rightIcon={
           <Button
-            className="py-2.5 px-6 bg-[#38608F] rounded-full mr-2"
+            className="py-2.5 px-6 bg-[#38608F] rounded-full mr-2 normal-case"
             onClick={joinClicked}
           >
             <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>

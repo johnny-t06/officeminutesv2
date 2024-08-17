@@ -23,8 +23,7 @@ const Page = async () => {
       <div className="flex flex-col items-center justify-center flex-grow gap-4">
         <div>Add a class to get started</div>
         <Button
-          style={{ textTransform: "none" }}
-          className="py-2.5 px-6 bg-[#38608F] rounded-full"
+          className="py-2.5 px-6 bg-[#38608F] rounded-full normal-case"
           onClick={() => router.push("/private/course/join")}
         >
           <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>

@@ -25,8 +25,7 @@ export default function Page() {
         </div>
         <div className="mt-1">Answers in minutes, Not hours</div>
         <Button
-          style={{ textTransform: "none" }}
-          className="py-2.5 px-6 bg-[#38608F] rounded-full mt-6"
+          className="py-2.5 px-6 bg-[#38608F] rounded-full mt-6 normal-case"
           onClick={() => {
             onSignIn();
           }}
