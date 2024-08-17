@@ -74,12 +74,14 @@ export const UserSessionContextProvider = ({
           tufts_username: "",
           email: user.email ?? "",
           role: "user",
+          courses: [],
         });
       }
       setSession((prev) => ({
         ...prev,
         isLoading: true,
       }));
+      router.push("/private/course");
     } catch (e: any) {
       setSession({
         isAuthenticated: false,

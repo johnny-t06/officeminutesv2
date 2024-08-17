@@ -19,6 +19,7 @@ const Page = async () => {
         }
         title="Classes"
       />
+      {/* NOTE: Currently only displays the case where a user has no classes */}
       <div className="flex flex-col items-center justify-center flex-grow gap-4">
         <div>Add a class to get started</div>
         <Button

@@ -15,35 +15,115 @@ import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { getCourses, updateCourse } from "services/client/course";
-import { useAuth } from "@hooks";
+import { useUserSession } from "@context/UserSessionContext";
+import { updateUser } from "@services/client/user";
 
 const Page = () => {
   const router = useRouter();
-  const { currUser } = useAuth();
+  const { user } = useUserSession();
 
   const [code, setCode] = React.useState("");
-  const [errorModal, setErrorModal] = React.useState(false);
+  const [charError, setCharError] = React.useState(false);
+  const [enrolledError, setEnrolledError] = React.useState(false);
+  const [notFoundError, setNotFoundError] = React.useState(false);
 
   const joinClicked = () => {
     if (code.length < 6 || code.length > 8) {
-      alert("Please input a code of 6-8 characters");
+      setCharError(true);
+      return;
     }
 
     getCourses().then(async (courses) => {
       const course = courses.find((course) => course.code === code);
 
-      if (course && currUser) {
-        console.log("course found!");
+      if (course && user) {
+        if (
+          course.students.includes(user.id) ||
+          user.courses.includes(course.id)
+        ) {
+          setEnrolledError(true);
+          return;
+        }
 
-        course.students.push(currUser.uid);
+        course.students.push(user.id);
         await updateCourse(course);
 
-        // currUser.courses.push(course.id);
+        user.courses.push(course.id);
+        await updateUser(user);
+
+        router.push(`/private/course/${course.id}`);
       } else {
-        console.log("course not found!");
+        setNotFoundError(true);
       }
     });
   };
+
+  const errorModal = (
+    title: string,
+    subtitle: string,
+    open: boolean,
+    setOpen: (open: boolean) => void
+  ) => (
+    <Modal
+      aria-labelledby="transition-modal-title"
+      aria-describedby="transition-modal-description"
+      open={open}
+      onClose={() => setOpen(false)}
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+        },
+      }}
+    >
+      <Fade in={open}>
+        <Box
+          sx={{
+            position: "absolute" as "absolute",
+            top: "50%",
+            left: "50%",
+            width: "75%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "#ECEDF4",
+            boxShadow: 24,
+            px: 3,
+            py: 4,
+            borderRadius: "28px",
+          }}
+        >
+          <Typography id="transition-modal-title" variant="h5" component="h2">
+            {title}
+          </Typography>
+          <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+            {subtitle}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "36px",
+              gap: "24px",
+            }}
+          >
+            <Button style={{ textTransform: "none", padding: 0, minWidth: 0 }}>
+              <Typography color="#38608F" fontWeight={500}>
+                Visit Piazza
+              </Typography>
+            </Button>
+            <Button
+              style={{ textTransform: "none", padding: 0, minWidth: 0 }}
+              onClick={() => setOpen(false)}
+            >
+              <Typography color="#38608F" fontWeight={500}>
+                OK
+              </Typography>
+            </Button>
+          </Box>
+        </Box>
+      </Fade>
+    </Modal>
+  );
 
   return (
     <div>
@@ -56,9 +136,8 @@ const Page = () => {
         title="Join class"
         rightIcon={
           <Button
-            style={{ textTransform: "none" }}
-            className="py-2.5 px-6 bg-[#38608F] rounded-full"
-            onClick={() => setErrorModal(true)}
+            className="py-2.5 px-6 bg-[#38608F] rounded-full mr-2"
+            onClick={joinClicked}
           >
             <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
               Join
@@ -88,67 +167,24 @@ const Page = () => {
           </li>
         </ul>
       </div>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={errorModal}
-        onClose={() => setErrorModal(false)}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={errorModal}>
-          <Box
-            sx={{
-              position: "absolute" as "absolute",
-              top: "50%",
-              left: "50%",
-              width: "75%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "#ECEDF4",
-              boxShadow: 24,
-              px: 3,
-              py: 4,
-              borderRadius: "28px",
-            }}
-          >
-            <Typography id="transition-modal-title" variant="h5" component="h2">
-              Class not found
-            </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              No class with that class code
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "36px",
-                gap: "24px",
-              }}
-            >
-              <Button
-                style={{ textTransform: "none", padding: 0, minWidth: 0 }}
-              >
-                <Typography color="#38608F" fontWeight={500}>
-                  Visit Piazza
-                </Typography>
-              </Button>
-              <Button
-                style={{ textTransform: "none", padding: 0, minWidth: 0 }}
-                onClick={() => setErrorModal(false)}
-              >
-                <Typography color="#38608F" fontWeight={500}>
-                  OK
-                </Typography>
-              </Button>
-            </Box>
-          </Box>
-        </Fade>
-      </Modal>
+      {errorModal(
+        "6-8 characters",
+        "Please input a code of 6-8 characters",
+        charError,
+        setCharError
+      )}
+      {errorModal(
+        "Already enrolled",
+        "You are already enrolled in this course!",
+        enrolledError,
+        setEnrolledError
+      )}
+      {errorModal(
+        "Class not found",
+        "No class with that class code",
+        notFoundError,
+        setNotFoundError
+      )}
     </div>
   );
 };

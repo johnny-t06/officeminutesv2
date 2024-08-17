@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "./../hooks";
+import { useUserSession } from "@context/UserSessionContext";
 import { Button, Typography } from "@mui/material";
 
 export default function Page() {
-  const { onSignIn } = useAuth();
+  const { onSignIn } = useUserSession();
 
   return (
     <div className="flex items-center justify-center h-screen">
@@ -27,7 +27,9 @@ export default function Page() {
         <Button
           style={{ textTransform: "none" }}
           className="py-2.5 px-6 bg-[#38608F] rounded-full mt-6"
-          onClick={() => onSignIn()}
+          onClick={() => {
+            onSignIn();
+          }}
         >
           <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
             Get started
