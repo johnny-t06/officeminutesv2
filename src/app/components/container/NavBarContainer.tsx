@@ -8,12 +8,12 @@ interface NavBarContainerProps extends INavBar {
 const NavBarContainer = (props: NavBarContainerProps) => {
   const { children, buttons } = props;
   return (
-    <div>
+    <>
       <Paper className="fixed bottom-0 left-0 right-0" elevation={3}>
         <NavBar buttons={buttons} />
       </Paper>
       <div>{children}</div>
-    </div>
+    </>
   );
 };
 

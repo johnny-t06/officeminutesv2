@@ -23,7 +23,7 @@ export const NavBar = ({ buttons }: INavBar) => {
           label={button.label}
           icon={button.icon}
           href={button.href}
-        ></BottomNavigationAction>
+        />
       ))}
     </BottomNavigation>
   );
