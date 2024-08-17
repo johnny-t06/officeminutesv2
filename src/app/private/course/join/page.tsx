@@ -28,34 +28,38 @@ const Page = () => {
   const [notFoundError, setNotFoundError] = React.useState(false);
 
   const joinClicked = () => {
-    if (code.length < 6 || code.length > 8) {
-      setCharError(true);
-      return;
-    }
-
-    getCourses().then(async (courses) => {
-      const course = courses.find((course) => course.code === code);
-
-      if (course && user) {
-        if (
-          course.students.includes(user.id) ||
-          user.courses.includes(course.id)
-        ) {
-          setEnrolledError(true);
-          return;
-        }
-
-        course.students.push(user.id);
-        await updateCourse(course);
-
-        user.courses.push(course.id);
-        await updateUser(user);
-
-        router.push(`/private/course/${course.id}`);
-      } else {
-        setNotFoundError(true);
+    try {
+      if (code.length < 6 || code.length > 8) {
+        setCharError(true);
+        return;
       }
-    });
+
+      getCourses().then(async (courses) => {
+        const course = courses.find((course) => course.code === code);
+
+        if (course && user) {
+          if (
+            course.students.includes(user.id) ||
+            user.courses.includes(course.id)
+          ) {
+            setEnrolledError(true);
+            return;
+          }
+
+          course.students.push(user.id);
+          await updateCourse(course);
+
+          user.courses.push(course.id);
+          await updateUser(user);
+
+          router.push(`/private/course/${course.id}`);
+        } else {
+          setNotFoundError(true);
+        }
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const errorModal = (

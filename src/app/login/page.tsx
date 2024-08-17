@@ -26,9 +26,7 @@ export default function Page() {
         <div className="mt-1">Answers in minutes, Not hours</div>
         <Button
           className="py-2.5 px-6 bg-[#38608F] rounded-full mt-6 normal-case"
-          onClick={() => {
-            onSignIn();
-          }}
+          onClick={() => onSignIn()}
         >
           <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
             Get started
