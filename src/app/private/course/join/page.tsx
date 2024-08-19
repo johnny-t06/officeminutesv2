@@ -23,14 +23,12 @@ const Page = () => {
   const { user } = useUserSession();
 
   const [code, setCode] = React.useState("");
-  const [charError, setCharError] = React.useState(false);
   const [enrolledError, setEnrolledError] = React.useState(false);
   const [notFoundError, setNotFoundError] = React.useState(false);
 
   const joinClicked = () => {
     try {
       if (code.length < 6 || code.length > 8) {
-        setCharError(true);
         return;
       }
 
@@ -140,8 +138,13 @@ const Page = () => {
         title="Join class"
         rightIcon={
           <Button
-            className="py-2.5 px-6 bg-[#38608F] rounded-full mr-2 normal-case"
+            className={`py-2.5 px-6 rounded-full mr-2 normal-case ${
+              code.length < 6 || code.length > 8
+                ? "bg-[#BCC6D4] cursor-not-allowed"
+                : "bg-[#38608F] cursor-pointer"
+            }`}
             onClick={joinClicked}
+            disabled={code.length < 6 || code.length > 8}
           >
             <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
               Join
@@ -159,6 +162,7 @@ const Page = () => {
           className="w-full mt-4"
           value={code}
           onChange={(event) => setCode(event.target.value)}
+          autoComplete="off"
         />
         <ul className="ps-5 text-[#545F70]">
           <li>
@@ -171,12 +175,6 @@ const Page = () => {
           </li>
         </ul>
       </div>
-      {errorModal(
-        "6-8 characters",
-        "Please input a code of 6-8 characters",
-        charError,
-        setCharError
-      )}
       {errorModal(
         "Already enrolled",
         "You are already enrolled in this course!",
