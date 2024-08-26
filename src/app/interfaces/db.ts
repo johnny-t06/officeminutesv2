@@ -8,7 +8,7 @@ export interface User {
   role: string;
 }
 
-interface Tags {
+export interface Tags {
   [key: string]: {
     options: TagOption[];
     required: boolean;
@@ -16,8 +16,9 @@ interface Tags {
   };
 }
 
-interface TagOption {
+export interface TagOption {
   choice: string;
+  note: string;
   color: string;
   colorFill: boolean;
 }
