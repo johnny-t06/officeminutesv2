@@ -1,10 +1,22 @@
-import { Box, Button, Drawer, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Drawer,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  TextField,
+} from "@mui/material";
 import { IoMdClose } from "react-icons/io";
 import React from "react";
 import { green } from "@mui/material/colors";
 import { officeHourContext } from "@context/OfficeHourContext";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
 import { TagOption } from "@interfaces/db";
+import { createQuestion } from "@utils/index";
+import { serverTimestamp } from "firebase/firestore";
+import { UserSessionContext } from "@context/UserSessionContext";
 
 interface QuestionFormProps {
   // triggerButton -> then use React.cloneElement
@@ -17,27 +29,49 @@ const QuestionForm = (props: QuestionFormProps) => {
   const { triggerButton, title } = props;
   const [openForm, setOpenForm] = React.useState(false);
   const ohContext = React.useContext(officeHourContext);
+  const userSessionContext = React.useContext(UserSessionContext);
 
   const [question, setQuestion] = React.useState("");
   const [description, setDescription] = React.useState("");
+  const [questionPublic, setQuestionPublic] = React.useState(false);
 
   const [questionTags, setQuestionTags] = React.useState<
     Record<string, TagOption[]>
   >({});
 
   const updateQuestionTags = (tagsKey: string, newTags: TagOption[]) => {
-    // const curr = questionTags;
-    // curr[tagsKey] = newTags;
     setQuestionTags({ ...questionTags, [tagsKey]: newTags });
-    console.log(questionTags);
   };
 
   const trigger = React.cloneElement(triggerButton, {
     onClick: () => {
       setOpenForm(true);
-      console.log("clicked");
+      // console.log("clicked");
     },
   });
+
+  const joinQueue = () => {
+    const timestamp = serverTimestamp();
+    const author = userSessionContext.user?.tufts_username;
+
+    let tagsArr = Object.values(questionTags).reduce((arr, curr) => {
+      return [...arr, ...curr];
+    }, []);
+
+    if (title === "Join queue") {
+      createQuestion(
+        question,
+        description,
+        questionPublic,
+        timestamp,
+        author ? [author] : [],
+        tagsArr,
+        ohContext.course.id
+      );
+    }
+
+    setOpenForm(false);
+  };
   return (
     <Box>
       {trigger}
@@ -80,7 +114,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               focused
               value={question}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setQuestion(event.target.value)
+                setQuestion(event.target.value);
               }}
             ></TextField>
 
@@ -92,7 +126,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               rows={4}
               value={description}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setDescription(event.target.value)
+                setDescription(event.target.value);
               }}
             ></TextField>
 
@@ -115,6 +149,30 @@ const QuestionForm = (props: QuestionFormProps) => {
                 ></SingleChoiceTags>
               )
             )}
+
+            <FormControl>
+              <FormLabel>Optional</FormLabel>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setQuestionPublic(event.target.checked)
+                    }
+                    checked={questionPublic}
+                    // name="questionPublic"
+                  />
+                }
+                label={
+                  <Box>
+                    <Box fontSize={18}>Post to board</Box>
+                    <Box fontSize={14}>
+                      Posting to the board will allow a maximum of 4 other
+                      people to join your TA session.
+                    </Box>
+                  </Box>
+                }
+              ></FormControlLabel>
+            </FormControl>
           </Box>
           <Box right={0} left={0} bottom={0} padding={2}>
             <Button
@@ -122,6 +180,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               color="primary"
               variant="contained"
               sx={{ textTransform: "initial", borderRadius: 5 }}
+              onClick={joinQueue}
             >
               Join now
             </Button>

@@ -42,11 +42,11 @@ export enum QuestionState {
 export interface Question {
   title: string;
   description: string;
-  public: boolean;
+  questionPublic: boolean;
   state: QuestionState;
   timestamp: FieldValue;
   group: string[];
-  tags: string[];
+  tags: TagOption[];
 }
 
 export type Questions = Question[];

@@ -1,4 +1,6 @@
+import { Question, QuestionState, TagOption } from "@interfaces/db";
 import { IdentifiableQuestion } from "@interfaces/type";
+import { addQuestion } from "@services/client/question";
 import { FieldValue, Timestamp } from "firebase/firestore";
 
 export const trimName = (name: string) => {
@@ -56,4 +58,26 @@ export const formatTimeDifference = (
   const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
 
   return `${formattedHours}:${formattedMinutes} ${period}`;
+};
+
+export const createQuestion = (
+  title: string,
+  description: string,
+  questionPublic: boolean,
+  timestamp: FieldValue,
+  group: string[],
+  tags: TagOption[],
+  courseId: string
+) => {
+  const question: Question = {
+    title: title,
+    description: description,
+    questionPublic: questionPublic,
+    state: QuestionState.PENDING,
+    timestamp: timestamp,
+    group: group,
+    tags: tags,
+  };
+
+  addQuestion(question, courseId);
 };
