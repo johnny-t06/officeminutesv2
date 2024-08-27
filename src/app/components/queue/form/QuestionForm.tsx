@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import { IoMdClose } from "react-icons/io";
 import React from "react";
-import { green } from "@mui/material/colors";
 import { officeHourContext } from "@context/OfficeHourContext";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
 import { TagOption } from "@interfaces/db";
@@ -20,7 +19,7 @@ import { UserSessionContext } from "@context/UserSessionContext";
 import { IdentifiableQuestion } from "@interfaces/type";
 
 interface QuestionFormProps {
-  // triggerButton -> then use React.cloneElement
+  // button to open the form
   triggerButton: JSX.Element;
   title: string;
   // current state of question
@@ -51,10 +50,6 @@ const QuestionForm = (props: QuestionFormProps) => {
         curr_tags.includes(o.choice)
       );
     });
-
-    console.log("currentQuestion.tags: ", currentQuestion.tags);
-    console.log("curr_tags: ", curr_tags);
-    console.log("init:", init);
     return init;
   });
 
@@ -96,9 +91,6 @@ const QuestionForm = (props: QuestionFormProps) => {
       <Drawer
         open={openForm}
         anchor="bottom"
-        // onClose={() => {
-        //   setOpenForm(false);
-        // }}
       >
         <Box height="100vh" width="100vw" overflow="scroll">
           <Box display="flex" alignItems="center" padding={1.5} gap={1}>
@@ -124,7 +116,6 @@ const QuestionForm = (props: QuestionFormProps) => {
             flexDirection="column"
             gap={2}
             padding={2}
-            // sx={{ backgroundColor: green[50] }}
           >
             <TextField
               required
@@ -179,7 +170,6 @@ const QuestionForm = (props: QuestionFormProps) => {
                       setQuestionPublic(event.target.checked)
                     }
                     checked={questionPublic}
-                    // name="questionPublic"
                   />
                 }
                 label={

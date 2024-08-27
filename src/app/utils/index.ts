@@ -63,16 +63,13 @@ export const formatTimeDifference = (
 export const defaultQuestion = () => {
   return {
     id: "",
-    title: "abc",
-    description: "hahaha",
-    questionPublic: true,
+    title: "",
+    description: "",
+    questionPublic: false,
     state: QuestionState.PENDING,
     timestamp: serverTimestamp(),
     group: [],
-    tags: [
-      { choice: "Big O", color: "orange", colorFill: false, note: "" },
-      { choice: "Confused", color: "orange", colorFill: false, note: "" },
-    ],
+    tags: [],
   } as IdentifiableQuestion;
 };
 

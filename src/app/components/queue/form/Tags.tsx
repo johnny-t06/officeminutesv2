@@ -23,7 +23,6 @@ export const MultipleChoiceTags = (props: TagsProps) => {
   const [state, setState] = React.useState<Record<string, boolean>>(() => {
     let init: Record<string, boolean> = {};
     tags.options.forEach((o) => {
-      console.log(allQuestionTags[tagsKey]);
       if (
         Object.hasOwn(allQuestionTags, tagsKey) &&
         allQuestionTags[tagsKey].includes(o)
@@ -33,7 +32,6 @@ export const MultipleChoiceTags = (props: TagsProps) => {
         init[o.choice] = false;
       }
     });
-
     return init;
   });
 
@@ -51,7 +49,6 @@ export const MultipleChoiceTags = (props: TagsProps) => {
     <Box>
       <FormControl required={tags.required}>
         <FormLabel id={tagsKey}>{tagsKey}</FormLabel>
-        {/* <FormGroup> */}
         <Box>
           {tags.options.map((o) => (
             <Checkbox
@@ -72,6 +69,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                   {o.choice}
                 </Box>
               }
+              // TODO(lnguyen2693) - style button when user choose a tag
               checkedIcon={
                 <Box
                   sx={{
@@ -89,7 +87,6 @@ export const MultipleChoiceTags = (props: TagsProps) => {
               }
             />
           ))}
-          {/* </FormGroup> */}
         </Box>
       </FormControl>
     </Box>
