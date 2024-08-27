@@ -71,16 +71,26 @@ const QuestionForm = (props: QuestionFormProps) => {
       return [...arr, ...curr];
     }, []);
 
-    if (title === "Join queue") {
-      createQuestion(
-        question,
-        description,
-        questionPublic,
-        timestamp,
-        author ? [author] : [],
-        tagsArr,
-        ohContext.course.id
-      );
+    const tagsValidate = Object.keys(questionTags).filter(
+      (k) => ohContext.course.tags[k].required && questionTags[k].length === 0
+    );
+
+    if (question !== "" && description !== "" && tagsValidate.length === 0) {
+      if (title === "Join queue") {
+        createQuestion(
+          question,
+          description,
+          questionPublic,
+          timestamp,
+          author ? [author] : [],
+          tagsArr,
+          ohContext.course.id
+        );
+      }
+      // if title === edit submission
+    } else {
+      console.log("Required fields not filled")
+      // TODO(lnguye2693) - Display error
     }
 
     setOpenForm(false);
@@ -178,6 +188,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               ></FormControlLabel>
             </FormControl>
           </Box>
+
           <Box right={0} left={0} bottom={0} padding={2}>
             <Button
               fullWidth
