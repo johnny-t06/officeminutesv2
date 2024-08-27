@@ -88,10 +88,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   return (
     <Box>
       {trigger}
-      <Drawer
-        open={openForm}
-        anchor="bottom"
-      >
+      <Drawer open={openForm} anchor="bottom">
         <Box height="100vh" width="100vw" overflow="scroll">
           <Box display="flex" alignItems="center" padding={1.5} gap={1}>
             <button
@@ -111,12 +108,7 @@ const QuestionForm = (props: QuestionFormProps) => {
             </button>
             <Box>{title}</Box>
           </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            gap={2}
-            padding={2}
-          >
+          <Box display="flex" flexDirection="column" gap={2} padding={2}>
             <TextField
               required
               label="Question"
@@ -141,6 +133,8 @@ const QuestionForm = (props: QuestionFormProps) => {
               }}
             ></TextField>
 
+            {/* TODO(lnguyen2693) - Add index for tags, sort and display them 
+            in an order */}
             {Object.keys(ohContext.course.tags).map((k) =>
               ohContext.course.tags[k].multipleChoice ? (
                 <MultipleChoiceTags

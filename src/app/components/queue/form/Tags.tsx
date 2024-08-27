@@ -117,6 +117,7 @@ export const SingleChoiceTags = (props: TagsProps) => {
               : ""
           }
         >
+          {/* TODO(lnguyen2693) - display notes */}
           {tags.options.map((o) => (
             <FormControlLabel
               value={o.choice}
