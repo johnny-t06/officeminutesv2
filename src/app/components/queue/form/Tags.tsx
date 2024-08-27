@@ -1,19 +1,12 @@
 import { TagOption, Tags } from "@interfaces/db";
-import { CheckBox } from "@mui/icons-material";
 import {
   Box,
   Checkbox,
-  colors,
   FormControl,
   FormControlLabel,
-  FormGroup,
   FormLabel,
   Radio,
   RadioGroup,
-  styled,
-  ToggleButton,
-  ToggleButtonGroup,
-  toggleButtonGroupClasses,
 } from "@mui/material";
 import React from "react";
 
@@ -24,25 +17,23 @@ interface TagsProps {
   updateQuestionTags: (tagsKey: string, newTags: TagOption[]) => void;
 }
 
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
-  flexWrap: "wrap",
-  gap: 6,
-  // padding: 1,
-  color: "primary",
-  [`& .${toggleButtonGroupClasses.grouped}`]: {
-    // margin: 4,
-    borderRadius: 8,
-  },
-});
-
 export const MultipleChoiceTags = (props: TagsProps) => {
   const { tagsKey, tags, allQuestionTags, updateQuestionTags } = props;
 
   const [state, setState] = React.useState<Record<string, boolean>>(() => {
     let init: Record<string, boolean> = {};
     tags.options.forEach((o) => {
-      init[o.choice] = false;
+      console.log(allQuestionTags[tagsKey]);
+      if (
+        Object.hasOwn(allQuestionTags, tagsKey) &&
+        allQuestionTags[tagsKey].includes(o)
+      ) {
+        init[o.choice] = true;
+      } else {
+        init[o.choice] = false;
+      }
     });
+
     return init;
   });
 
@@ -58,7 +49,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
   };
   return (
     <Box>
-      <FormControl>
+      <FormControl required={tags.required}>
         <FormLabel id={tagsKey}>{tagsKey}</FormLabel>
         {/* <FormGroup> */}
         <Box>
@@ -119,9 +110,16 @@ export const SingleChoiceTags = (props: TagsProps) => {
   };
   return (
     <Box>
-      <FormControl>
+      <FormControl required={tags.required}>
         <FormLabel id={tagsKey}>{tagsKey}</FormLabel>
-        <RadioGroup onChange={handleChange}>
+        <RadioGroup
+          onChange={handleChange}
+          value={
+            allQuestionTags[tagsKey][0]
+              ? allQuestionTags[tagsKey][0].choice
+              : ""
+          }
+        >
           {tags.options.map((o) => (
             <FormControlLabel
               value={o.choice}

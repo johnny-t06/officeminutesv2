@@ -1,6 +1,7 @@
 import { Box, Button } from "@mui/material";
 import { FaArrowRight } from "react-icons/fa";
 import QuestionForm from "./form/QuestionForm";
+import { defaultQuestion } from "@utils/index";
 
 const CreateQuestion = () => {
   const triggerButton = (
@@ -37,6 +38,7 @@ const CreateQuestion = () => {
       <QuestionForm
         triggerButton={triggerButton}
         title="Join queue"
+        currentQuestion={defaultQuestion()}
       ></QuestionForm>
     </Box>
   );

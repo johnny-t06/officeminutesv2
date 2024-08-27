@@ -17,27 +17,46 @@ import { TagOption } from "@interfaces/db";
 import { createQuestion } from "@utils/index";
 import { serverTimestamp } from "firebase/firestore";
 import { UserSessionContext } from "@context/UserSessionContext";
+import { IdentifiableQuestion } from "@interfaces/type";
 
 interface QuestionFormProps {
   // triggerButton -> then use React.cloneElement
   triggerButton: JSX.Element;
   title: string;
   // current state of question
+  currentQuestion: IdentifiableQuestion;
 }
 
 const QuestionForm = (props: QuestionFormProps) => {
-  const { triggerButton, title } = props;
+  const { triggerButton, title, currentQuestion } = props;
   const [openForm, setOpenForm] = React.useState(false);
   const ohContext = React.useContext(officeHourContext);
   const userSessionContext = React.useContext(UserSessionContext);
 
-  const [question, setQuestion] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [questionPublic, setQuestionPublic] = React.useState(false);
+  const [question, setQuestion] = React.useState(currentQuestion.title);
+  const [description, setDescription] = React.useState(
+    currentQuestion.description
+  );
+  const [questionPublic, setQuestionPublic] = React.useState(
+    currentQuestion.questionPublic
+  );
 
   const [questionTags, setQuestionTags] = React.useState<
     Record<string, TagOption[]>
-  >({});
+  >(() => {
+    const curr_tags = currentQuestion.tags.map((t) => t.choice);
+    let init: Record<string, TagOption[]> = {};
+    Object.keys(ohContext.course.tags).forEach((t) => {
+      init[t] = ohContext.course.tags[t].options.filter((o) =>
+        curr_tags.includes(o.choice)
+      );
+    });
+
+    console.log("currentQuestion.tags: ", currentQuestion.tags);
+    console.log("curr_tags: ", curr_tags);
+    console.log("init:", init);
+    return init;
+  });
 
   const updateQuestionTags = (tagsKey: string, newTags: TagOption[]) => {
     setQuestionTags({ ...questionTags, [tagsKey]: newTags });
@@ -46,7 +65,6 @@ const QuestionForm = (props: QuestionFormProps) => {
   const trigger = React.cloneElement(triggerButton, {
     onClick: () => {
       setOpenForm(true);
-      // console.log("clicked");
     },
   });
 
@@ -109,6 +127,7 @@ const QuestionForm = (props: QuestionFormProps) => {
             // sx={{ backgroundColor: green[50] }}
           >
             <TextField
+              required
               label="Question"
               placeholder="Give your question a title"
               focused
@@ -119,6 +138,7 @@ const QuestionForm = (props: QuestionFormProps) => {
             ></TextField>
 
             <TextField
+              required
               label="Description"
               placeholder="Add description"
               focused

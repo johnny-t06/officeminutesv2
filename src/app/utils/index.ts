@@ -1,7 +1,7 @@
 import { Question, QuestionState, TagOption } from "@interfaces/db";
 import { IdentifiableQuestion } from "@interfaces/type";
 import { addQuestion } from "@services/client/question";
-import { FieldValue, Timestamp } from "firebase/firestore";
+import { FieldValue, serverTimestamp, Timestamp } from "firebase/firestore";
 
 export const trimName = (name: string) => {
   const [firstName, lastName] = name.split(" ");
@@ -58,6 +58,22 @@ export const formatTimeDifference = (
   const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
 
   return `${formattedHours}:${formattedMinutes} ${period}`;
+};
+
+export const defaultQuestion = () => {
+  return {
+    id: "",
+    title: "abc",
+    description: "hahaha",
+    questionPublic: true,
+    state: QuestionState.PENDING,
+    timestamp: serverTimestamp(),
+    group: [],
+    tags: [
+      { choice: "Big O", color: "orange", colorFill: false, note: "" },
+      { choice: "Confused", color: "orange", colorFill: false, note: "" },
+    ],
+  } as IdentifiableQuestion;
 };
 
 export const createQuestion = (
