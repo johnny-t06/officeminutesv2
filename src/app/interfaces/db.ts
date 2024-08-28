@@ -6,6 +6,7 @@ export interface User {
   tufts_username: string;
   email: string;
   role: string;
+  courses: string[];
 }
 
 export interface Tags {
@@ -25,6 +26,7 @@ export interface TagOption {
 
 export interface Course {
   name: string;
+  code: string;
   location: string;
   professors: string[];
   students: string[];
