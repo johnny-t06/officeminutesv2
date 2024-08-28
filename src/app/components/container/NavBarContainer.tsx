@@ -6,11 +6,11 @@ interface NavBarContainerProps extends INavBar {
 }
 
 const NavBarContainer = (props: NavBarContainerProps) => {
-  const { children, buttons } = props;
+  const { children, buttons, pathname } = props;
   return (
     <div>
       <Paper className="fixed bottom-0 left-0 right-0" elevation={3}>
-        <NavBar buttons={buttons} />
+        <NavBar buttons={buttons} pathname={pathname} />
       </Paper>
       <div>{children}</div>
     </div>

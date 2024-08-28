@@ -1,3 +1,4 @@
+'use client'
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import StickyNote2OutlinedIcon from "@mui/icons-material/StickyNote2Outlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -5,6 +6,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import { NavBarContainer } from "@components/container";
 import OfficeHourProvider from "@context/OfficeHourContext";
 import { Box } from "@mui/material";
+import { usePathname } from "next/navigation";
 interface ILayout {
   children: React.ReactNode;
   params: {
@@ -13,6 +15,8 @@ interface ILayout {
 }
 
 const Layout = (props: ILayout) => {
+  const pathname = usePathname();
+  console.log(pathname)
   const {
     children,
     params: { courseId },
@@ -46,7 +50,7 @@ const Layout = (props: ILayout) => {
 
   return (
     <OfficeHourProvider courseId={courseId}>
-      <NavBarContainer buttons={buttons}>
+      <NavBarContainer buttons={buttons} pathname={pathname}>
         <Box
           paddingX="16px"
           display="flex"
