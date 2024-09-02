@@ -73,15 +73,18 @@ const Board = (props: BoardProps) => {
     });
   };
   return (
-    <>
-      <ToggleButtonGroup value={selectedTopics} onChange={addOrRemoveTopic}>
+    <div>
+      <ToggleButtonGroup
+        value={selectedTopics}
+        onChange={addOrRemoveTopic}
+        fullWidth
+      >
         <Stack
           columnGap="16px"
           direction="row"
           overflow="auto"
           paddingBottom="16px"
           marginBottom="16px"
-          maxWidth="100vw"
         >
           {topics.map((topic) => (
             <ToggleButton
@@ -132,7 +135,7 @@ const Board = (props: BoardProps) => {
         </Stack>
       </ToggleButtonGroup>
       <_Board questions={getQuestionsByTopic(selectedTopics)} />
-    </>
+    </div>
   );
 };
 
