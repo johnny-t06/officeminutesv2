@@ -28,7 +28,7 @@ export const NavBar = ({ buttons, pathname }: INavBar) => {
           label={button.label}
           icon={button.icon}
           href={button.href}
-        ></BottomNavigationAction>
+        />
       ))}
     </BottomNavigation>
   );

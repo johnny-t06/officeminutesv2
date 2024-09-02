@@ -1,6 +1,6 @@
 import { IdentifiableQuestion } from "@interfaces/type";
 import { Box, Button, Typography } from "@mui/material";
-import { formatTimeDifference, trimName } from "@utils/index";
+import { formatTimeDifference, hasPassed, trimName } from "@utils/index";
 import React from "react";
 
 interface QuestionProps {
@@ -31,7 +31,7 @@ const Question = (props: QuestionProps) => {
             overflow: "hidden",
           }}
         >
-          {formatTimeDifference(question.timestamp)}
+          {formatTimeDifference(question)}
         </Typography>
       </Box>
 
@@ -69,12 +69,16 @@ const Question = (props: QuestionProps) => {
               paddingX="12px"
               color="#43474E"
             >
-              <Typography sx={{ fontWeight: "bold" }}> {tag}</Typography>
+              <Typography sx={{ fontWeight: "bold" }}>{tag}</Typography>
             </Box>
           ))}
         </Box>
       </Box>
-      <Box marginTop="16px" display="flex" justifyContent="flex-end">
+      <Box
+        marginTop="16px"
+        display={hasPassed(question) ? "none" : "flex"}
+        justifyContent="flex-end"
+      >
         <Button
           sx={{
             paddingY: "10px",
