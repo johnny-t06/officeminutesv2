@@ -18,7 +18,7 @@ const Queue = () => {
   return (
     <>
       <Box>
-        <Stack spacing="36px">
+        <Stack spacing="36px" display={queueClosed ? "none" : "block"}>
           <QueueList
             header="Currently Helping"
             displayEnqueued={false}
