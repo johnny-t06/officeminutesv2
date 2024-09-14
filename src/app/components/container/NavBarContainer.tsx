@@ -4,7 +4,7 @@ import { Paper } from "@mui/material";
 import { usePathname } from "next/navigation";
 
 interface NavBarContainerProps extends Omit<INavBar, "pathname"> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const NavBarContainer = (props: NavBarContainerProps) => {

@@ -1,20 +1,32 @@
+"use client";
+
 import Header from "@components/Header";
+import Queue from "@components/queue";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import MenuIcon from "@mui/icons-material/Menu";
-import { IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 
 const Page = () => {
+  const { course } = useOfficeHour();
   return (
-    <div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      rowGap="18px"
+      position="relative"
+      height="100%"
+    >
       <Header
         leftIcon={
           <IconButton edge="start">
             <MenuIcon />
           </IconButton>
         }
-        title="Course Name"
+        title={course.name}
         alignCenter
       />
-    </div>
+      <Queue />
+    </Box>
   );
 };
 
