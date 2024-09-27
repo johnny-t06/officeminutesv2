@@ -46,10 +46,12 @@ const Layout = (props: ILayout) => {
 
   return (
     <OfficeHourProvider courseId={courseId}>
-      <Box paddingX="16px" paddingBottom="96px">
-        {children}
+      <Box height="100vh">
+        <Box paddingX="16px" paddingBottom="156px">
+          {children}
+        </Box>
+        <NavBarContainer buttons={buttons} />
       </Box>
-      <NavBarContainer buttons={buttons}>{null}</NavBarContainer>
     </OfficeHourProvider>
   );
 };
