@@ -1,33 +1,34 @@
 import Header from "@components/Header";
-import OfficeHourProvider from "@context/OfficeHourContext";
 import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { getCourse } from "@services/client/course";
+import { getUsers } from "@services/client/user";
+import DisplayCourse from "@components/DisplayCourse";
 interface PageProps {
   params: {
     courseId: string;
   };
 }
 
-const Page = (props: PageProps) => {
+const Page = async (props: PageProps) => {
   const {
     params: { courseId },
   } = props;
-
+  const course = await getCourse(courseId);
+  const tas = await getUsers(course.tas);
   return (
-    <OfficeHourProvider courseId={courseId}>
-      {/* TODO(nickbar01234) - Display UI */}
-      <div>
-        <Header
-          leftIcon={
-            <IconButton edge="start">
-              <MenuIcon />
-            </IconButton>
-          }
-          title="Course Name"
-          alignCenter
-        />
-      </div>
-    </OfficeHourProvider>
+    <div>
+      <Header
+        leftIcon={
+          <IconButton edge="start">
+            <MenuIcon />
+          </IconButton>
+        }
+        title={courseId.toUpperCase()}
+        alignCenter
+      />
+      <DisplayCourse tas={tas} />
+    </div>
   );
 };
 
