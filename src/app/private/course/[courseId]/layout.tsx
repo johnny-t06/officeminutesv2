@@ -52,7 +52,6 @@ const Layout = (props: ILayout) => {
           display="flex"
           flexDirection="column"
           rowGap="16px"
-          // height="100vh"
         >
           {children}
         </Box>

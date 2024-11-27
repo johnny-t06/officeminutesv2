@@ -5,7 +5,8 @@ interface TaCardProps {
   ta: IdentifiableUser;
 }
 
-const TaCard = ({ ta }: TaCardProps) => {
+const TaCard = (props: TaCardProps) => {
+  const { ta } = props;
   return (
     <ListItem>
       <ListItemAvatar>

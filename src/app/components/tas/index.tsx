@@ -2,11 +2,11 @@ import { IdentifiableUsers } from "@interfaces/type";
 import { List } from "@mui/material";
 import TaCard from "./TaCard";
 
-interface tasProps {
+interface TasProps {
   tas: IdentifiableUsers;
 }
 
-const DisplayTas = (props: tasProps) => {
+const DisplayTas = (props: TasProps) => {
   const { tas } = props;
   return (
     <List>
