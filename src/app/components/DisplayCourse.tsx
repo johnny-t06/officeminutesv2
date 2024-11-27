@@ -105,19 +105,22 @@ const DisplayCourse = (props: DisplayCourseProps) => {
           variant="contained"
           sx={{
             marginTop: "16px",
-            bgcolor: theme.palette.primary.light,
             borderRadius: "16px",
+            bgcolor: theme.palette.primary.light,
             "&:hover": {
-              bgcolor: theme.palette.primary.light,
+              bgcolor: theme.palette.primary.light, // Prevent hover color from changing
             },
             "&:active": {
-              bgcolor: theme.palette.primary.light,
+              bgcolor: theme.palette.primary.light, // Prevent active color from changing
+            },
+            "&:focus-visible": {
+              bgcolor: theme.palette.primary.light, // Prevent focus-visible color from changing
             },
           }}
         >
           <Typography
             variant="subtitle2"
-            color={theme.palette.text.secondary}
+            color={theme.palette.text.primary}
             sx={{
               fontWeight: "bold",
               textTransform: "none",
