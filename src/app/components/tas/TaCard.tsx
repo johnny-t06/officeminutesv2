@@ -9,7 +9,7 @@ const TaCard = ({ ta }: TaCardProps) => {
   return (
     <ListItem>
       <ListItemAvatar>
-        <Avatar></Avatar>
+        <Avatar />
       </ListItemAvatar>
       <ListItemText primary={ta.name} secondary={ta.email} />
     </ListItem>

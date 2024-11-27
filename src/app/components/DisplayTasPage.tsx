@@ -14,10 +14,16 @@ interface DisplayTasPageProps {
 
 const DisplayTasPage = (props: DisplayTasPageProps) => {
   const { onDutyTas, offDutyTas } = props;
-
+  const testTas = offDutyTas.concat(offDutyTas);
   const router = useRouter();
   return (
-    <div>
+    <div
+      className="flex flex-col"
+      style={{
+        height: "calc(100vh - 112px)", //Accounting for header and bottom nav
+        overflow: "hidden",
+      }}
+    >
       <Header
         leftIcon={
           <IconButton
@@ -37,40 +43,38 @@ const DisplayTasPage = (props: DisplayTasPageProps) => {
           flexDirection: "column",
           gap: "24px",
           marginTop: "24px",
-          height: "100vh",
         }}
       >
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
+          On Duty
+        </Typography>
         <Box
           sx={{
-            height: "40%",
+            height: "25%",
             overflow: "auto",
-            borderBottom: "1px solid #E0E0E0",
           }}
         >
-          <Typography
-            variant="h6"
-            color={theme.palette.text.primary}
-            sx={{ fontWeight: "bold" }}
-          >
-            On Duty
-          </Typography>
           <DisplayTas tas={onDutyTas} />
         </Box>
 
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
+          Off Duty
+        </Typography>
         <Box
           sx={{
-            height: "40%",
+            height: "25%",
             overflow: "auto",
           }}
         >
-          <Typography
-            variant="h6"
-            color={theme.palette.text.primary}
-            sx={{ fontWeight: "bold" }}
-          >
-            Off Duty
-          </Typography>
-          <DisplayTas tas={offDutyTas} />
+          <DisplayTas tas={testTas} />
         </Box>
       </Box>
     </div>
