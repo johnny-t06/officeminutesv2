@@ -62,10 +62,8 @@ export const UserSessionContextProvider = ({
         router.push("/");
       }
     });
-    console.log("subbing auth!");
     return () => unsub();
   }, []);
-
   const onSignIn = async () => {
     try {
       await setPersistence(auth, browserLocalPersistence);
