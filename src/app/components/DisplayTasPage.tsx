@@ -14,7 +14,6 @@ interface DisplayTasPageProps {
 
 const DisplayTasPage = (props: DisplayTasPageProps) => {
   const { onDutyTas, offDutyTas } = props;
-  const testTas = offDutyTas.concat(offDutyTas);
   const router = useRouter();
   return (
     <div
@@ -54,7 +53,7 @@ const DisplayTasPage = (props: DisplayTasPageProps) => {
         </Typography>
         <Box
           sx={{
-            height: "25%",
+            height: "25vh",
             overflow: "auto",
           }}
         >
@@ -70,11 +69,11 @@ const DisplayTasPage = (props: DisplayTasPageProps) => {
         </Typography>
         <Box
           sx={{
-            height: "25%",
+            height: "25vh",
             overflow: "auto",
           }}
         >
-          <DisplayTas tas={testTas} />
+          <DisplayTas tas={offDutyTas} />
         </Box>
       </Box>
     </div>
