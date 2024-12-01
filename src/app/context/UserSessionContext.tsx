@@ -8,7 +8,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import React, { useRef } from "react";
+import React from "react";
 import { auth } from "@project/firebase";
 import { addUser, getUser } from "@services/client/user";
 import { useRouter } from "next/navigation";
