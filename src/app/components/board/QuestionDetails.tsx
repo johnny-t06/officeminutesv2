@@ -174,7 +174,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
       >
         <PeopleAltIcon style={{ marginRight: 4 }} />
         <Typography sx={{ fontSize: 14, color: theme.palette.text.secondary }}>
-          {users.map((user) => trimName(user.name)).join(", ")}&nbsp;are in this
+          {users.map((user) => trimName(user.name)).join(", ")}&nbsp;{users.length === 1 ? "is" : "are"} in this
           group.
         </Typography>
       </Box>
