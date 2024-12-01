@@ -43,13 +43,12 @@ export const UserSessionContextProvider = ({
   });
   const router = useRouter();
 
-  const isInitiated = useRef(false);
+  // const isInitiated = useRef(false);
   React.useEffect(() => {
     // TODO: on password change, add additional check
-    if (user !== null || isInitiated.current) {
+    if (user !== null) {
       return;
     }
-    isInitiated.current = true;
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const currUser = await getUser(firebaseUser?.uid);

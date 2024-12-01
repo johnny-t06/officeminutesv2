@@ -1,29 +1,50 @@
-import { useUserSession } from "@context/UserSessionContext";
-import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
-import { Avatar, Box, Button, Typography } from "@mui/material";
-import { getUsers } from "@services/client/user";
-import { formatTimeDifference, hasPassed, trimName } from "@utils/index";
-import { useRouter } from "next/navigation";
-import React from "react";
-import theme from "theme";
+"use client";
 
-interface QuestionProps {
-  question: IdentifiableQuestion;
+import Header from "@components/Header";
+import { QuestionState } from "@interfaces/db";
+import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
+import { ArrowBack } from "@mui/icons-material";
+import { Avatar, Box, Button, Link, Typography } from "@mui/material";
+import { formatTimeDifference, hasPassed, trimName } from "@utils/index";
+import { Timestamp } from "firebase/firestore";
+import React, { useEffect } from "react";
+import theme from "theme";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { getUsers } from "@services/client/user";
+import { updateQuestion } from "@services/client/question";
+import { useUserSession } from "@context/UserSessionContext";
+
+interface QuestionDetailsProps {
+  question: {
+    id: string;
+    timestamp: Date;
+    title: string;
+    description: string;
+    public: boolean;
+    state: QuestionState;
+    group: string[];
+    tags: string[];
+  };
+  courseId: string;
 }
 
-const Question = (props: QuestionProps) => {
-  const { question } = props;
-  const router = useRouter();
+export const QuestionDetails = (props: QuestionDetailsProps) => {
+  const { question, courseId } = props;
   const { user } = useUserSession();
-  const [users, setUsers] = React.useState<IdentifiableUsers>([]);
+
+  const convertedQuestion = {
+    ...question,
+    timestamp: Timestamp.fromDate(new Date(question.timestamp)),
+  } as IdentifiableQuestion;
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
-    question.group.includes(user!.id)
+    convertedQuestion.group.includes(user!.id)
   );
+  const [users, setUsers] = React.useState<IdentifiableUsers>([]);
 
   React.useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const fetchedUsers = await getUsers(question.group);
+        const fetchedUsers = await getUsers(convertedQuestion.group);
         console.log("Fetched users:", fetchedUsers);
         setUsers(fetchedUsers);
       } catch (error) {
@@ -34,11 +55,41 @@ const Question = (props: QuestionProps) => {
     fetchUsers();
   }, []);
 
+  const onJoinGroup = async () => {
+    console.log("Users:", users);
+    if (joinGroup) {
+      await updateQuestion(
+        {
+          ...convertedQuestion,
+          group: convertedQuestion.group.filter((id) => id !== user!.id),
+        },
+        courseId
+      );
+      setUsers(users.filter((member) => member.id !== user!.id));
+    } else {
+      await updateQuestion(
+        { ...convertedQuestion, group: [...convertedQuestion.group, user!.id] },
+        courseId
+      );
+      setUsers([...users, user!]);
+    }
+
+    setJoinGroup(!joinGroup);
+  };
+
   return users.length === 0 ? (
     <div> loading </div>
   ) : (
-    <Box sx={{ backgroundColor: "#F2F3FA" }} padding="16px" borderRadius="8px">
+    <Box>
+      <Header
+        leftIcon={
+          <Link href={`/private/course/${courseId}/board`}>
+            <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
+          </Link>
+        }
+      />
       <Box
+        marginTop="24px"
         height="48px"
         display="flex"
         flexDirection="row"
@@ -68,11 +119,10 @@ const Question = (props: QuestionProps) => {
               overflow: "hidden",
             }}
           >
-            {formatTimeDifference(question)}
+            {formatTimeDifference(convertedQuestion)}
           </Typography>
         </Box>
       </Box>
-
       <Box marginTop="28px" fontWeight={400}>
         <Typography
           style={{
@@ -117,21 +167,27 @@ const Question = (props: QuestionProps) => {
         </Box>
       </Box>
       <Box
-        marginTop="16px"
-        display={hasPassed(question) ? "none" : "flex"}
-        justifyContent="flex-end"
+        marginTop="8px"
+        display={"flex"}
+        flexDirection={"row"}
+        alignItems="center"
+      >
+        <PeopleAltIcon style={{ marginRight: 4 }} />
+        <Typography sx={{ fontSize: 14, color: theme.palette.text.secondary }}>
+          {users.map((user) => trimName(user.name)).join(", ")}&nbsp;are in this
+          group.
+        </Typography>
+      </Box>
+      <Box
+        marginTop="8px"
+        display={hasPassed(convertedQuestion) ? "none" : "flex"}
       >
         <Button
           variant="contained"
           sx={{
+            marginTop: "16px",
             paddingY: "10px",
             paddingX: "24px",
-            borderRadius: "32px",
-            color: joinGroup ? "#000" : "#fff",
-            textTransform: "none",
-
-            marginTop: "16px",
-
             bgcolor: joinGroup
               ? theme.palette.primary.light
               : theme.palette.primary.main,
@@ -150,10 +206,12 @@ const Question = (props: QuestionProps) => {
                 ? theme.palette.primary.light
                 : theme.palette.primary.main,
             }, // Prevent focus-visible color from changing
+            borderRadius: "32px",
+            color: joinGroup ? "#000" : "#fff",
+            textTransform: "none",
+            width: "100%",
           }}
-          onClick={() =>
-            router.push(`${window.location.pathname}/${question.id}`)
-          }
+          onClick={onJoinGroup}
         >
           {joinGroup ? "Leave group" : "Join group"}
         </Button>
@@ -161,5 +219,3 @@ const Question = (props: QuestionProps) => {
     </Box>
   );
 };
-
-export default Question;

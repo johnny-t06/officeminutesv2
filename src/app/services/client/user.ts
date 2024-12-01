@@ -38,7 +38,7 @@ export const getUsers = async (
   userIds: string[]
 ): Promise<IdentifiableUsers> => {
   const users = await Promise.all(userIds.map((id) => getUser(id)));
-  return users.filter((user) => user !== null) as IdentifiableUser[];
+  return users.filter((user) => user !== null) as IdentifiableUsers;
 };
 
 export const updateUser = async (user: IdentifiableUser) => {
