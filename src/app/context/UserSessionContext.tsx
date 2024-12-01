@@ -58,7 +58,7 @@ export const UserSessionContextProvider = ({
     });
 
     return () => unsub();
-  }, [user]);
+  }, []);
 
   const onSignIn = async () => {
     try {
