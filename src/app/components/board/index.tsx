@@ -30,7 +30,12 @@ const _Board = (props: BoardProps) => {
     );
   } else {
     return (
-      <Box display="flex" flexDirection="column" rowGap="16px">
+      <Box
+        display="flex"
+        flexDirection="column"
+        rowGap="16px"
+        paddingBottom="128px"
+      >
         {questions.map((question) => (
           <Question key={question.id} question={question} />
         ))}

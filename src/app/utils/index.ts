@@ -3,6 +3,9 @@ import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 import { Timestamp } from "firebase/firestore";
 
 export const trimName = (name: string) => {
+  if (name === undefined) {
+    return "";
+  }
   const [firstName, lastName] = name.split(" ");
   if (lastName !== undefined && lastName.length > 0) {
     return firstName + " " + lastName[0];

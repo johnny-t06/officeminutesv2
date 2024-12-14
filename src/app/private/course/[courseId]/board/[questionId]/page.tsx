@@ -1,5 +1,8 @@
 import { QuestionDetails } from "@components/board/QuestionDetails";
+import Header from "@components/Header";
+import { ArrowBack } from "@mui/icons-material";
 import { getQuestion } from "@services/client/question";
+import Link from "next/link";
 
 interface PageProps {
   params: {
@@ -18,7 +21,19 @@ const Page = async (props: PageProps) => {
     ...question,
     timestamp: question.timestamp.toDate(),
   };
-  return <QuestionDetails courseId={courseId} question={convertedQuestion} />;
+
+  return (
+    <div>
+      <Header
+        leftIcon={
+          <Link href={`/private/course/${courseId}/board`}>
+            <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
+          </Link>
+        }
+      />
+      <QuestionDetails courseId={courseId} question={convertedQuestion} />
+    </div>
+  );
 };
 
 export default Page;

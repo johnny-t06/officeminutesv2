@@ -1,3 +1,4 @@
+import Spinner from "@components/Spinner";
 import { useUserSession } from "@context/UserSessionContext";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Button, Typography } from "@mui/material";
@@ -16,26 +17,24 @@ const Question = (props: QuestionProps) => {
   const router = useRouter();
   const { user } = useUserSession();
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
-  const [joinGroup, setJoinGroup] = React.useState<boolean>(
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [joinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)
   );
 
   React.useEffect(() => {
     const fetchUsers = async () => {
-      try {
-        const fetchedUsers = await getUsers(question.group);
-        console.log("Fetched users:", fetchedUsers);
-        setUsers(fetchedUsers);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
+      const fetchedUsers = await getUsers(question.group);
+      setUsers(fetchedUsers);
+      setLoading(false);
     };
-
     fetchUsers();
   }, []);
 
-  return users.length === 0 ? (
-    <div> loading </div>
+  return loading ? (
+    <div className="h-screen absolute top-[50vh] left-[calc(50vw-24px)]">
+      <Spinner />
+    </div>
   ) : (
     <Box sx={{ backgroundColor: "#F2F3FA" }} padding="16px" borderRadius="8px">
       <Box
@@ -129,9 +128,7 @@ const Question = (props: QuestionProps) => {
             borderRadius: "32px",
             color: joinGroup ? "#000" : "#fff",
             textTransform: "none",
-
             marginTop: "16px",
-
             bgcolor: joinGroup
               ? theme.palette.primary.light
               : theme.palette.primary.main,
@@ -139,17 +136,17 @@ const Question = (props: QuestionProps) => {
               bgcolor: joinGroup
                 ? theme.palette.primary.light
                 : theme.palette.primary.main,
-            }, // Prevent hover color from changing
+            },
             "&:active": {
               bgcolor: joinGroup
                 ? theme.palette.primary.light
                 : theme.palette.primary.main,
-            }, // Prevent active color from changing
+            },
             "&:focus-visible": {
               bgcolor: joinGroup
                 ? theme.palette.primary.light
                 : theme.palette.primary.main,
-            }, // Prevent focus-visible color from changing
+            },
           }}
           onClick={() =>
             router.push(`${window.location.pathname}/${question.id}`)
