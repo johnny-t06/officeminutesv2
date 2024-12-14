@@ -8,7 +8,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import React from "react";
+import React, { useRef } from "react";
 import { auth } from "@project/firebase";
 import { addUser, getUser } from "@services/client/user";
 import { useRouter } from "next/navigation";
@@ -43,7 +43,12 @@ export const UserSessionContextProvider = ({
   });
   const router = useRouter();
 
+  // const isInitiated = useRef(false);
   React.useEffect(() => {
+    // TODO: on password change, add additional check
+    if (user !== null) {
+      return;
+    }
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const currUser = await getUser(firebaseUser?.uid);

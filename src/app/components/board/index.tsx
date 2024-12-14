@@ -30,7 +30,12 @@ const _Board = (props: BoardProps) => {
     );
   } else {
     return (
-      <Box display="flex" flexDirection="column" rowGap="16px">
+      <Box
+        display="flex"
+        flexDirection="column"
+        rowGap="16px"
+        paddingBottom="128px"
+      >
         {questions.map((question) => (
           <Question key={question.id} question={question} />
         ))}
@@ -80,7 +85,7 @@ const Board = (props: BoardProps) => {
         fullWidth
       >
         <Stack
-          columnGap="16px"
+          columnGap="8px"
           direction="row"
           overflow="auto"
           paddingBottom="16px"
@@ -105,14 +110,15 @@ const Board = (props: BoardProps) => {
                     } !important`,
                   },
                 },
+                padding: "6px 16px",
+                border: "1px solid black",
+                borderRadius: "8px",
               }}
             >
               <Box
-                padding="4px 12px"
                 color="#1D192B"
                 whiteSpace="nowrap"
                 minWidth="content"
-                borderRadius="10px"
                 textTransform="none"
                 alignItems="center"
                 justifyContent="center"
