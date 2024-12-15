@@ -1,9 +1,9 @@
 import Header from "@components/Header";
-import { IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import { getCourse } from "@services/client/course";
 import { getUsers } from "@services/client/user";
 import DisplayCourse from "@components/DisplayCourse";
+import MenuButton from "@components/buttons/MenuButton";
+
 interface PageProps {
   params: {
     courseId: string;
@@ -19,11 +19,7 @@ const Page = async (props: PageProps) => {
   return (
     <div>
       <Header
-        leftIcon={
-          <IconButton edge="start">
-            <MenuIcon />
-          </IconButton>
-        }
+        leftIcon={<MenuButton isEdge={true} />}
         title={courseId.toUpperCase()}
         alignCenter
       />

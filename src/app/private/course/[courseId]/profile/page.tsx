@@ -1,19 +1,15 @@
 "use client";
+import MenuButton from "@components/buttons/MenuButton";
 import Header from "@components/Header";
 import { useUserSession } from "@context/UserSessionContext";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Button, IconButton } from "@mui/material";
+import { Button } from "@mui/material";
 
 const Page = () => {
   const { onSignOut } = useUserSession();
   return (
     <div>
       <Header
-        leftIcon={
-          <IconButton edge="start">
-            <MenuIcon />
-          </IconButton>
-        }
+        leftIcon={<MenuButton isEdge={true} />}
         title="Profile"
         alignCenter
         rightIcon={<Button onClick={onSignOut}>Sign Out</Button>}

@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ThemeProviderWrapper from "@context/ThemeProviderWrapper";
 import { UserSessionContextProvider } from "@context/UserSessionContext";
+import { SidebarProvider } from "@context/SidebarContext";
+import Sidebar from "@components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +22,10 @@ export default function RootLayout({
       <body className={inter.className} id="root">
         <div id="__next">
           <UserSessionContextProvider>
-            <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+            <SidebarProvider>
+              <Sidebar />
+              <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+            </SidebarProvider>
           </UserSessionContextProvider>
         </div>
       </body>
