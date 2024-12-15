@@ -5,7 +5,14 @@ import {
   useSidebarStateContext,
   useSidebarActionsContext,
 } from "@context/SidebarContext";
-import { Drawer, Box, Typography, List, ListItemButton } from "@mui/material";
+import {
+  Drawer,
+  Box,
+  Typography,
+  List,
+  ListItemButton,
+  Divider,
+} from "@mui/material";
 import theme from "theme";
 import { getCourses } from "@services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
@@ -13,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { IdentifiableCourse } from "@interfaces/type";
 import MenuButton from "./buttons/MenuButton";
+import ModeIcon from "@mui/icons-material/Mode";
 
 const Sidebar = React.memo(() => {
   const [courses, setCourses] = React.useState<IdentifiableCourse[]>([]);
@@ -45,6 +53,17 @@ const Sidebar = React.memo(() => {
     closeSidebar();
   };
 
+  const handleManageCoursesClick = () => {
+    const isCourseRoute = /\/[a-zA-Z]+\d+/.test(pathname);
+
+    const basePath = isCourseRoute
+      ? pathname.match(/(.*\/[a-zA-Z]+\d+)/)?.[0]
+      : `${pathname}/${courses[0].id}`;
+
+    router.push(`${basePath}/profile/edit`);
+    closeSidebar();
+  };
+
   const formattedCourseName = (course: IdentifiableCourse) => {
     const formattedCourseId = course.id
       .toUpperCase()
@@ -67,8 +86,7 @@ const Sidebar = React.memo(() => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          height: "100%",
-          padding: "30px",
+          padding: "30px 30px 0",
         }}
       >
         <Box
@@ -108,6 +126,31 @@ const Sidebar = React.memo(() => {
             </ListItemButton>
           ))}
         </List>
+      </Box>
+      <Box
+        sx={{
+          paddingX: "30px",
+        }}
+      >
+        <Divider sx={{ marginBottom: "12px" }} />
+        <ListItemButton
+          onClick={handleManageCoursesClick}
+          sx={{
+            padding: "12px 0 12px 4px",
+            borderRadius: "9999px",
+            gap: "8px",
+            justifyContent: "flex-start",
+            "&:hover": {
+              background: "transparent",
+            },
+            "&:active": {
+              background: "transparent",
+            },
+          }}
+        >
+          <ModeIcon />
+          <Typography variant="body2">Manage Classes</Typography>
+        </ListItemButton>
       </Box>
     </Drawer>
   );
