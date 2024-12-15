@@ -22,10 +22,12 @@ export default function RootLayout({
       <body className={inter.className} id="root">
         <div id="__next">
           <UserSessionContextProvider>
-            <SidebarProvider>
-              <Sidebar />
-              <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
-            </SidebarProvider>
+            <ThemeProviderWrapper>
+              <SidebarProvider>
+                <Sidebar />
+                {children}
+              </SidebarProvider>
+            </ThemeProviderWrapper>
           </UserSessionContextProvider>
         </div>
       </body>

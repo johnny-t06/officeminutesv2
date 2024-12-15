@@ -97,11 +97,7 @@ const Sidebar = React.memo(() => {
             alignItems: "center",
           }}
         >
-          <Typography
-            variant="h6"
-            color={theme.palette.text.primary}
-            fontWeight="light"
-          >
+          <Typography variant="h6" color={theme.palette.text.primary}>
             My Classes
           </Typography>
           <MenuButton isOpen={false} />
@@ -120,7 +116,7 @@ const Sidebar = React.memo(() => {
               }}
               onClick={() => handleCourseClick(course)}
             >
-              <Typography variant="body2">
+              <Typography variant="body1">
                 {formattedCourseName(course)}
               </Typography>
             </ListItemButton>
@@ -149,7 +145,9 @@ const Sidebar = React.memo(() => {
           }}
         >
           <ModeEditOutlinedIcon />
-          <Typography variant="body2">Manage Classes</Typography>
+          <Typography variant="body1" fontWeight="light">
+            Manage Classes
+          </Typography>
         </ListItemButton>
       </Box>
     </Drawer>
