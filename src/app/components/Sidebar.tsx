@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { IdentifiableCourse } from "@interfaces/type";
 import MenuButton from "./buttons/MenuButton";
-import ModeIcon from "@mui/icons-material/Mode";
+import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 
 const Sidebar = React.memo(() => {
   const [courses, setCourses] = React.useState<IdentifiableCourse[]>([]);
@@ -148,7 +148,7 @@ const Sidebar = React.memo(() => {
             },
           }}
         >
-          <ModeIcon />
+          <ModeEditOutlinedIcon />
           <Typography variant="body2">Manage Classes</Typography>
         </ListItemButton>
       </Box>
