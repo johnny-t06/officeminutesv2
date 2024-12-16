@@ -1,10 +1,10 @@
 import { IdentifiableQuestions } from "@interfaces/type";
 import { Box, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import Question from "./Question";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import { compareQuestions } from "@utils/index";
+import { useOfficeHourStore } from "@stores/useOfficeHourStore";
 
 interface BoardProps {
   questions: IdentifiableQuestions;
@@ -41,8 +41,8 @@ const _Board = (props: BoardProps) => {
 
 const Board = (props: BoardProps) => {
   const { questions } = props;
-  const { course } = useOfficeHour();
-  const topics = [SELECT_ALL, ...Object.keys(course.tags).sort()];
+  const { course } = useOfficeHourStore();
+  const topics = [SELECT_ALL, ...Object.keys(course?.tags || {}).sort()];
 
   const [selectedTopics, setSelectedTopics] = React.useState([SELECT_ALL]);
 

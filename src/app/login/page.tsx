@@ -1,10 +1,10 @@
 "use client";
 
-import { useUserSession } from "@context/UserSessionContext";
+import { useUserSessionStore } from "@stores/useUserSessionStore";
 import { Button, Typography } from "@mui/material";
 
 export default function Page() {
-  const { onSignIn } = useUserSession();
+  const { onSignIn } = useUserSessionStore();
 
   return (
     <div className="flex items-center justify-center h-screen">

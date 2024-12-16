@@ -2,12 +2,12 @@
 
 import Header from "@components/Header";
 import Queue from "@components/queue";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, IconButton } from "@mui/material";
-
+import { useOfficeHourStore } from "@stores/useOfficeHourStore";
 const Page = () => {
-  const { course } = useOfficeHour();
+  const { course } = useOfficeHourStore();
+
   return (
     <Box
       display="flex"
@@ -22,7 +22,7 @@ const Page = () => {
             <MenuIcon />
           </IconButton>
         }
-        title={course.name}
+        title={course?.name}
         alignCenter
       />
       <Queue />

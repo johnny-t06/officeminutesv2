@@ -1,10 +1,14 @@
+"use client";
+
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import StickyNote2OutlinedIcon from "@mui/icons-material/StickyNote2Outlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { NavBarContainer } from "@components/container";
-import OfficeHourProvider from "@context/OfficeHourContext";
 import { Box } from "@mui/material";
+import { useOfficeHourStore } from "@stores/useOfficeHourStore";
+import React from "react";
+
 interface ILayout {
   children: React.ReactNode;
   params: {
@@ -17,6 +21,13 @@ const Layout = (props: ILayout) => {
     children,
     params: { courseId },
   } = props;
+  const { initializeListeners } = useOfficeHourStore();
+
+  React.useEffect(() => {
+    const cleanup = initializeListeners(courseId);
+    return () => cleanup();
+  }, [courseId, initializeListeners]);
+
   /* TODO(johnnyt-06) */
   // Call user context here
   // Perform role and class validation here
@@ -45,18 +56,11 @@ const Layout = (props: ILayout) => {
   ];
 
   return (
-    <OfficeHourProvider courseId={courseId}>
-      <NavBarContainer buttons={buttons}>
-        <Box
-          paddingX="16px"
-          display="flex"
-          flexDirection="column"
-          rowGap="16px"
-        >
-          {children}
-        </Box>
-      </NavBarContainer>
-    </OfficeHourProvider>
+    <NavBarContainer buttons={buttons}>
+      <Box paddingX="16px" display="flex" flexDirection="column" rowGap="16px">
+        {children}
+      </Box>
+    </NavBarContainer>
   );
 };
 

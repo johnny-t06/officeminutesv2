@@ -4,7 +4,7 @@ import theme from "theme";
 import DisplayTas from "./tas";
 import { IdentifiableUsers } from "@interfaces/type";
 import { usePathname, useRouter } from "next/navigation";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { useOfficeHourStore } from "@stores/useOfficeHourStore";
 
 interface DisplayCourseProps {
   tas: IdentifiableUsers;
@@ -13,7 +13,7 @@ const DisplayCourse = (props: DisplayCourseProps) => {
   const { tas } = props;
   const router = useRouter();
   const pathname = usePathname();
-  const { course } = useOfficeHour();
+  const { course } = useOfficeHourStore();
 
   return (
     <Box
@@ -42,7 +42,7 @@ const DisplayCourse = (props: DisplayCourseProps) => {
           }}
         >
           <Typography variant="body2" color={theme.palette.text.secondary}>
-            {course.announcement}
+            {course?.announcement}
           </Typography>
         </Box>
       </Box>

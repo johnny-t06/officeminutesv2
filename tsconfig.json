@@ -30,6 +30,7 @@
       "@/types": ["./types/index.ts"],
       "@/images/*": ["../../public/*"],
       "@services/*": ["./services/*"],
+      "@stores/*": ["./stores/*"],
       "@/*": ["./src*"]
     },
     "target": "es6"

@@ -1,10 +1,10 @@
 "use client";
 import Board from "@components/board";
 import Header from "@components/Header";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { ArrowBack } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { getExpiredQuestions } from "@utils/index";
+import { useOfficeHourStore } from "@stores/useOfficeHourStore";
 import Link from "next/link";
 
 interface PageProps {
@@ -15,7 +15,7 @@ interface PageProps {
 
 const Page = (props: PageProps) => {
   const { courseId } = props.params;
-  const { questions } = useOfficeHour();
+  const { questions } = useOfficeHourStore();
   const expiredQuestions = getExpiredQuestions(questions);
 
   return (
