@@ -57,6 +57,15 @@ export const getCourses = async () => {
   return coursesDocs;
 };
 
+export const getCoursesByIds = async (
+  courseIds: String[]
+): Promise<IdentifiableCourse[]> => {
+  const courses = courseIds.map((id) => getCourse(id));
+  const snapshots = await Promise.all(courses);
+
+  return snapshots;
+};
+
 export const deleteCourse = async (courseID: String) => {
   const courseDoc = doc(db, `courses/${courseID}`).withConverter(
     courseConverter

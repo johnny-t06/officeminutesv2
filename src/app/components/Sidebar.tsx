@@ -14,10 +14,9 @@ import {
   Divider,
 } from "@mui/material";
 import theme from "theme";
-import { getCourses } from "@services/client/course";
+import { getCoursesByIds } from "@services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
 import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
 import { IdentifiableCourse } from "@interfaces/type";
 import MenuButton from "./buttons/MenuButton";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
@@ -29,38 +28,24 @@ const Sidebar = React.memo(() => {
   const { user } = useUserSession();
   const { courses: courseIds = [] } = user || {};
   const router = useRouter();
-  const pathname = usePathname();
 
   React.useEffect(() => {
     const loadCourses = async () => {
-      const allCourses = await getCourses();
-      const filteredCourses = allCourses
-        .filter((course) => courseIds.includes(course.id))
-        .map((course) => course);
-      setCourses(filteredCourses);
+      if (courseIds.length > 0) {
+        const courses = await getCoursesByIds(courseIds);
+        setCourses(courses);
+      }
     };
     loadCourses();
   }, [user]);
 
   const handleCourseClick = (course: IdentifiableCourse) => {
-    const isCourseRoute = /\/[a-zA-Z]+\d+/.test(pathname);
-
-    const basePath = isCourseRoute
-      ? pathname.replace(/\/[a-zA-Z]+\d+.*$/, "")
-      : pathname;
-
-    router.push(`${basePath}/${course.id}`);
+    router.push(`/private/course/${course.id}`);
     closeSidebar();
   };
 
   const handleManageCoursesClick = () => {
-    const isCourseRoute = /\/[a-zA-Z]+\d+/.test(pathname);
-
-    const basePath = isCourseRoute
-      ? pathname.match(/(.*\/[a-zA-Z]+\d+)/)?.[0]
-      : `${pathname}/${courses[0].id}`;
-
-    router.push(`${basePath}/profile/edit`);
+    router.push(`/private/course/${courses[0].id}/profile/edit`);
     closeSidebar();
   };
 
