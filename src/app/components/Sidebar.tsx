@@ -37,7 +37,7 @@ const Sidebar = React.memo(() => {
       }
     };
     loadCourses();
-  }, [user]);
+  }, [courseIds]);
 
   const handleCourseClick = (course: IdentifiableCourse) => {
     router.push(`/private/course/${course.id}`);
@@ -45,7 +45,11 @@ const Sidebar = React.memo(() => {
   };
 
   const handleManageCoursesClick = () => {
-    router.push(`/private/course/${courses[0].id}/profile/edit`);
+    if (courses.length > 0) {
+      router.push(`/private/course/${courses[0].id}/profile/edit`);
+    } else {
+      router.push(`/private/course`);
+    }
     closeSidebar();
   };
 
