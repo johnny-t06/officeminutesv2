@@ -33,6 +33,7 @@ export interface Course {
   tas: string[];
   onDuty: string[];
   tags: Tags;
+  announcement: string;
 }
 
 export enum QuestionState {

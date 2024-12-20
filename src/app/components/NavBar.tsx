@@ -3,6 +3,7 @@ import React from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import { BottomNavigationAction } from "@mui/material";
 import { SvgIconComponent } from "@mui/icons-material";
+import Link from "next/link";
 
 interface INavBarItem {
   label: string;
@@ -28,6 +29,7 @@ export const NavBar = ({ buttons, pathname }: INavBar) => {
           label={button.label}
           icon={button.icon}
           href={button.href}
+          LinkComponent={Link}
         />
       ))}
     </BottomNavigation>

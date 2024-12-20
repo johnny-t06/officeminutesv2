@@ -1,6 +1,6 @@
 import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
-import { FieldValue, Timestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 
 export const trimName = (name: string) => {
   const [firstName, lastName] = name.split(" ");
@@ -72,8 +72,33 @@ export const hasPassed = (question: IdentifiableQuestion) => {
   return now > postedAt || question.state === QuestionState.RESOLVED;
 };
 
-export const getActiveQuestions = (questions: IdentifiableQuestions) =>
-  questions.filter((question) => !hasPassed(question));
+export const getActiveQuestions = (
+  questions: IdentifiableQuestions,
+  isPublic: boolean = true
+) =>
+  questions.filter(
+    (question) => !hasPassed(question) && question.public === isPublic
+  );
 
-export const getExpiredQuestions = (questions: IdentifiableQuestions) =>
-  questions.filter((question) => hasPassed(question));
+export const getActiveQuestionsByState = (
+  questions: IdentifiableQuestions,
+  isPublic: boolean = true
+) => {
+  const activeQuestions = Object.groupBy(
+    getActiveQuestions(questions, isPublic),
+    ({ state }) => state
+  );
+  return {
+    [QuestionState.PENDING]: activeQuestions[QuestionState.PENDING] ?? [],
+    [QuestionState.IN_PROGRESS]:
+      activeQuestions[QuestionState.IN_PROGRESS] ?? [],
+  };
+};
+
+export const getExpiredQuestions = (
+  questions: IdentifiableQuestions,
+  isPublic: boolean = true
+) =>
+  questions.filter(
+    (question) => hasPassed(question) && question.public === isPublic
+  );

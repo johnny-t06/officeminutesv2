@@ -29,8 +29,8 @@ export const useCourseLoader = (props: UseCourseLoaderProps) => {
     if (state.state !== State.SUCCESS) {
       if (unsubscriber.current !== null) {
         unsubscriber.current();
+        unsubscriber.current = null;
       }
-      unsubscriber.current = null;
       return;
     }
 
@@ -46,7 +46,12 @@ export const useCourseLoader = (props: UseCourseLoaderProps) => {
 
     unsubscriber.current = unsubscribe;
 
-    return unsubscriber.current();
+    return () => {
+      if (unsubscriber.current) {
+        unsubscriber.current();
+        unsubscriber.current = null;
+      }
+    };
   }, [state.state, courseId]);
 
   // TODO(lnguyen2693) - handle setError
