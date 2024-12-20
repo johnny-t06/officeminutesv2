@@ -1,7 +1,6 @@
-import { Question, QuestionState, TagOption } from "@interfaces/db";
-import { IdentifiableQuestion } from "@interfaces/type";
-import { addQuestion } from "@services/client/question";
-import { FieldValue, serverTimestamp, Timestamp } from "firebase/firestore";
+import { QuestionState } from "@interfaces/db";
+import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
+import { FieldValue, Timestamp } from "firebase/firestore";
 
 export const trimName = (name: string) => {
   const [firstName, lastName] = name.split(" ");
@@ -32,9 +31,13 @@ export const compareQuestions = (
 };
 
 export const formatTimeDifference = (
-  timestamp: FieldValue | Timestamp
+  question: IdentifiableQuestion
 ): string => {
-  const date = timestamp instanceof Timestamp ? timestamp.toDate() : new Date();
+  const date = question.timestamp.toDate();
+
+  if (hasPassed(question)) {
+    return date.toLocaleDateString();
+  }
 
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -60,37 +63,17 @@ export const formatTimeDifference = (
   return `${formattedHours}:${formattedMinutes} ${period}`;
 };
 
-export const defaultQuestion = () => {
-  return {
-    id: "",
-    title: "",
-    description: "",
-    questionPublic: false,
-    state: QuestionState.PENDING,
-    timestamp: serverTimestamp(),
-    group: [],
-    tags: [],
-  } as IdentifiableQuestion;
+/**
+ * A question has "expired" if it's a different date or it's been resolved
+ */
+export const hasPassed = (question: IdentifiableQuestion) => {
+  const postedAt = question.timestamp.toDate().setHours(0, 0, 0, 0);
+  const now = new Date().setHours(0, 0, 0, 0);
+  return now > postedAt || question.state === QuestionState.RESOLVED;
 };
 
-export const createQuestion = (
-  title: string,
-  description: string,
-  questionPublic: boolean,
-  timestamp: FieldValue,
-  group: string[],
-  tags: TagOption[],
-  courseId: string
-) => {
-  const question: Question = {
-    title: title,
-    description: description,
-    questionPublic: questionPublic,
-    state: QuestionState.PENDING,
-    timestamp: timestamp,
-    group: group,
-    tags: tags,
-  };
+export const getActiveQuestions = (questions: IdentifiableQuestions) =>
+  questions.filter((question) => !hasPassed(question));
 
-  addQuestion(question, courseId);
-};
+export const getExpiredQuestions = (questions: IdentifiableQuestions) =>
+  questions.filter((question) => hasPassed(question));
