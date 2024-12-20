@@ -72,7 +72,7 @@ const Page = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Typography color="#43474E" fontSize={14}>
-              [answer here]
+              You can find your class code by reaching out to your professor!
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -88,7 +88,7 @@ const Page = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Typography color="#43474E" fontSize={14}>
-              No, you can only join one group on the queue at a time!
+              No, you can only join one group on the queue at a time.
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -153,7 +153,7 @@ const Page = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Typography color="#43474E" fontSize={14}>
-              No, you cannot join the queue before office hours begins!
+              No, you cannot join the queue before office hours begins.
             </Typography>
           </AccordionDetails>
         </Accordion>

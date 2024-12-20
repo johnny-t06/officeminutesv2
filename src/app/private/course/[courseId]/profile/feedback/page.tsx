@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React from "react";
 import theme from "theme";
+import { sendFeedback } from "api/send-feedback/route.client";
 
 const Page = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const Page = () => {
   const [recommendation, setRecommendation] = React.useState("");
   const [feedback, setFeedback] = React.useState<string>("");
   const [feedbackSubmitted, setFeedbackSubmitted] = React.useState(false);
+  const [error, setError] = React.useState("");
 
   const handleRecommendChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -39,6 +41,20 @@ const Page = () => {
 
   const handleFeedbackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFeedback(event.target.value);
+  };
+
+  const handleSendFeedback = async () => {
+    if (recommendation === "") {
+      return;
+    }
+
+    const response = await sendFeedback(recommendation, feedback);
+
+    if (response.code === "ERROR") {
+      setError(response.message);
+    } else {
+      setFeedbackSubmitted(true);
+    }
   };
 
   return (
@@ -72,31 +88,31 @@ const Page = () => {
           >
             <RadioGroup value={recommendation} onChange={handleRecommendChange}>
               <FormControlLabel
-                value="very_unlikely"
+                value="Very unlikely"
                 control={<Radio />}
                 label="Very unlikely"
                 sx={formControlLabelStyles}
               />
               <FormControlLabel
-                value="unlikely"
+                value="Unlikely"
                 control={<Radio />}
                 label="Unlikely"
                 sx={formControlLabelStyles}
               />
               <FormControlLabel
-                value="neutral"
+                value="Neutral"
                 control={<Radio />}
                 label="Neutral"
                 sx={formControlLabelStyles}
               />
               <FormControlLabel
-                value="likely"
+                value="Likely"
                 control={<Radio />}
                 label="Likely"
                 sx={formControlLabelStyles}
               />
               <FormControlLabel
-                value="very_likely"
+                value="Very likely"
                 control={<Radio />}
                 label="Very likely"
                 sx={formControlLabelStyles}
@@ -131,15 +147,14 @@ const Page = () => {
                 color: theme.palette.text.disabled,
               },
             }}
-            onClick={() => {
-              console.log("recommendation:", recommendation);
-              console.log("feedback:", feedback);
-              setFeedbackSubmitted(true);
-            }}
+            onClick={handleSendFeedback}
             disabled={recommendation === ""}
           >
             Send feedback
           </Button>
+          {error !== "" ? (
+            <div className="text-red text-center mt-2 text-sm">{error}</div>
+          ) : null}
         </>
       )}
     </div>
