@@ -17,7 +17,7 @@ const Page = () => {
       height="100%"
     >
       <Header
-        leftIcon={<MenuButton isEdge={true} />}
+        leftIcon={<MenuButton isEdge />}
         title={course.name}
         alignCenter
       />

@@ -19,7 +19,7 @@ const Page = async (props: PageProps) => {
   return (
     <div>
       <Header
-        leftIcon={<MenuButton isEdge={true} />}
+        leftIcon={<MenuButton isEdge />}
         title={courseId.toUpperCase()}
         alignCenter
       />

@@ -9,7 +9,7 @@ const Page = () => {
   return (
     <div>
       <Header
-        leftIcon={<MenuButton isEdge={true} />}
+        leftIcon={<MenuButton isEdge />}
         title="Profile"
         alignCenter
         rightIcon={<Button onClick={onSignOut}>Sign Out</Button>}
