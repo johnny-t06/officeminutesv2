@@ -1,12 +1,10 @@
 "use client";
 import Board from "@components/board";
 import Header from "@components/Header";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box, Button, Typography } from "@mui/material";
-import { addQuestion } from "@services/client/question";
 import { getActiveQuestions } from "@utils/index";
+import { useOfficeHourStore } from "@stores/useOfficeHourStore";
 import Link from "next/link";
-
 import React from "react";
 
 interface PageProps {
@@ -17,7 +15,7 @@ interface PageProps {
 
 const Page = (props: PageProps) => {
   const { courseId } = props.params;
-  const { questions } = useOfficeHour();
+  const { questions } = useOfficeHourStore();
   const activeQuestions = getActiveQuestions(questions);
 
   return (

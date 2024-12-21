@@ -1,18 +1,14 @@
 "use client";
-import { useUserSession } from "@context/UserSessionContext";
+
+import { useUserSessionStore } from "@stores/useUserSessionStore";
 
 export default function Home() {
-  const { onSignIn, onSignOut, user } = useUserSession();
+  const { onSignIn, onSignOut, user } = useUserSessionStore();
+
   return (
     <div>
-      <button onClick={() => onSignIn()}> Sign in! </button>
-      <button
-        onClick={() => {
-          onSignOut();
-        }}
-      >
-        Sign Out{" "}
-      </button>
+      <button onClick={onSignIn}> Sign in! </button>
+      <button onClick={onSignOut}>Sign Out</button>
       <div> Logged In: {user?.name}</div>
     </div>
   );
