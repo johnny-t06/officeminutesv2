@@ -1,10 +1,10 @@
 "use client";
 
+import MenuButton from "@components/buttons/MenuButton";
 import Header from "@components/Header";
 import Queue from "@components/queue";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Box, IconButton } from "@mui/material";
+import { Box } from "@mui/material";
 
 const Page = () => {
   const { course } = useOfficeHour();
@@ -17,11 +17,7 @@ const Page = () => {
       height="100%"
     >
       <Header
-        leftIcon={
-          <IconButton edge="start">
-            <MenuIcon />
-          </IconButton>
-        }
+        leftIcon={<MenuButton isEdge />}
         title={course.name}
         alignCenter
       />
