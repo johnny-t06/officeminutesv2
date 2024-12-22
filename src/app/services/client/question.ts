@@ -16,18 +16,21 @@ import {
 } from "firebase/firestore";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 
-type addQuestion = Pick<
+type AddQuestion = Pick<
   Question,
   "title" | "description" | "questionPublic" | "timestamp" | "group" | "tags"
 > &
   PartialWithFieldValue<Question>;
 
-export const addQuestion = async (question: addQuestion, courseId: string) => {
+export const addQuestion = async (question: AddQuestion, courseId: string) => {
   const questionsColection: CollectionReference = collection(
     db,
     `courses/${courseId}/questions`
   ).withConverter(questionConverter);
-  const questionDoc = await addDoc(questionsColection, question);
+  const questionDoc = await addDoc(questionsColection, {
+    ...question,
+    timestamp: serverTimestamp(),
+  });
   return { id: questionDoc.id, ...question } as IdentifiableQuestion;
 };
 

@@ -1,7 +1,7 @@
 import { Box, Button } from "@mui/material";
-import { FaArrowRight } from "react-icons/fa";
 import QuestionForm from "./form/QuestionForm";
 import { defaultQuestion } from "@utils/index";
+import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 
 const CreateQuestion = () => {
   const triggerButton = (
@@ -18,17 +18,21 @@ const CreateQuestion = () => {
         paddingBottom: 1.5,
         paddingRight: 2.5,
         paddingLeft: 2.5,
-        borderRadius: 3.5,
+        borderRadius: 4,
         position: "fixed",
         bottom: 70,
         right: 15,
         zIndex: 99,
       }}
     >
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <FaArrowRight />
-      </Box>
-      <Box display="flex" justifyContent="center" alignItems="center">
+      <ArrowForwardOutlinedIcon />
+      <Box
+        fontWeight={500}
+        fontSize={16}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
         Join queue
       </Box>
     </Button>

@@ -130,11 +130,13 @@ export const SingleChoiceTags = (props: TagsProps) => {
             {/* TODO(lnguyen2693) - display notes */}
             {tags.options.map((o) => (
               <FormControlLabel
+                key={o.choice}
                 value={o.choice}
                 control={<Radio />}
                 // label={o.choice}
                 label={
                   <Box
+                    key={o.choice}
                     sx={{ marginBottom: 2.5, marginTop: 2.5, marginLeft: 1 }}
                   >
                     {o.choice}

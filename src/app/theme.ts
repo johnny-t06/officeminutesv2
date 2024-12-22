@@ -1,5 +1,6 @@
 "use client";
 import { createTheme } from "@mui/material/styles";
+const { palette } = createTheme();
 
 const theme = createTheme({
   palette: {
@@ -12,6 +13,9 @@ const theme = createTheme({
     },
     text: {
       primary: "#000000", // Black text
+    },
+    error: {
+      main: "#FF0000", // Red color
     },
   },
 });

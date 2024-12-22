@@ -1,7 +1,8 @@
 import { Question, QuestionState, TagOption } from "@interfaces/db";
-import { IdentifiableQuestion } from "@interfaces/type";
 import { addQuestion } from "@services/client/question";
-import { FieldValue, serverTimestamp, Timestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
+import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
+
 
 export const trimName = (name: string) => {
   const [firstName, lastName] = name.split(" ");
@@ -32,9 +33,13 @@ export const compareQuestions = (
 };
 
 export const formatTimeDifference = (
-  timestamp: FieldValue | Timestamp
+  question: IdentifiableQuestion
 ): string => {
-  const date = timestamp instanceof Timestamp ? timestamp.toDate() : new Date();
+  const date = question.timestamp.toDate();
+
+  if (hasPassed(question)) {
+    return date.toLocaleDateString();
+  }
 
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -67,7 +72,7 @@ export const defaultQuestion = () => {
     description: "",
     questionPublic: false,
     state: QuestionState.PENDING,
-    timestamp: serverTimestamp(),
+    timestamp: Timestamp.now(),
     group: [],
     tags: [],
   } as IdentifiableQuestion;
@@ -77,7 +82,7 @@ export const createQuestion = (
   title: string,
   description: string,
   questionPublic: boolean,
-  timestamp: FieldValue,
+  timestamp: Timestamp,
   group: string[],
   tags: TagOption[],
   courseId: string
@@ -94,3 +99,42 @@ export const createQuestion = (
 
   addQuestion(question, courseId);
 };
+/**
+ * A question has "expired" if it's a different date or it's been resolved
+ */
+export const hasPassed = (question: IdentifiableQuestion) => {
+  const postedAt = question.timestamp.toDate().setHours(0, 0, 0, 0);
+  const now = new Date().setHours(0, 0, 0, 0);
+  return now > postedAt || question.state === QuestionState.RESOLVED;
+};
+
+export const getActiveQuestions = (
+  questions: IdentifiableQuestions,
+  isPublic: boolean = true
+) =>
+  questions.filter(
+    (question) => !hasPassed(question) && question.questionPublic === isPublic
+  );
+
+export const getActiveQuestionsByState = (
+  questions: IdentifiableQuestions,
+  isPublic: boolean = true
+) => {
+  const activeQuestions = Object.groupBy(
+    getActiveQuestions(questions, isPublic),
+    ({ state }) => state
+  );
+  return {
+    [QuestionState.PENDING]: activeQuestions[QuestionState.PENDING] ?? [],
+    [QuestionState.IN_PROGRESS]:
+      activeQuestions[QuestionState.IN_PROGRESS] ?? [],
+  };
+};
+
+export const getExpiredQuestions = (
+  questions: IdentifiableQuestions,
+  isPublic: boolean = true
+) =>
+  questions.filter(
+    (question) => hasPassed(question) && question.questionPublic === isPublic
+  );

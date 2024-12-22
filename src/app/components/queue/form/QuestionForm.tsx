@@ -14,7 +14,7 @@ import { officeHourContext } from "@context/OfficeHourContext";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
 import { TagOption } from "@interfaces/db";
 import { createQuestion } from "@utils/index";
-import { serverTimestamp } from "firebase/firestore";
+import { serverTimestamp, Timestamp } from "firebase/firestore";
 import { UserSessionContext } from "@context/UserSessionContext";
 import { IdentifiableQuestion } from "@interfaces/type";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
@@ -65,7 +65,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   });
 
   const joinQueue = () => {
-    const timestamp = serverTimestamp();
+    const timestamp = Timestamp.now();
     const author = userSessionContext.user?.tufts_username;
 
     let tagsArr = Object.values(questionTags).reduce((arr, curr) => {
@@ -143,7 +143,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setDescription(event.target.value);
               }}
-            ></TextField>
+            />
 
             {/* TODO(lnguyen2693) - Add index for tags, sort and display them 
             in an order */}
@@ -187,7 +187,7 @@ const QuestionForm = (props: QuestionFormProps) => {
                 <Box sx={{ margin: 0.5, marginLeft: 1.5 }}>Upload image</Box>
               </Button>
               <FormControlLabel
-                sx={{ marginLeft: 2 }}
+                sx={{ marginLeft: 2, marginTop: 0.5 }}
                 control={
                   <Checkbox
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
