@@ -52,6 +52,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
         <Box>
           {tags.options.map((o) => (
             <Checkbox
+              key={o.toString()}
               onChange={handleChange}
               checked={state[o.choice]}
               name={o.choice}
@@ -117,14 +118,31 @@ export const SingleChoiceTags = (props: TagsProps) => {
               : ""
           }
         >
-          {/* TODO(lnguyen2693) - display notes */}
-          {tags.options.map((o) => (
-            <FormControlLabel
-              value={o.choice}
-              control={<Radio />}
-              label={o.choice}
-            />
-          ))}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              paddingLeft: 3,
+              paddingTop: 1,
+              paddingBottom: 2,
+            }}
+          >
+            {/* TODO(lnguyen2693) - display notes */}
+            {tags.options.map((o) => (
+              <FormControlLabel
+                value={o.choice}
+                control={<Radio />}
+                // label={o.choice}
+                label={
+                  <Box
+                    sx={{ marginBottom: 2.5, marginTop: 2.5, marginLeft: 1 }}
+                  >
+                    {o.choice}
+                  </Box>
+                }
+              ></FormControlLabel>
+            ))}
+          </Box>
         </RadioGroup>
       </FormControl>
     </Box>

@@ -28,7 +28,7 @@ const Page = (props: PageProps) => {
       return questions;
     } else {
       return questions.filter((question) =>
-        question.tags.find((tag) => topics.includes(tag))
+        question.tags.find((tag) => topics.includes(tag.toString()))
       );
     }
   };

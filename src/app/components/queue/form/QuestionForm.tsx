@@ -17,6 +17,7 @@ import { createQuestion } from "@utils/index";
 import { serverTimestamp } from "firebase/firestore";
 import { UserSessionContext } from "@context/UserSessionContext";
 import { IdentifiableQuestion } from "@interfaces/type";
+import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 
 interface QuestionFormProps {
   // button to open the form
@@ -89,7 +90,7 @@ const QuestionForm = (props: QuestionFormProps) => {
       }
       // if title === edit submission
     } else {
-      console.log("Required fields not filled")
+      console.log("Required fields not filled");
       // TODO(lnguye2693) - Display error
     }
 
@@ -118,7 +119,8 @@ const QuestionForm = (props: QuestionFormProps) => {
             </button>
             <Box>{title}</Box>
           </Box>
-          <Box display="flex" flexDirection="column" gap={2} padding={2}>
+
+          <Box display="flex" flexDirection="column" gap={2} padding={3.5} paddingTop={1}>
             <TextField
               required
               label="Question"
@@ -165,9 +167,27 @@ const QuestionForm = (props: QuestionFormProps) => {
               )
             )}
 
-            <FormControl>
+            <FormControl sx={{ marginTop: 0.5 }}>
               <FormLabel>Optional</FormLabel>
+              <Button
+                style={{
+                  backgroundColor: "#D3E4FF",
+                }}
+                variant="contained"
+                sx={{
+                  color: "text.primary",
+                  textTransform: "none",
+                  borderRadius: 50,
+                  width: 170,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              >
+                <FileUploadOutlinedIcon></FileUploadOutlinedIcon>
+                <Box sx={{ margin: 0.5, marginLeft: 1.5 }}>Upload image</Box>
+              </Button>
               <FormControlLabel
+                sx={{ marginLeft: 2 }}
                 control={
                   <Checkbox
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -177,8 +197,8 @@ const QuestionForm = (props: QuestionFormProps) => {
                   />
                 }
                 label={
-                  <Box>
-                    <Box fontSize={18}>Post to board</Box>
+                  <Box sx={{ paddingLeft: 2.5, paddingTop: 1 }}>
+                    <Box fontSize={16}>Post to board</Box>
                     <Box fontSize={14}>
                       Posting to the board will allow a maximum of 4 other
                       people to join your TA session.
