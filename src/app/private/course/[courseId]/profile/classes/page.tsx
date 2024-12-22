@@ -11,12 +11,7 @@ const Page = () => {
     <div>
       <Header
         leftIcon={
-          <IconButton
-            onClick={() => {
-              router.back();
-            }}
-            edge="start"
-          >
+          <IconButton onClick={router.back} edge="start">
             <ArrowBackIcon />
           </IconButton>
         }

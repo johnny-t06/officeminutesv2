@@ -61,12 +61,7 @@ const Page = () => {
     <div className="flex flex-col">
       <Header
         leftIcon={
-          <IconButton
-            onClick={() => {
-              router.back();
-            }}
-            edge="start"
-          >
+          <IconButton onClick={router.back} edge="start">
             <ArrowBackIcon />
           </IconButton>
         }
