@@ -69,7 +69,10 @@ const Question = (props: QuestionProps) => {
               paddingX="12px"
               color="#43474E"
             >
-              <Typography sx={{ fontWeight: "bold" }}> {tag.toString()}</Typography>
+              <Typography sx={{ fontWeight: "bold" }}>
+                {" "}
+                {tag.toString()}
+              </Typography>
             </Box>
           ))}
         </Box>
