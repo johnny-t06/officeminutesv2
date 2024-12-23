@@ -48,7 +48,10 @@ const Page = () => {
       return;
     }
 
-    const response = await sendFeedback(recommendation, feedback);
+    const response = await sendFeedback({
+      recommendation,
+      feedback,
+    });
 
     if (response.code === "ERROR") {
       setError(response.message);
