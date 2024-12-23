@@ -3,11 +3,9 @@
 import { useUserSessionStore } from "@providers/UserSessionProvider";
 
 export default function Home() {
-  const { onSignIn, onSignOut, user } = useUserSessionStore((state) => ({
-    user: state.user,
-    onSignIn: state.onSignIn,
-    onSignOut: state.onSignOut,
-  }));
+  const user = useUserSessionStore((state) => state.user);
+  const onSignIn = useUserSessionStore((state) => state.onSignIn);
+  const onSignOut = useUserSessionStore((state) => state.onSignOut);
 
   return (
     <div>
