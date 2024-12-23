@@ -1,10 +1,10 @@
 "use client";
 
-import { useUserSessionStore } from "@stores/useUserSessionStore";
+import { useUserSessionStore } from "@providers/UserSessionProvider";
 import { Button, Typography } from "@mui/material";
 
 export default function Page() {
-  const { onSignIn } = useUserSessionStore();
+  const onSignIn = useUserSessionStore((state) => state.onSignIn);
 
   return (
     <div className="flex items-center justify-center h-screen">
@@ -26,7 +26,7 @@ export default function Page() {
         <div className="mt-1">Answers in minutes, Not hours</div>
         <Button
           className="py-2.5 px-6 bg-[#38608F] rounded-full mt-6 normal-case"
-          onClick={() => onSignIn()}
+          onClick={onSignIn}
         >
           <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
             Get started

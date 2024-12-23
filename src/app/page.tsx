@@ -1,9 +1,13 @@
 "use client";
 
-import { useUserSessionStore } from "@stores/useUserSessionStore";
+import { useUserSessionStore } from "@providers/UserSessionProvider";
 
 export default function Home() {
-  const { onSignIn, onSignOut, user } = useUserSessionStore();
+  const { onSignIn, onSignOut, user } = useUserSessionStore((state) => ({
+    user: state.user,
+    onSignIn: state.onSignIn,
+    onSignOut: state.onSignOut,
+  }));
 
   return (
     <div>

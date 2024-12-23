@@ -1,12 +1,13 @@
 import { Box, Fab, Stack, Typography } from "@mui/material";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
-import { useOfficeHourStore } from "@stores/useOfficeHourStore";
+import { useOfficeHourStore } from "@providers/OfficeHourProvider";
 import { QuestionState } from "@interfaces/db";
 import { getActiveQuestionsByState } from "@utils/index";
 import QueueList from "./QueueList";
 
 const Queue = () => {
-  const { course, questions } = useOfficeHourStore();
+  const course = useOfficeHourStore((state) => state.course);
+  const questions = useOfficeHourStore((state) => state.questions);
   const {
     [QuestionState.PENDING]: pendingQuestions,
     [QuestionState.IN_PROGRESS]: inProgressQuestions,

@@ -4,7 +4,7 @@ import Question from "./Question";
 import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import { compareQuestions } from "@utils/index";
-import { useOfficeHourStore } from "@stores/useOfficeHourStore";
+import { useOfficeHourStore } from "@providers/OfficeHourProvider";
 
 interface BoardProps {
   questions: IdentifiableQuestions;
@@ -41,7 +41,7 @@ const _Board = (props: BoardProps) => {
 
 const Board = (props: BoardProps) => {
   const { questions } = props;
-  const { course } = useOfficeHourStore();
+  const course = useOfficeHourStore((state) => state.course);
   const topics = [SELECT_ALL, ...Object.keys(course?.tags || {}).sort()];
 
   const [selectedTopics, setSelectedTopics] = React.useState([SELECT_ALL]);

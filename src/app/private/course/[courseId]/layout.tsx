@@ -6,7 +6,7 @@ import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { NavBarContainer } from "@components/container";
 import { Box } from "@mui/material";
-import { useOfficeHourStore } from "@stores/useOfficeHourStore";
+import { useOfficeHourStore } from "@providers/OfficeHourProvider";
 import React from "react";
 
 interface ILayout {
@@ -21,7 +21,7 @@ const Layout = (props: ILayout) => {
     children,
     params: { courseId },
   } = props;
-  const { initializeListeners } = useOfficeHourStore();
+  const initializeListeners = useOfficeHourStore((state) => state.initializeListeners);
 
   React.useEffect(() => {
     const cleanup = initializeListeners(courseId);

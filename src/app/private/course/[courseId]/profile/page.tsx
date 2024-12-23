@@ -1,12 +1,12 @@
 "use client";
 
 import Header from "@components/Header";
-import { useUserSessionStore } from "@stores/useUserSessionStore";
+import { useUserSessionStore } from "@providers/UserSessionProvider";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Button, IconButton } from "@mui/material";
 
 const Page = () => {
-  const { onSignOut } = useUserSessionStore();
+  const onSignOut = useUserSessionStore((state) => state.onSignOut);
 
   return (
     <div>

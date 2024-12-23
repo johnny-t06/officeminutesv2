@@ -15,12 +15,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { getCourses, updateCourse } from "@services/client/course";
-import { useUserSessionStore } from "@stores/useUserSessionStore";
+import { useUserSessionStore } from "@providers/UserSessionProvider";
 import { updateUser } from "@services/client/user";
 
 const Page = () => {
   const router = useRouter();
-  const { user } = useUserSessionStore();
+  const user = useUserSessionStore((state) => state.user);
 
   const [code, setCode] = React.useState("");
   const [enrolledError, setEnrolledError] = React.useState(false);

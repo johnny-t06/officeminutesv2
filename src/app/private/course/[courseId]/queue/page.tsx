@@ -4,9 +4,10 @@ import Header from "@components/Header";
 import Queue from "@components/queue";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, IconButton } from "@mui/material";
-import { useOfficeHourStore } from "@stores/useOfficeHourStore";
+import { useOfficeHourStore } from "@providers/OfficeHourProvider";
+
 const Page = () => {
-  const { course } = useOfficeHourStore();
+  const course = useOfficeHourStore((state) => state.course);
 
   return (
     <Box
