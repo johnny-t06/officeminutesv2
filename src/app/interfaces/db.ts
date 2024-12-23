@@ -14,6 +14,7 @@ export interface Tags {
     options: TagOption[];
     required: boolean;
     multipleChoice: boolean;
+    priority: number;
   };
 }
 

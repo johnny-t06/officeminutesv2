@@ -1,6 +1,7 @@
 import { TagOption, Tags } from "@interfaces/db";
 import {
   Box,
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -57,7 +58,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
               checked={state[o.choice]}
               name={o.choice}
               icon={
-                <Box
+                <Button
                   sx={{
                     border: 1,
                     paddingTop: 0.5,
@@ -65,14 +66,15 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                     paddingLeft: 2,
                     paddingRight: 2,
                     borderRadius: 2,
+                    textTransform: "none"
                   }}
                 >
                   {o.choice}
-                </Box>
+                </Button>
               }
-              // TODO(lnguyen2693) - style button when user choose a tag
               checkedIcon={
-                <Box
+                <Button
+                  variant="contained"
                   sx={{
                     border: 1,
                     paddingTop: 0.5,
@@ -81,10 +83,11 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                     paddingRight: 2,
                     borderRadius: 2,
                     bgcolor: "primary",
+                    textTransform: "none"
                   }}
                 >
                   {o.choice}
-                </Box>
+                </Button>
               }
             />
           ))}
@@ -139,7 +142,8 @@ export const SingleChoiceTags = (props: TagsProps) => {
                     key={o.choice}
                     sx={{ marginBottom: 2.5, marginTop: 2.5, marginLeft: 1 }}
                   >
-                    {o.choice}
+                    <Box fontSize={16}>{o.choice}</Box>
+                    {o.note ? <Box fontSize={14}>{o.note}</Box> : <></>}
                   </Box>
                 }
               ></FormControlLabel>

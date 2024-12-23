@@ -120,7 +120,13 @@ const QuestionForm = (props: QuestionFormProps) => {
             <Box>{title}</Box>
           </Box>
 
-          <Box display="flex" flexDirection="column" gap={2} padding={3.5} paddingTop={1}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap={2}
+            padding={3.5}
+            paddingTop={1}
+          >
             <TextField
               required
               label="Question"
@@ -147,25 +153,31 @@ const QuestionForm = (props: QuestionFormProps) => {
 
             {/* TODO(lnguyen2693) - Add index for tags, sort and display them 
             in an order */}
-            {Object.keys(ohContext.course.tags).map((k) =>
-              ohContext.course.tags[k].multipleChoice ? (
-                <MultipleChoiceTags
-                  key={k}
-                  tagsKey={k}
-                  tags={ohContext.course.tags[k]}
-                  allQuestionTags={questionTags}
-                  updateQuestionTags={updateQuestionTags}
-                ></MultipleChoiceTags>
-              ) : (
-                <SingleChoiceTags
-                  key={k}
-                  tagsKey={k}
-                  tags={ohContext.course.tags[k]}
-                  allQuestionTags={questionTags}
-                  updateQuestionTags={updateQuestionTags}
-                ></SingleChoiceTags>
+            {Object.keys(ohContext.course.tags)
+              .sort(
+                (a, b) =>
+                  ohContext.course.tags[a].priority -
+                  ohContext.course.tags[b].priority
               )
-            )}
+              .map((k) =>
+                ohContext.course.tags[k].multipleChoice ? (
+                  <MultipleChoiceTags
+                    key={k}
+                    tagsKey={k}
+                    tags={ohContext.course.tags[k]}
+                    allQuestionTags={questionTags}
+                    updateQuestionTags={updateQuestionTags}
+                  ></MultipleChoiceTags>
+                ) : (
+                  <SingleChoiceTags
+                    key={k}
+                    tagsKey={k}
+                    tags={ohContext.course.tags[k]}
+                    allQuestionTags={questionTags}
+                    updateQuestionTags={updateQuestionTags}
+                  ></SingleChoiceTags>
+                )
+              )}
 
             <FormControl sx={{ marginTop: 0.5 }}>
               <FormLabel>Optional</FormLabel>
