@@ -1,12 +1,16 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  corePlugins: {
+    preflight: false,
+  },
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  important: "#__next",
   theme: {
     extend: {
       backgroundImage: {
@@ -15,20 +19,12 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
-  },
-  plugins: [],
-};
-module.exports = {
-  corePlugins: {
-    preflight: false,
-  },
-  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
-  important: "#__next",
-  theme: {
     colors: {
       gray: "#ECEDF4",
       blue: "#D3E4FF",
     },
   },
+  plugins: [],
 };
+
 export default config;
