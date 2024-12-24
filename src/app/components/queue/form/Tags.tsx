@@ -50,9 +50,10 @@ export const MultipleChoiceTags = (props: TagsProps) => {
     <Box>
       <FormControl required={tags.required}>
         <FormLabel id={tagsKey}>{tagsKey}</FormLabel>
-        <Box>
+        <Box sx={{ marginTop: 1 }}>
           {tags.options.map((o) => (
             <Checkbox
+              style={{ padding: 4 }}
               key={o.toString()}
               onChange={handleChange}
               checked={state[o.choice]}
@@ -66,7 +67,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                     paddingLeft: 2,
                     paddingRight: 2,
                     borderRadius: 2,
-                    textTransform: "none"
+                    textTransform: "none",
                   }}
                 >
                   {o.choice}
@@ -83,7 +84,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                     paddingRight: 2,
                     borderRadius: 2,
                     bgcolor: "primary",
-                    textTransform: "none"
+                    textTransform: "none",
                   }}
                 >
                   {o.choice}
