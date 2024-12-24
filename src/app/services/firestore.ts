@@ -1,4 +1,4 @@
-import { Course, Question, User } from "@interfaces/db";
+import { Course, Feedback, Question, User } from "@interfaces/db";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 
 export const courseConverter = {
@@ -25,5 +25,14 @@ export const userConverter = {
   },
   fromFirestore(snapshot: QueryDocumentSnapshot, options: any): User {
     return snapshot.data(options) as User;
+  },
+};
+
+export const feedbackConverter = {
+  toFirestore(feedback: Feedback): DocumentData {
+    return feedback;
+  },
+  fromFirestore(snapshot: QueryDocumentSnapshot, options: any): Feedback {
+    return snapshot.data(options) as Feedback;
   },
 };

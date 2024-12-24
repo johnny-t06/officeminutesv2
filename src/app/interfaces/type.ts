@@ -1,4 +1,4 @@
-import { Course, Question, User } from "./db";
+import { Course, Feedback, Question, User } from "./db";
 
 type Identifiable<T extends Object> = {
   id: string;
@@ -7,6 +7,10 @@ type Identifiable<T extends Object> = {
 export type IdentifiableCourse = Identifiable<Course>;
 
 export type IdentifiableCourses = IdentifiableCourse[];
+
+export type IdentifiableFeedback = Identifiable<Feedback>;
+
+export type IdentifiableFeedbacks = IdentifiableFeedback[];
 
 export type IdentifiableQuestion = Identifiable<Question>;
 
