@@ -31,7 +31,7 @@ export const updateFeedback = async (feedback: IdentifiableFeedback) => {
 
   await updateDoc(feedbackDoc, res);
 
-  console.log("Feedback updated: ", feedback);
+  console.log("Feedback updated");
   return feedback;
 };
 
@@ -60,5 +60,5 @@ export const deleteFeedback = async (feedbackID: string) => {
   );
 
   await deleteDoc(feedbackDoc);
-  console.log("Feedback deleted with ID: ", feedbackID);
+  console.log("Feedback deleted");
 };
