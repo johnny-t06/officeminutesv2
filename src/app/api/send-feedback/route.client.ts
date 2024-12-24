@@ -1,4 +1,9 @@
-export const sendFeedback = async (body: Record<string, any>) => {
+interface FeedbackBody {
+  recommendation: string;
+  feedback: string;
+}
+
+export const sendFeedback = async (body: FeedbackBody) => {
   const response = await fetch("/api/send-feedback", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
