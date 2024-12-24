@@ -14,7 +14,8 @@ import { useRouter } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React from "react";
 import theme from "theme";
-import { sendFeedback } from "api/send-feedback/route.client";
+import { addFeedback } from "@services/client/feedback";
+import { Timestamp } from "firebase/firestore";
 
 const Page = () => {
   const router = useRouter();
@@ -28,7 +29,9 @@ const Page = () => {
     marginRight: 0,
   };
 
-  const [recommendation, setRecommendation] = React.useState("");
+  const [recommendation, setRecommendation] = React.useState<number | null>(
+    null
+  );
   const [feedback, setFeedback] = React.useState<string>("");
   const [feedbackSubmitted, setFeedbackSubmitted] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -36,7 +39,7 @@ const Page = () => {
   const handleRecommendChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRecommendation(event.target.value);
+    setRecommendation(parseInt(event.target.value, 10));
   };
 
   const handleFeedbackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,19 +47,22 @@ const Page = () => {
   };
 
   const handleSendFeedback = async () => {
-    if (recommendation === "") {
+    if (recommendation === null) {
       return;
     }
 
-    const response = await sendFeedback({
-      recommendation,
-      feedback,
-    });
+    try {
+      await addFeedback({
+        recommendation,
+        feedback,
+        timestamp: Timestamp.fromDate(new Date()),
+      });
 
-    if (response.code === "ERROR") {
-      setError(response.message);
-    } else {
       setFeedbackSubmitted(true);
+    } catch (e) {
+      setError(
+        "An error occurred while submitting your feedback. Please try again."
+      );
     }
   };
 
@@ -86,31 +92,31 @@ const Page = () => {
           >
             <RadioGroup value={recommendation} onChange={handleRecommendChange}>
               <FormControlLabel
-                value="Very unlikely"
+                value={1}
                 control={<Radio />}
                 label="Very unlikely"
                 sx={formControlLabelStyles}
               />
               <FormControlLabel
-                value="Unlikely"
+                value={2}
                 control={<Radio />}
                 label="Unlikely"
                 sx={formControlLabelStyles}
               />
               <FormControlLabel
-                value="Neutral"
+                value={3}
                 control={<Radio />}
                 label="Neutral"
                 sx={formControlLabelStyles}
               />
               <FormControlLabel
-                value="Likely"
+                value={4}
                 control={<Radio />}
                 label="Likely"
                 sx={formControlLabelStyles}
               />
               <FormControlLabel
-                value="Very likely"
+                value={5}
                 control={<Radio />}
                 label="Very likely"
                 sx={formControlLabelStyles}
@@ -146,7 +152,7 @@ const Page = () => {
               },
             }}
             onClick={handleSendFeedback}
-            disabled={recommendation === ""}
+            disabled={recommendation === null}
           >
             Send feedback
           </Button>
