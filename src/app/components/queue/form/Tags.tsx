@@ -54,7 +54,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
           {tags.options.map((o) => (
             <Checkbox
               style={{ padding: 4 }}
-              key={o.toString()}
+              key={o.choice}
               onChange={handleChange}
               checked={state[o.choice]}
               name={o.choice}

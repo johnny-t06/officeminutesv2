@@ -61,6 +61,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   const trigger = React.cloneElement(triggerButton, {
     onClick: () => {
       setOpenForm(true);
+      triggerButton.props.onClick();
     },
   });
 

@@ -24,6 +24,7 @@ const CreateQuestion = () => {
         right: 15,
         zIndex: 99,
       }}
+      onClick={() => {console.log("abc")}}
     >
       <ArrowForwardOutlinedIcon />
       <Box
