@@ -60,7 +60,7 @@ const Queue = () => {
           </Box>
         ) : null}
       </Box>
-      <Box position="fixed" bottom={80} right={10}>
+      {/* <Box position="fixed" bottom={80} right={10}>
         <Fab
           aria-label="Join queue"
           variant="extended"
@@ -79,7 +79,7 @@ const Queue = () => {
           <ArrowForwardOutlinedIcon sx={{ marginRight: "12px" }} />
           <Typography fontWeight={500}>Join queue</Typography>
         </Fab>
-      </Box>
+      </Box> */}
     </>
   );
 };
