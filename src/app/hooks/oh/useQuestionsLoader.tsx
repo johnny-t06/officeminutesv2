@@ -42,12 +42,12 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
         questionConverter
       ),
       (snapshot) => {
-        let questionsList: IdentifiableQuestions = [];
-        snapshot.docs.map((doc) => {
-          questionsList.push({ id: doc.id, ...doc.data() });
-        });
-
         if (!snapshot.metadata.hasPendingWrites) {
+          let questionsList: IdentifiableQuestions = [];
+          snapshot.docs.map((doc) => {
+            questionsList.push({ id: doc.id, ...doc.data() });
+          });
+
           setValue(questionsList);
         }
       }

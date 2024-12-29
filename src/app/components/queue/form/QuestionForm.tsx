@@ -8,7 +8,7 @@ import {
   FormLabel,
   TextField,
 } from "@mui/material";
-import { IoMdClose } from "react-icons/io";
+import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { officeHourContext } from "@context/OfficeHourContext";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
@@ -61,7 +61,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   const trigger = React.cloneElement(triggerButton, {
     onClick: () => {
       setOpenForm(true);
-      if (typeof triggerButton.props.onClick === 'function') {
+      if (typeof triggerButton.props.onClick === "function") {
         triggerButton.props.onClick();
       }
     },
@@ -118,7 +118,7 @@ const QuestionForm = (props: QuestionFormProps) => {
                 aspectRatio: 1,
               }}
             >
-              <IoMdClose size={20} />
+              <CloseIcon></CloseIcon>
             </button>
             <Box>{title}</Box>
           </Box>
