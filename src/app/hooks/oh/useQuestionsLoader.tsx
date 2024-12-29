@@ -47,7 +47,9 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
           questionsList.push({ id: doc.id, ...doc.data() });
         });
 
-        setValue(questionsList);
+        if (!snapshot.metadata.hasPendingWrites) {
+          setValue(questionsList);
+        }
       }
     );
 

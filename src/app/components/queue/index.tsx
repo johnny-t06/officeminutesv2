@@ -60,26 +60,6 @@ const Queue = () => {
           </Box>
         ) : null}
       </Box>
-      {/* <Box position="fixed" bottom={80} right={10}>
-        <Fab
-          aria-label="Join queue"
-          variant="extended"
-          color="primary"
-          sx={{
-            bgcolor: queueClosed ? "#545F70" : "",
-            color: "#FFF",
-            textTransform: "none",
-            paddingY: "18px",
-            paddingX: "16px",
-            borderRadius: "16px",
-            minHeight: "56px",
-          }}
-          disabled={queueClosed}
-        >
-          <ArrowForwardOutlinedIcon sx={{ marginRight: "12px" }} />
-          <Typography fontWeight={500}>Join queue</Typography>
-        </Fab>
-      </Box> */}
     </>
   );
 };
