@@ -1,5 +1,5 @@
 import { IdentifiableFeedback, IdentifiableFeedbacks } from "@interfaces/type";
-import { db } from "../../../../firebase";
+import { db } from "@project/firebase";
 import { feedbackConverter } from "../firestore";
 import {
   addDoc,
