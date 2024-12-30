@@ -17,6 +17,22 @@ import theme from "theme";
 import { addFeedback } from "@services/client/feedback";
 import { Timestamp } from "firebase/firestore";
 
+enum Recommendation {
+  VERY_UNLIKELY = 1,
+  UNLIKELY,
+  NEUTRAL,
+  LIKELY,
+  VERY_LIKELY,
+}
+
+const recommendationLabels: { [key in Recommendation]: string } = {
+  [Recommendation.VERY_UNLIKELY]: "Very unlikely",
+  [Recommendation.UNLIKELY]: "Unlikely",
+  [Recommendation.NEUTRAL]: "Neutral",
+  [Recommendation.LIKELY]: "Likely",
+  [Recommendation.VERY_LIKELY]: "Very likely",
+};
+
 const Page = () => {
   const router = useRouter();
 
@@ -29,9 +45,8 @@ const Page = () => {
     marginRight: 0,
   };
 
-  const [recommendation, setRecommendation] = React.useState<number | null>(
-    null
-  );
+  const [recommendation, setRecommendation] =
+    React.useState<Recommendation | null>(null);
   const [feedback, setFeedback] = React.useState<string>("");
   const [feedbackSubmitted, setFeedbackSubmitted] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -91,36 +106,15 @@ const Page = () => {
             sx={{ width: "100%", paddingInline: "16px" }}
           >
             <RadioGroup value={recommendation} onChange={handleRecommendChange}>
-              <FormControlLabel
-                value={1}
-                control={<Radio />}
-                label="Very unlikely"
-                sx={formControlLabelStyles}
-              />
-              <FormControlLabel
-                value={2}
-                control={<Radio />}
-                label="Unlikely"
-                sx={formControlLabelStyles}
-              />
-              <FormControlLabel
-                value={3}
-                control={<Radio />}
-                label="Neutral"
-                sx={formControlLabelStyles}
-              />
-              <FormControlLabel
-                value={4}
-                control={<Radio />}
-                label="Likely"
-                sx={formControlLabelStyles}
-              />
-              <FormControlLabel
-                value={5}
-                control={<Radio />}
-                label="Very likely"
-                sx={formControlLabelStyles}
-              />
+              {Object.entries(recommendationLabels).map(([key, label]) => (
+                <FormControlLabel
+                  key={key}
+                  value={key}
+                  control={<Radio />}
+                  label={label}
+                  sx={formControlLabelStyles}
+                />
+              ))}
             </RadioGroup>
           </FormControl>
           <Typography sx={{ marginBlock: "12px", fontWeight: 500 }}>
