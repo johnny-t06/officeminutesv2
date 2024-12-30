@@ -156,9 +156,9 @@ const Page = () => {
           >
             Send feedback
           </Button>
-          {error !== "" ? (
+          {error && (
             <div className="text-red text-center mt-2 text-sm">{error}</div>
-          ) : null}
+          )}
         </>
       )}
     </div>
