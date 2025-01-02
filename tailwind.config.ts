@@ -22,6 +22,7 @@ const config: Config = {
     colors: {
       gray: "#ECEDF4",
       blue: "#D3E4FF",
+      red: "#E11D48",
     },
   },
   plugins: [],
