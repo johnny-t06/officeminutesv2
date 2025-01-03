@@ -22,10 +22,7 @@ export default function RootLayout({
           <AppRouterCacheProvider>
             <UserSessionContextProvider>
               <ThemeProviderWrapper>
-                <SidebarProvider>
-                  <Sidebar />
-                  {children}
-                </SidebarProvider>
+                <SidebarProvider>{children}</SidebarProvider>
               </ThemeProviderWrapper>
             </UserSessionContextProvider>
           </AppRouterCacheProvider>

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Sidebar from "@components/Sidebar";
 
 interface SidebarContextState {
   isOpen: boolean;
@@ -36,6 +37,7 @@ export const SidebarProvider: React.FC<SidebarContextProps> = (
   return (
     <SidebarStateContext.Provider value={{ isOpen: isSidebarOpen }}>
       <SidebarActionsContext.Provider value={{ openSidebar, closeSidebar }}>
+        <Sidebar />
         {children}
       </SidebarActionsContext.Provider>
     </SidebarStateContext.Provider>
