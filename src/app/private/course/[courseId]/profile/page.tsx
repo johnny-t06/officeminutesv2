@@ -1,8 +1,8 @@
 "use client";
+import MenuButton from "@components/buttons/MenuButton";
 import Header from "@components/Header";
 import { useUserSession } from "@context/UserSessionContext";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Avatar, Button, IconButton } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import { trimName } from "@utils/index";
 import theme from "theme";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
@@ -27,11 +27,7 @@ const Page = (props: PageProps) => {
   return (
     <div>
       <Header
-        leftIcon={
-          <IconButton edge="start">
-            <MenuIcon />
-          </IconButton>
-        }
+        leftIcon={<MenuButton isEdge />}
         title={courseId.toUpperCase()}
         alignCenter
       />

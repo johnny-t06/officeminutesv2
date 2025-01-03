@@ -10,6 +10,9 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  query,
+  where,
+  documentId,
 } from "firebase/firestore";
 
 export const addCourse = async (course: IdentifiableCourse) => {
@@ -50,6 +53,24 @@ export const getCourses = async () => {
     collection(db, `courses`).withConverter(courseConverter)
   );
   const coursesDocs: IdentifiableCourses = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return coursesDocs;
+};
+
+export const getCoursesByIds = async (
+  courseIds: string[]
+): Promise<IdentifiableCourse[]> => {
+  const coursesQuery = query(
+    collection(db, "courses"),
+    where(documentId(), "in", courseIds)
+  );
+
+  const snapshot = await getDocs(coursesQuery.withConverter(courseConverter));
+
+  const coursesDocs: IdentifiableCourse[] = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }));
