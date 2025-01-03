@@ -52,3 +52,9 @@ export interface Question {
 }
 
 export type Questions = Question[];
+
+export interface Feedback {
+  recommendation: number;
+  feedback: string;
+  timestamp: Timestamp;
+}
