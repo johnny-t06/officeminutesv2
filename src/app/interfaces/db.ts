@@ -9,16 +9,18 @@ export interface User {
   courses: string[];
 }
 
-interface Tags {
+export interface Tags {
   [key: string]: {
     options: TagOption[];
     required: boolean;
     multipleChoice: boolean;
+    priority: number;
   };
 }
 
-interface TagOption {
+export interface TagOption {
   choice: string;
+  note: string;
   color: string;
   colorFill: boolean;
 }
@@ -44,11 +46,11 @@ export enum QuestionState {
 export interface Question {
   title: string;
   description: string;
-  public: boolean;
+  questionPublic: boolean;
   state: QuestionState;
   timestamp: Timestamp;
   group: string[];
-  tags: string[];
+  tags: TagOption[];
 }
 
 export type Questions = Question[];
