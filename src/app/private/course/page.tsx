@@ -1,9 +1,9 @@
 "use client";
 
 import Header from "@components/Header";
-import { Button, IconButton, Typography } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
+import MenuButton from "@components/buttons/MenuButton";
 
 const Page = async () => {
   const router = useRouter();
@@ -11,14 +11,7 @@ const Page = async () => {
   //   fetch courses and render
   return (
     <div className="flex flex-col min-h-screen">
-      <Header
-        leftIcon={
-          <IconButton>
-            <MenuIcon />
-          </IconButton>
-        }
-        title="Classes"
-      />
+      <Header leftIcon={<MenuButton />} title="Classes" />
       {/* NOTE: Currently only displays the case where a user has no classes */}
       <div className="flex flex-col items-center justify-center flex-grow gap-4">
         <div>Add a class to get started</div>
