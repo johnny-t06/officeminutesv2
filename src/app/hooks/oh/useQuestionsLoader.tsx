@@ -64,6 +64,5 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
   }, [state.state, courseId]);
 
   // TODO(lnguyen2693) - handle setError
-
   return { questions: state };
 };

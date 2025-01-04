@@ -3,7 +3,6 @@ import Board from "@components/board";
 import Header from "@components/Header";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box, Button, Typography } from "@mui/material";
-import { addQuestion } from "@services/client/question";
 import { getActiveQuestions } from "@utils/index";
 import Link from "next/link";
 
@@ -19,7 +18,6 @@ const Page = (props: PageProps) => {
   const { courseId } = props.params;
   const { questions } = useOfficeHour();
   const activeQuestions = getActiveQuestions(questions);
-
   return (
     <Box>
       <Header

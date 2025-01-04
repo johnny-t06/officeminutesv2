@@ -1,10 +1,14 @@
-import { Question, QuestionState, TagOption } from "@interfaces/db";
 import { addQuestion } from "@services/client/question";
-import { Timestamp } from "firebase/firestore";
+import { useUserSession } from "@context/UserSessionContext";
+import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
-
+import { Timestamp } from "firebase/firestore";
+import { redirect } from "next/navigation";
 
 export const trimName = (name: string) => {
+  if (name === undefined) {
+    return "";
+  }
   const [firstName, lastName] = name.split(" ");
   if (lastName !== undefined && lastName.length > 0) {
     return firstName + " " + lastName[0];
@@ -138,3 +142,11 @@ export const getExpiredQuestions = (
   questions.filter(
     (question) => hasPassed(question) && question.questionPublic === isPublic
   );
+
+export const getUserSessionOrRedirect = () => {
+  const { user } = useUserSession();
+  if (user === null) {
+    redirect("/");
+  }
+  return user;
+};

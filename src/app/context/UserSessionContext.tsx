@@ -21,6 +21,7 @@ interface Session {
 
 interface IUserSessionContext {
   user: IdentifiableUser | null;
+  setUser: React.Dispatch<React.SetStateAction<IdentifiableUser | null>>;
   session: Session;
   onSignIn: () => void;
   onSignOut: () => Promise<void>;
@@ -44,6 +45,10 @@ export const UserSessionContextProvider = ({
   const router = useRouter();
 
   React.useEffect(() => {
+    // TODO: on password change, add additional check
+    if (user !== null) {
+      return;
+    }
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const currUser = await getUser(firebaseUser?.uid);
@@ -106,7 +111,9 @@ export const UserSessionContextProvider = ({
     }
   };
   return (
-    <UserSessionContext.Provider value={{ user, session, onSignIn, onSignOut }}>
+    <UserSessionContext.Provider
+      value={{ user, session, onSignIn, onSignOut, setUser }}
+    >
       {children}
     </UserSessionContext.Provider>
   );
