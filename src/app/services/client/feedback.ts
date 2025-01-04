@@ -18,8 +18,6 @@ export const addFeedback = async (feedback: Feedback) => {
   );
 
   await addDoc(feedbackCollection, feedback);
-
-  console.log("New feedback created");
 };
 
 export const updateFeedback = async (feedback: IdentifiableFeedback) => {
@@ -30,8 +28,6 @@ export const updateFeedback = async (feedback: IdentifiableFeedback) => {
   const { id, ...res } = feedback;
 
   await updateDoc(feedbackDoc, res);
-
-  console.log("Feedback updated");
   return feedback;
 };
 
@@ -60,5 +56,4 @@ export const deleteFeedback = async (feedbackID: string) => {
   );
 
   await deleteDoc(feedbackDoc);
-  console.log("Feedback deleted");
 };
