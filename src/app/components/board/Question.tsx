@@ -105,7 +105,7 @@ const Question = (props: QuestionProps) => {
         <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
           {question.tags.map((tag) => (
             <Box
-              key={tag.toString()}
+              key={tag.choice}
               border={1}
               borderColor="#73777F"
               borderRadius="10px"
@@ -114,7 +114,7 @@ const Question = (props: QuestionProps) => {
               color="#43474E"
             >
               <Typography sx={{ fontWeight: 500, fontSize: 14 }}>
-                {tag.toString()}
+                {tag.choice}
               </Typography>
             </Box>
           ))}

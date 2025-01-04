@@ -18,7 +18,7 @@ import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 
 type AddQuestion = Pick<
   Question,
-  "title" | "description" | "questionPublic" | "timestamp" | "group" | "tags"
+  "title" | "description" | "questionPublic" | "group" | "tags"
 > &
   PartialWithFieldValue<Question>;
 

@@ -22,7 +22,7 @@ const Page = () => {
         title={course.name}
         alignCenter
       />
-      <CreateQuestion></CreateQuestion>
+      <CreateQuestion/>
       <Queue />
     </Box>
   );

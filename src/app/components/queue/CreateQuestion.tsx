@@ -1,6 +1,6 @@
 import { Box, Button } from "@mui/material";
 import QuestionForm from "./form/QuestionForm";
-import { defaultQuestion } from "@utils/index";
+import { defaultQuestion } from "api/question";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 
 const CreateQuestion = () => {

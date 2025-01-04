@@ -58,7 +58,7 @@ const Board = (props: BoardProps) => {
       return questions;
     } else {
       return questions.filter((question) =>
-        question.tags.find((tag) => topics.includes(tag.toString()))
+        question.tags.find((tag) => topics.includes(tag.choice))
       );
     }
   };

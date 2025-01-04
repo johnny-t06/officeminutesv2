@@ -13,7 +13,7 @@ import React from "react";
 import { officeHourContext } from "@context/OfficeHourContext";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
 import { TagOption } from "@interfaces/db";
-import { createQuestion } from "@utils/index";
+import { createQuestion } from "api/question";
 import { serverTimestamp, Timestamp } from "firebase/firestore";
 import { UserSessionContext } from "@context/UserSessionContext";
 import { IdentifiableQuestion } from "@interfaces/type";
