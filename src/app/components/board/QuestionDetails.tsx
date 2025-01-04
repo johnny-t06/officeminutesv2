@@ -1,41 +1,31 @@
 "use client";
 
-import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
-import { Avatar, Box, Button, Typography } from "@mui/material";
-import { formatTimeDifference, hasPassed, trimName } from "@utils/index";
-import { Timestamp } from "firebase/firestore";
+import { Avatar, Box, Typography } from "@mui/material";
+import {
+  formatTimeDifference,
+  getUserSessionOrRedirect,
+  hasPassed,
+  trimName,
+} from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { getUsers } from "@services/client/user";
 import { updateQuestion } from "@services/client/question";
-import { useUserSession } from "@context/UserSessionContext";
 import Spinner from "@components/Spinner";
+import { CustomButton } from "@components/buttons/CustomButton";
 
 interface QuestionDetailsProps {
-  question: {
-    id: string;
-    timestamp: Date;
-    title: string;
-    description: string;
-    public: boolean;
-    state: QuestionState;
-    group: string[];
-    tags: string[];
-  };
+  question: IdentifiableQuestion;
   courseId: string;
 }
 
 export const QuestionDetails = (props: QuestionDetailsProps) => {
   const { question, courseId } = props;
-  const { user } = useUserSession();
-  const convertedQuestion = {
-    ...question,
-    timestamp: Timestamp.fromDate(new Date(question.timestamp)),
-  } as IdentifiableQuestion;
+  const user = getUserSessionOrRedirect();
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
-    convertedQuestion.group.includes(user!.id)
+    question.group.includes(user.id)
   );
 
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -48,24 +38,28 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
       setLoading(false);
     };
     fetchUsers();
-  }, []);
+  }, [question]);
+
+  React.useEffect(() => {
+    setJoinGroup(question.group.includes(user.id));
+  }, [question.group]);
 
   const onJoinGroup = async () => {
     if (joinGroup) {
       await updateQuestion(
         {
-          ...convertedQuestion,
-          group: convertedQuestion.group.filter((id) => id !== user!.id),
+          ...question,
+          group: question.group.filter((id) => id !== user.id),
         },
         courseId
       );
-      setUsers(users.filter((member) => member.id !== user!.id));
+      setUsers(users.filter((member) => member.id !== user.id));
     } else {
       await updateQuestion(
-        { ...convertedQuestion, group: [...convertedQuestion.group, user!.id] },
+        { ...question, group: [...question.group, user.id] },
         courseId
       );
-      setUsers([...users, user!]);
+      setUsers([...users, user]);
     }
 
     setJoinGroup(!joinGroup);
@@ -110,7 +104,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                   overflow: "hidden",
                 }}
               >
-                {formatTimeDifference(convertedQuestion)}
+                {formatTimeDifference(question)}
               </Typography>
             </Box>
           </Box>
@@ -171,43 +165,27 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               {users.length === 1 ? "is" : "are"} in this group.
             </Typography>
           </Box>
-          <Box
-            marginTop="8px"
-            display={hasPassed(convertedQuestion) ? "none" : "flex"}
-          >
-            <Button
+          <Box marginTop="8px" display={hasPassed(question) ? "none" : "flex"}>
+            <CustomButton
               variant="contained"
+              customColor={
+                joinGroup
+                  ? theme.palette.primary.light
+                  : theme.palette.primary.main
+              }
               sx={{
                 marginTop: "16px",
                 paddingY: "10px",
                 paddingX: "24px",
-                bgcolor: joinGroup
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main,
-                "&:hover": {
-                  bgcolor: joinGroup
-                    ? theme.palette.primary.light
-                    : theme.palette.primary.main,
-                },
-                "&:active": {
-                  bgcolor: joinGroup
-                    ? theme.palette.primary.light
-                    : theme.palette.primary.main,
-                },
-                "&:focus-visible": {
-                  bgcolor: joinGroup
-                    ? theme.palette.primary.light
-                    : theme.palette.primary.main,
-                },
                 borderRadius: "32px",
-                color: joinGroup ? "#000" : "#fff",
                 textTransform: "none",
                 width: "100%",
+                color: joinGroup ? "#000" : "#fff",
               }}
               onClick={onJoinGroup}
             >
               {joinGroup ? "Leave group" : "Join group"}
-            </Button>
+            </CustomButton>
           </Box>
         </>
       )}

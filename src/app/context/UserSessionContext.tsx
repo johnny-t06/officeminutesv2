@@ -21,6 +21,7 @@ interface Session {
 
 interface IUserSessionContext {
   user: IdentifiableUser | null;
+  setUser: React.Dispatch<React.SetStateAction<IdentifiableUser | null>>;
   session: Session;
   onSignIn: () => void;
   onSignOut: () => Promise<void>;
@@ -111,7 +112,9 @@ export const UserSessionContextProvider = ({
     }
   };
   return (
-    <UserSessionContext.Provider value={{ user, session, onSignIn, onSignOut }}>
+    <UserSessionContext.Provider
+      value={{ user, session, onSignIn, onSignOut, setUser }}
+    >
       {children}
     </UserSessionContext.Provider>
   );

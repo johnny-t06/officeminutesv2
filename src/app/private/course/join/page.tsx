@@ -17,10 +17,12 @@ import { useRouter } from "next/navigation";
 import { getCourses, updateCourse } from "services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
 import { updateUser } from "@services/client/user";
+import { getUserSessionOrRedirect } from "@utils/index";
 
 const Page = () => {
   const router = useRouter();
-  const { user } = useUserSession();
+  const { setUser } = useUserSession();
+  const user = getUserSessionOrRedirect();
 
   const [code, setCode] = React.useState("");
   const [enrolledError, setEnrolledError] = React.useState(false);
@@ -44,13 +46,17 @@ const Page = () => {
             return;
           }
 
-          course.students.push(user.id);
-          await updateCourse(course);
+          const newCourse = {
+            ...course,
+            students: [...course.students, user.id],
+          };
+          await updateCourse(newCourse);
 
-          user.courses.push(course.id);
-          await updateUser(user);
+          const newUser = { ...user, courses: [...user.courses, course.id] };
+          await updateUser(newUser);
 
           router.push(`/private/course/${course.id}`);
+          setUser(newUser);
         } else {
           setNotFoundError(true);
         }

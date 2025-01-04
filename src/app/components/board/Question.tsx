@@ -1,9 +1,14 @@
+import { CustomButton } from "@components/buttons/CustomButton";
 import Spinner from "@components/Spinner";
-import { useUserSession } from "@context/UserSessionContext";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Button, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
-import { formatTimeDifference, hasPassed, trimName } from "@utils/index";
+import {
+  formatTimeDifference,
+  getUserSessionOrRedirect,
+  hasPassed,
+  trimName,
+} from "@utils/index";
 import { useRouter } from "next/navigation";
 import React from "react";
 import theme from "theme";
@@ -15,7 +20,7 @@ interface QuestionProps {
 const Question = (props: QuestionProps) => {
   const { question } = props;
   const router = useRouter();
-  const { user } = useUserSession();
+  const user = getUserSessionOrRedirect();
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [joinGroup] = React.useState<boolean>(
@@ -120,8 +125,11 @@ const Question = (props: QuestionProps) => {
         display={hasPassed(question) ? "none" : "flex"}
         justifyContent="flex-end"
       >
-        <Button
+        <CustomButton
           variant="contained"
+          customColor={
+            joinGroup ? theme.palette.primary.light : theme.palette.primary.main
+          }
           sx={{
             paddingY: "10px",
             paddingX: "24px",
@@ -129,31 +137,13 @@ const Question = (props: QuestionProps) => {
             color: joinGroup ? "#000" : "#fff",
             textTransform: "none",
             marginTop: "16px",
-            bgcolor: joinGroup
-              ? theme.palette.primary.light
-              : theme.palette.primary.main,
-            "&:hover": {
-              bgcolor: joinGroup
-                ? theme.palette.primary.light
-                : theme.palette.primary.main,
-            },
-            "&:active": {
-              bgcolor: joinGroup
-                ? theme.palette.primary.light
-                : theme.palette.primary.main,
-            },
-            "&:focus-visible": {
-              bgcolor: joinGroup
-                ? theme.palette.primary.light
-                : theme.palette.primary.main,
-            },
           }}
           onClick={() =>
             router.push(`${window.location.pathname}/${question.id}`)
           }
         >
           {joinGroup ? "Leave group" : "Join group"}
-        </Button>
+        </CustomButton>
       </Box>
     </Box>
   );
