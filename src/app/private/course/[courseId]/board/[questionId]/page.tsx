@@ -1,7 +1,8 @@
+"use client";
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { ArrowBack } from "@mui/icons-material";
-import { getQuestion } from "@services/client/question";
 import Link from "next/link";
 
 interface PageProps {
@@ -11,16 +12,16 @@ interface PageProps {
   };
 }
 
-const Page = async (props: PageProps) => {
+const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
+  const { questions } = useOfficeHour();
+  const question = questions.find((q) => q.id === questionId);
 
-  const question = await getQuestion(courseId, questionId);
-  const convertedQuestion = {
-    ...question,
-    timestamp: question.timestamp.toDate(),
-  };
+  if (!question) {
+    throw new Error();
+  }
 
   return (
     <div>
@@ -31,7 +32,7 @@ const Page = async (props: PageProps) => {
           </Link>
         }
       />
-      <QuestionDetails courseId={courseId} question={convertedQuestion} />
+      <QuestionDetails courseId={courseId} question={question} />
     </div>
   );
 };

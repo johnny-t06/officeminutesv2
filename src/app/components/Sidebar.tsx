@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { use } from "react";
 import {
   useSidebarStateContext,
   useSidebarActionsContext,
@@ -15,29 +15,30 @@ import {
 } from "@mui/material";
 import theme from "theme";
 import { getCoursesByIds } from "@services/client/course";
-import { useUserSession } from "@context/UserSessionContext";
 import { useRouter } from "next/navigation";
 import { IdentifiableCourse } from "@interfaces/type";
 import MenuButton from "./buttons/MenuButton";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
+import { useUserSession } from "@context/UserSessionContext";
 
-const Sidebar = React.memo(() => {
+const Sidebar = () => {
   const [courses, setCourses] = React.useState<IdentifiableCourse[]>([]);
   const { isOpen } = useSidebarStateContext();
   const { closeSidebar } = useSidebarActionsContext();
   const { user } = useUserSession();
-  const { courses: courseIds = [] } = user || {};
   const router = useRouter();
 
   React.useEffect(() => {
     const loadCourses = async () => {
-      if (courseIds.length > 0) {
-        const courses = await getCoursesByIds(courseIds);
+      if (user && user.courses.length > 0) {
+        const courses = await getCoursesByIds(user.courses);
         setCourses(courses);
+      } else {
+        setCourses([]);
       }
     };
     loadCourses();
-  }, [courseIds]);
+  }, [user]);
 
   const handleCourseClick = (course: IdentifiableCourse) => {
     router.push(`/private/course/${course.id}`);
@@ -141,6 +142,6 @@ const Sidebar = React.memo(() => {
       </Box>
     </Drawer>
   );
-});
+};
 
 export default Sidebar;

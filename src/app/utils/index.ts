@@ -1,6 +1,8 @@
+import { useUserSession } from "@context/UserSessionContext";
 import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 import { Timestamp } from "firebase/firestore";
+import { redirect } from "next/navigation";
 
 export const trimName = (name: string) => {
   if (name === undefined) {
@@ -105,3 +107,11 @@ export const getExpiredQuestions = (
   questions.filter(
     (question) => hasPassed(question) && question.public === isPublic
   );
+
+export const getUserSessionOrRedirect = () => {
+  const { user } = useUserSession();
+  if (user === null) {
+    redirect("/");
+  }
+  return user;
+};
