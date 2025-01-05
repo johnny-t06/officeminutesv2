@@ -69,7 +69,7 @@ const QuestionForm = (props: QuestionFormProps) => {
 
   const joinQueue = () => {
     const timestamp = Timestamp.now();
-    const author = userSessionContext.user?.tufts_username;
+    const author = userSessionContext.user?.id;
 
     let tagsArr = Object.values(questionTags).reduce((arr, curr) => {
       return [...arr, ...curr];
@@ -157,11 +157,7 @@ const QuestionForm = (props: QuestionFormProps) => {
             {/* TODO(lnguyen2693) - Add index for tags, sort and display them 
             in an order */}
             {Object.keys(ohContext.course.tags)
-              .sort(
-                (a, b) =>
-                  ohContext.course.tags[a].priority -
-                  ohContext.course.tags[b].priority
-              )
+              .sort((a, b) => a.localeCompare(b))
               .map((k) =>
                 ohContext.course.tags[k].multipleChoice ? (
                   <MultipleChoiceTags
