@@ -120,7 +120,7 @@ const QuestionForm = (props: QuestionFormProps) => {
             >
               <CloseIcon></CloseIcon>
             </button>
-            <Box>{title}</Box>
+            <Box sx={{ fontSize: 20}}>{title}</Box>
           </Box>
 
           <Box
