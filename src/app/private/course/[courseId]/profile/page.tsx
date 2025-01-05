@@ -8,6 +8,10 @@ import theme from "theme";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import { useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import React from "react";
+import { getCourse } from "@services/client/course";
+import { getUsers } from "@services/client/user";
+import Spinner from "@components/Spinner";
 
 interface PageProps {
   params: {
@@ -24,6 +28,33 @@ const Page = (props: PageProps) => {
   const { course } = useOfficeHour();
   const { onSignOut } = useUserSession();
   const user = getUserSessionOrRedirect();
+
+  const [loading, setLoading] = React.useState(true);
+  const [isUserTA, setIsUserTA] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const courseData = await getCourse(courseId);
+        const tasData = await getUsers(courseData.tas);
+        setIsUserTA(tasData.some((ta) => ta.id === user.id));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [courseId]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen ">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -55,23 +86,25 @@ const Page = (props: PageProps) => {
           <div>
             <div className="text-lg">Classes</div>
             <div className="text-[#43474E] text-sm">
-              Manage your enrolled classes here
+              Manage your classes here
             </div>
           </div>
           <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
         </div>
-        <div
-          className="flex justify-between items-center"
-          onClick={() =>
-            router.push(`/private/course/${course.id}/profile/help`)
-          }
-        >
-          <div>
-            <div className="text-lg">Get Help</div>
-            <div className="text-[#43474E] text-sm">Read our FAQ</div>
+        {!isUserTA && (
+          <div
+            className="flex justify-between items-center"
+            onClick={() =>
+              router.push(`/private/course/${course.id}/profile/help`)
+            }
+          >
+            <div>
+              <div className="text-lg">Get Help</div>
+              <div className="text-[#43474E] text-sm">Read our FAQ</div>
+            </div>
+            <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
           </div>
-          <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
-        </div>
+        )}
         <div
           className="flex justify-between items-center"
           onClick={() =>

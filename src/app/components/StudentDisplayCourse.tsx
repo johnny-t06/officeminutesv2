@@ -6,10 +6,10 @@ import { IdentifiableUsers } from "@interfaces/type";
 import { usePathname, useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 
-interface DisplayCourseProps {
+interface StudentDisplayCourseProps {
   tas: IdentifiableUsers;
 }
-const DisplayCourse = (props: DisplayCourseProps) => {
+const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
   const { tas } = props;
   const router = useRouter();
   const pathname = usePathname();
@@ -134,4 +134,4 @@ const DisplayCourse = (props: DisplayCourseProps) => {
   );
 };
 
-export default DisplayCourse;
+export default StudentDisplayCourse;

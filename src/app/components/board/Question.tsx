@@ -15,10 +15,11 @@ import theme from "theme";
 
 interface QuestionProps {
   question: IdentifiableQuestion;
+  isUserTA: boolean;
 }
 
 const Question = (props: QuestionProps) => {
-  const { question } = props;
+  const { question, isUserTA } = props;
   const router = useRouter();
   const user = getUserSessionOrRedirect();
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
@@ -122,7 +123,7 @@ const Question = (props: QuestionProps) => {
       </Box>
       <Box
         marginTop="16px"
-        display={hasPassed(question) ? "none" : "flex"}
+        display={hasPassed(question) || isUserTA ? "none" : "flex"}
         justifyContent="flex-end"
       >
         <CustomButton
