@@ -1,6 +1,6 @@
 import { Box, Button } from "@mui/material";
 import QuestionForm from "./form/QuestionForm";
-import { defaultQuestion } from "api/question";
+import { defaultQuestion } from "@api/question";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 
 const CreateQuestion = () => {
@@ -43,7 +43,7 @@ const CreateQuestion = () => {
         triggerButton={triggerButton}
         title="Join queue"
         currentQuestion={defaultQuestion()}
-      ></QuestionForm>
+      />
     </Box>
   );
 };

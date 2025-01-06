@@ -1,13 +1,13 @@
 import { CustomButton } from "@components/buttons/CustomButton";
 import Spinner from "@components/Spinner";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
-import { Avatar, Box, Button, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
 import {
   formatTimeDifference,
   getUserSessionOrRedirect,
   hasPassed,
-  trimName,
+  trimUserName,
 } from "@utils/index";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -50,7 +50,7 @@ const Question = (props: QuestionProps) => {
         alignItems="center"
       >
         <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-          {trimName(users && users[0]?.name[0]) ?? ""}
+          {trimUserName(users[0])[0]}
         </Avatar>
         <Box>
           <Typography
@@ -62,7 +62,7 @@ const Question = (props: QuestionProps) => {
               overflow: "hidden",
             }}
           >
-            {trimName(users[0]?.name) ?? ""}
+            {trimUserName(users[0])}
           </Typography>
           <Typography
             style={{

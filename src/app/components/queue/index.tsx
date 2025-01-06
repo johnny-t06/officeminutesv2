@@ -1,8 +1,10 @@
-import { Box, Fab, Stack, Typography } from "@mui/material";
-import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
+import { Box, Stack, Typography } from "@mui/material";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { QuestionState } from "@interfaces/db";
-import { getActiveQuestionsByState } from "@utils/index";
+import {
+  getActiveQuestionsByState,
+  sortQuestionsChronologically,
+} from "@utils/index";
 import QueueList from "./QueueList";
 
 const Queue = () => {
@@ -22,12 +24,12 @@ const Queue = () => {
           <QueueList
             header="Currently Helping"
             displayEnqueued={false}
-            questions={inProgressQuestions}
+            questions={sortQuestionsChronologically(inProgressQuestions)}
           />
           <QueueList
             header="Queue"
             displayEnqueued
-            questions={pendingQuestions}
+            questions={sortQuestionsChronologically(pendingQuestions)}
           />
         </Stack>
         {queueClosed ? (

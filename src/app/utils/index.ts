@@ -1,15 +1,18 @@
-import { addQuestion } from "@services/client/question";
 import { useUserSession } from "@context/UserSessionContext";
-import { Question, QuestionState, TagOption } from "@interfaces/db";
-import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
+import { QuestionState } from "@interfaces/db";
+import {
+  IdentifiableQuestion,
+  IdentifiableQuestions,
+  IdentifiableUser,
+} from "@interfaces/type";
 import { Timestamp } from "firebase/firestore";
 import { redirect } from "next/navigation";
 
-export const trimName = (name: string) => {
-  if (name === undefined) {
-    return "";
+export const trimUserName = (user: IdentifiableUser | undefined) => {
+  if (user === undefined) {
+    return " "; // empty string to prevent error in rendering avatar character
   }
-  const [firstName, lastName] = name.split(" ");
+  const [firstName, lastName] = user.name.split(" ");
   if (lastName !== undefined && lastName.length > 0) {
     return firstName + " " + lastName[0];
   } else {
@@ -34,6 +37,13 @@ export const compareQuestions = (
       ? question2.timestamp.toDate()
       : new Date();
   return compareDate(date1, date2);
+};
+
+/* Not in place sorting */
+export const sortQuestionsChronologically = (
+  questions: IdentifiableQuestions
+) => {
+  return questions.toSorted(compareQuestions);
 };
 
 export const formatTimeDifference = (
