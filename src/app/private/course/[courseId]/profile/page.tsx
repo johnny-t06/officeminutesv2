@@ -3,7 +3,7 @@ import MenuButton from "@components/buttons/MenuButton";
 import Header from "@components/Header";
 import { useUserSession } from "@context/UserSessionContext";
 import { Avatar, Button } from "@mui/material";
-import { getUserSessionOrRedirect, trimName } from "@utils/index";
+import { getUserSessionOrRedirect, trimUserName } from "@utils/index";
 import theme from "theme";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import { useRouter } from "next/navigation";
@@ -39,9 +39,7 @@ const Page = (props: PageProps) => {
           {user ? user.name[0] : ""}
         </Avatar>
         <div>
-          <div className="text-xl font-bold">
-            {trimName(user ? user.name : "")}
-          </div>
+          <div className="text-xl font-bold">{trimUserName(user)}</div>
           <div className="text-[#73777F]">{user ? user.email : ""}</div>
         </div>
       </div>

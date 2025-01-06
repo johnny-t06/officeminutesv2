@@ -1,7 +1,8 @@
-"use client";
+'use client'
 
 import MenuButton from "@components/buttons/MenuButton";
 import Header from "@components/Header";
+import CreateQuestion from "@components/queue/CreateQuestion";
 import Queue from "@components/queue";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box } from "@mui/material";
@@ -21,6 +22,7 @@ const Page = () => {
         title={course.name}
         alignCenter
       />
+      <CreateQuestion/>
       <Queue />
     </Box>
   );

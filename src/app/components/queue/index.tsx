@@ -1,8 +1,10 @@
-import { Box, Fab, Stack, Typography } from "@mui/material";
-import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
+import { Box, Stack, Typography } from "@mui/material";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { QuestionState } from "@interfaces/db";
-import { getActiveQuestionsByState } from "@utils/index";
+import {
+  getActiveQuestionsByState,
+  sortQuestionsChronologically,
+} from "@utils/index";
 import QueueList from "./QueueList";
 
 const Queue = () => {
@@ -22,12 +24,12 @@ const Queue = () => {
           <QueueList
             header="Currently Helping"
             displayEnqueued={false}
-            questions={inProgressQuestions}
+            questions={sortQuestionsChronologically(inProgressQuestions)}
           />
           <QueueList
             header="Queue"
             displayEnqueued
-            questions={pendingQuestions}
+            questions={sortQuestionsChronologically(pendingQuestions)}
           />
         </Stack>
         {queueClosed ? (
@@ -59,26 +61,6 @@ const Queue = () => {
             </Typography>
           </Box>
         ) : null}
-      </Box>
-      <Box position="fixed" bottom={80} right={10}>
-        <Fab
-          aria-label="Join queue"
-          variant="extended"
-          color="primary"
-          sx={{
-            bgcolor: queueClosed ? "#545F70" : "",
-            color: "#FFF",
-            textTransform: "none",
-            paddingY: "18px",
-            paddingX: "16px",
-            borderRadius: "16px",
-            minHeight: "56px",
-          }}
-          disabled={queueClosed}
-        >
-          <ArrowForwardOutlinedIcon sx={{ marginRight: "12px" }} />
-          <Typography fontWeight={500}>Join queue</Typography>
-        </Fab>
       </Box>
     </>
   );

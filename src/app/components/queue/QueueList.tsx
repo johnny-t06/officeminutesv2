@@ -1,4 +1,4 @@
-import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
+import { IdentifiableQuestions } from "@interfaces/type";
 import PersonOutlineOutlined from "@mui/icons-material/PersonOutlineOutlined";
 import { Box, Stack, Typography } from "@mui/material";
 import QueueItem from "./QueueItem";
@@ -44,7 +44,7 @@ const QueueList = (props: QueueListProps) => {
       </Box>
       <Stack spacing="8px" marginTop="16px">
         {questions.map((question, index) => (
-          <QueueItem key={question.id} order={index} question={question} />
+          <QueueItem key={question.id} order={index + 1} question={question} />
         ))}
       </Stack>
     </Box>
