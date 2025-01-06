@@ -6,13 +6,16 @@ import {
   formatTimeDifference,
   getUserSessionOrRedirect,
   hasPassed,
-  trimName,
+  trimUserName,
 } from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { getUsers } from "@services/client/user";
-import { updateQuestion } from "@services/client/question";
+import {
+  joinQuestionGroup,
+  leaveQuestionGroup,
+} from "@services/client/question";
 import Spinner from "@components/Spinner";
 import { CustomButton } from "@components/buttons/CustomButton";
 
@@ -46,22 +49,12 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
 
   const onJoinGroup = async () => {
     if (joinGroup) {
-      await updateQuestion(
-        {
-          ...question,
-          group: question.group.filter((id) => id !== user.id),
-        },
-        courseId
-      );
+      await leaveQuestionGroup(question, courseId, user.id);
       setUsers(users.filter((member) => member.id !== user.id));
     } else {
-      await updateQuestion(
-        { ...question, group: [...question.group, user.id] },
-        courseId
-      );
+      await joinQuestionGroup(question, courseId, user.id);
       setUsers([...users, user]);
     }
-
     setJoinGroup(!joinGroup);
   };
 
@@ -82,7 +75,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
             alignItems="center"
           >
             <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-              {trimName(users[0]?.name[0]) ?? ""}
+              {trimUserName(users[0])[0]}
             </Avatar>
             <Box>
               <Typography
@@ -94,7 +87,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                   overflow: "hidden",
                 }}
               >
-                {trimName(users[0]?.name) ?? ""}
+                {trimUserName(users[0])}
               </Typography>
               <Typography
                 style={{
@@ -161,7 +154,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
             <Typography
               sx={{ fontSize: 14, color: theme.palette.text.secondary }}
             >
-              {users.map((user) => trimName(user.name)).join(", ")}&nbsp;
+              {users.map(trimUserName).join(", ")}&nbsp;
               {users.length === 1 ? "is" : "are"} in this group.
             </Typography>
           </Box>

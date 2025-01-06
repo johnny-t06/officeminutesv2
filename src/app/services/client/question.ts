@@ -13,6 +13,8 @@ import {
   getDoc,
   getDocs,
   serverTimestamp,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 
@@ -51,6 +53,38 @@ export const updateQuestion = async (
   }
 
   return question;
+};
+
+export const joinQuestionGroup = async (
+  question: IdentifiableQuestion,
+  courseId: string,
+  userId: string
+) => {
+  const questionDoc: DocumentReference = doc(
+    db,
+    `courses/${courseId}/questions/${question.id}`
+  ).withConverter(questionConverter);
+
+  await updateDoc(questionDoc, {
+    group: arrayUnion(userId),
+  });
+  return { ...question, group: [...question.group, userId] };
+};
+
+export const leaveQuestionGroup = async (
+  question: IdentifiableQuestion,
+  courseId: string,
+  userId: string
+) => {
+  const questionDoc: DocumentReference = doc(
+    db,
+    `courses/${courseId}/questions/${question.id}`
+  ).withConverter(questionConverter);
+
+  await updateDoc(questionDoc, {
+    group: arrayRemove(userId),
+  });
+  return { ...question, group: question.group.filter((id) => id !== userId) };
 };
 
 export const getQuestion = async (courseId: string, questionId: string) => {

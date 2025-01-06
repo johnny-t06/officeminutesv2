@@ -5,19 +5,18 @@ import {
   Drawer,
   FormControl,
   FormControlLabel,
-  FormLabel,
+  IconButton,
   TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
-import { officeHourContext } from "@context/OfficeHourContext";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
 import { TagOption } from "@interfaces/db";
-import { createQuestion } from "api/question";
-import { serverTimestamp, Timestamp } from "firebase/firestore";
-import { UserSessionContext } from "@context/UserSessionContext";
+import { createQuestion, defaultQuestion } from "api/question";
 import { IdentifiableQuestion } from "@interfaces/type";
-import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { getUserSessionOrRedirect } from "@utils/index";
+import Header from "@components/Header";
 
 interface QuestionFormProps {
   // button to open the form
@@ -30,29 +29,24 @@ interface QuestionFormProps {
 const QuestionForm = (props: QuestionFormProps) => {
   const { triggerButton, title, currentQuestion } = props;
   const [openForm, setOpenForm] = React.useState(false);
-  const ohContext = React.useContext(officeHourContext);
-  const userSessionContext = React.useContext(UserSessionContext);
+  const { course } = useOfficeHour();
+  const user = getUserSessionOrRedirect();
+  const [newQuestion, setNewQuestion] =
+    React.useState<IdentifiableQuestion>(currentQuestion);
 
-  const [question, setQuestion] = React.useState(currentQuestion.title);
-  const [description, setDescription] = React.useState(
-    currentQuestion.description
-  );
-  const [questionPublic, setQuestionPublic] = React.useState(
-    currentQuestion.questionPublic
-  );
-
-  const [questionTags, setQuestionTags] = React.useState<
-    Record<string, TagOption[]>
-  >(() => {
+  const defaultTags = () => {
     const curr_tags = currentQuestion.tags.map((t) => t.choice);
     let init: Record<string, TagOption[]> = {};
-    Object.keys(ohContext.course.tags).forEach((t) => {
-      init[t] = ohContext.course.tags[t].options.filter((o) =>
+    Object.keys(course.tags).forEach((t) => {
+      init[t] = course.tags[t].options.filter((o) =>
         curr_tags.includes(o.choice)
       );
     });
     return init;
-  });
+  };
+  const [questionTags, setQuestionTags] = React.useState<
+    Record<string, TagOption[]>
+  >(defaultTags());
 
   const updateQuestionTags = (tagsKey: string, newTags: TagOption[]) => {
     setQuestionTags({ ...questionTags, [tagsKey]: newTags });
@@ -67,29 +61,32 @@ const QuestionForm = (props: QuestionFormProps) => {
     },
   });
 
-  const joinQueue = () => {
-    const timestamp = Timestamp.now();
-    const author = userSessionContext.user?.id;
+  const resetForm = () => {
+    setNewQuestion(defaultQuestion());
+    setQuestionTags(defaultTags());
+  };
 
+  const onSubmitForm = async () => {
     let tagsArr = Object.values(questionTags).reduce((arr, curr) => {
       return [...arr, ...curr];
     }, []);
 
     const tagsValidate = Object.keys(questionTags).filter(
-      (k) => ohContext.course.tags[k].required && questionTags[k].length === 0
+      (k) => course.tags[k].required && questionTags[k].length === 0
     );
 
-    if (question !== "" && description !== "" && tagsValidate.length === 0) {
+    if (
+      newQuestion.title !== "" &&
+      newQuestion.description !== "" &&
+      tagsValidate.length === 0
+    ) {
       if (title === "Join queue") {
-        createQuestion(
-          question,
-          description,
-          questionPublic,
-          timestamp,
-          author ? [author] : [],
-          tagsArr,
-          ohContext.course.id
-        );
+        await createQuestion({
+          ...newQuestion,
+          tags: tagsArr,
+          group: [user.id],
+          courseId: course.id,
+        });
       }
       // if title === edit submission
     } else {
@@ -98,31 +95,26 @@ const QuestionForm = (props: QuestionFormProps) => {
     }
 
     setOpenForm(false);
+    resetForm();
   };
+
   return (
     <Box>
       {trigger}
       <Drawer open={openForm} anchor="bottom">
         <Box height="100vh" width="100vw" overflow="scroll">
-          <Box display="flex" alignItems="center" padding={1.5} gap={1}>
-            <button
-              onClick={() => {
-                setOpenForm(false);
-              }}
-              style={{
-                background: "transparent",
-                border: "none",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                aspectRatio: 1,
-              }}
-            >
-              <CloseIcon></CloseIcon>
-            </button>
-            <Box sx={{ fontSize: 20}}>{title}</Box>
-          </Box>
-
+          <Header
+            leftIcon={
+              <IconButton
+                onClick={() => {
+                  setOpenForm(false);
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            }
+            title={title}
+          />
           <Box
             display="flex"
             flexDirection="column"
@@ -135,11 +127,11 @@ const QuestionForm = (props: QuestionFormProps) => {
               label="Question"
               placeholder="Give your question a title"
               focused
-              value={question}
+              value={newQuestion.title}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setQuestion(event.target.value);
+                setNewQuestion({ ...newQuestion, title: event.target.value });
               }}
-            ></TextField>
+            />
 
             <TextField
               required
@@ -148,38 +140,42 @@ const QuestionForm = (props: QuestionFormProps) => {
               focused
               multiline
               rows={4}
-              value={description}
+              value={newQuestion.description}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setDescription(event.target.value);
+                setNewQuestion({
+                  ...newQuestion,
+                  description: event.target.value,
+                });
               }}
             />
 
             {/* TODO(lnguyen2693) - Add index for tags, sort and display them 
             in an order */}
-            {Object.keys(ohContext.course.tags)
+            {Object.keys(course.tags)
               .sort((a, b) => a.localeCompare(b))
               .map((k) =>
-                ohContext.course.tags[k].multipleChoice ? (
+                course.tags[k].multipleChoice ? (
                   <MultipleChoiceTags
                     key={k}
                     tagsKey={k}
-                    tags={ohContext.course.tags[k]}
+                    tags={course.tags[k]}
                     allQuestionTags={questionTags}
                     updateQuestionTags={updateQuestionTags}
-                  ></MultipleChoiceTags>
+                  />
                 ) : (
                   <SingleChoiceTags
                     key={k}
                     tagsKey={k}
-                    tags={ohContext.course.tags[k]}
+                    tags={course.tags[k]}
                     allQuestionTags={questionTags}
                     updateQuestionTags={updateQuestionTags}
-                  ></SingleChoiceTags>
+                  />
                 )
               )}
 
+            {/* TODO(johnnyt-06) - Optional Image Upload Section */}
             <FormControl sx={{ marginTop: 0.5 }}>
-              <FormLabel>Optional</FormLabel>
+              {/* <FormLabel>Optional</FormLabel>
               <Button
                 style={{
                   backgroundColor: "#D3E4FF",
@@ -196,15 +192,18 @@ const QuestionForm = (props: QuestionFormProps) => {
               >
                 <FileUploadOutlinedIcon></FileUploadOutlinedIcon>
                 <Box sx={{ margin: 0.5, marginLeft: 1.5 }}>Upload image</Box>
-              </Button>
+              </Button> */}
               <FormControlLabel
                 sx={{ marginLeft: 2, marginTop: 0.5 }}
                 control={
                   <Checkbox
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setQuestionPublic(event.target.checked)
+                      setNewQuestion({
+                        ...newQuestion,
+                        questionPublic: event.target.checked,
+                      })
                     }
-                    checked={questionPublic}
+                    checked={newQuestion.questionPublic}
                   />
                 }
                 label={
@@ -226,7 +225,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               color="primary"
               variant="contained"
               sx={{ textTransform: "initial", borderRadius: 5 }}
-              onClick={joinQueue}
+              onClick={onSubmitForm}
             >
               Join now
             </Button>

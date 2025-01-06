@@ -1,9 +1,13 @@
-import { Questions, QuestionState } from "@interfaces/db";
 import { State, useLoadingValue } from "@hooks/utils/useLoadingValue";
 import React from "react";
 import { IdentifiableQuestions } from "@interfaces/type";
 import { getQuestions } from "services/client/question";
-import { collection, onSnapshot, Unsubscribe } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  Timestamp,
+  Unsubscribe,
+} from "firebase/firestore";
 import { db } from "@project/firebase";
 import { questionConverter } from "@services/firestore";
 
@@ -42,14 +46,17 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
         questionConverter
       ),
       (snapshot) => {
-        if (!snapshot.metadata.hasPendingWrites) {
-          let questionsList: IdentifiableQuestions = [];
-          snapshot.docs.map((doc) => {
-            questionsList.push({ id: doc.id, ...doc.data() });
+        let questionsList: IdentifiableQuestions = [];
+        snapshot.docs.map((doc) => {
+          const data = doc.data();
+          questionsList.push({
+            id: doc.id,
+            ...data,
+            timestamp: data.timestamp ?? Timestamp.now(),
           });
+        });
 
-          setValue(questionsList);
-        }
+        setValue(questionsList);
       }
     );
 
