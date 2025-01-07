@@ -6,6 +6,7 @@ import {
   sortQuestionsChronologically,
 } from "@utils/index";
 import QueueList from "./QueueList";
+import { useCourseData } from "@hooks/useCourseData";
 
 const Queue = () => {
   const { course, questions } = useOfficeHour();
@@ -16,6 +17,8 @@ const Queue = () => {
 
   const studentsEnqueued = pendingQuestions.length + inProgressQuestions.length;
   const queueClosed = course.onDuty.length === 0;
+
+  const { isUserTA } = useCourseData({ fetchUsers: false });
 
   return (
     <>
