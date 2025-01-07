@@ -32,7 +32,11 @@ const Page = (props: PageProps) => {
           </Link>
         }
       />
-      <QuestionDetails courseId={courseId} question={question} />
+      <QuestionDetails
+        courseId={courseId}
+        question={question}
+        fromTAQueue={false}
+      />
     </div>
   );
 };

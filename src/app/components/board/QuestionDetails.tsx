@@ -15,18 +15,24 @@ import { getUsers } from "@services/client/user";
 import {
   joinQuestionGroup,
   leaveQuestionGroup,
+  updateQuestion,
 } from "@services/client/question";
 import Spinner from "@components/Spinner";
 import { CustomButton } from "@components/buttons/CustomButton";
+import { QuestionState } from "@interfaces/db";
+import { useRouter } from "next/navigation";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
   courseId: string;
+  fromTAQueue: boolean;
 }
 
 export const QuestionDetails = (props: QuestionDetailsProps) => {
-  const { question, courseId } = props;
+  const { question, courseId, fromTAQueue } = props;
   const user = getUserSessionOrRedirect();
+  const router = useRouter();
+
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
     question.group.includes(user.id)
   );
@@ -158,28 +164,75 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               {users.length === 1 ? "is" : "are"} in this group.
             </Typography>
           </Box>
-          <Box marginTop="8px" display={hasPassed(question) ? "none" : "flex"}>
-            <CustomButton
-              variant="contained"
-              customColor={
-                joinGroup
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main
-              }
-              sx={{
-                marginTop: "16px",
-                paddingY: "10px",
-                paddingX: "24px",
-                borderRadius: "32px",
-                textTransform: "none",
-                width: "100%",
-                color: joinGroup ? "#000" : "#fff",
-              }}
-              onClick={onJoinGroup}
+          {fromTAQueue ? (
+            <Box
+              marginTop="8px"
+              sx={{ display: "flex", flexDirection: "column", gap: "16px" }}
             >
-              {joinGroup ? "Leave group" : "Join group"}
-            </CustomButton>
-          </Box>
+              <CustomButton
+                variant="contained"
+                customColor={theme.palette.primary.main}
+                sx={{
+                  marginTop: "16px",
+                  paddingY: "10px",
+                  paddingX: "24px",
+                  borderRadius: "32px",
+                  textTransform: "none",
+                  width: "100%",
+                }}
+                onClick={async () => {
+                  const inProgressQuestion = {
+                    ...question,
+                    state: QuestionState.IN_PROGRESS,
+                  };
+                  await updateQuestion(inProgressQuestion, courseId);
+                  router.push(`/private/course/${courseId}/queue`);
+                }}
+              >
+                Start helping
+              </CustomButton>
+              <CustomButton
+                variant="contained"
+                customColor={theme.palette.primary.light}
+                sx={{
+                  paddingY: "10px",
+                  paddingX: "24px",
+                  borderRadius: "32px",
+                  textTransform: "none",
+                  width: "100%",
+                  color: "#000",
+                }}
+              >
+                Mark as missing
+              </CustomButton>
+            </Box>
+          ) : (
+            <Box
+              marginTop="8px"
+              display={hasPassed(question) ? "none" : "flex"}
+            >
+              <CustomButton
+                variant="contained"
+                customColor={
+                  joinGroup
+                    ? theme.palette.primary.light
+                    : theme.palette.primary.main
+                }
+                sx={{
+                  marginTop: "16px",
+                  paddingY: "10px",
+                  paddingX: "24px",
+                  borderRadius: "32px",
+                  textTransform: "none",
+                  width: "100%",
+                  color: joinGroup ? "#000" : "#fff",
+                }}
+                onClick={onJoinGroup}
+              >
+                {joinGroup ? "Leave group" : "Join group"}
+              </CustomButton>
+            </Box>
+          )}
         </>
       )}
     </Box>
