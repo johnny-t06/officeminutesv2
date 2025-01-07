@@ -27,7 +27,7 @@ interface IUserSessionContext {
   onSignOut: () => Promise<void>;
 }
 
-const UserSessionContext = React.createContext<IUserSessionContext>(
+export const UserSessionContext = React.createContext<IUserSessionContext>(
   {} as IUserSessionContext
 );
 

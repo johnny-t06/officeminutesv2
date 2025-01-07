@@ -1,13 +1,13 @@
 import { CustomButton } from "@components/buttons/CustomButton";
 import Spinner from "@components/Spinner";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
-import { Avatar, Box, Button, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
 import {
   formatTimeDifference,
   getUserSessionOrRedirect,
   hasPassed,
-  trimName,
+  trimUserName,
 } from "@utils/index";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -51,7 +51,7 @@ const Question = (props: QuestionProps) => {
         alignItems="center"
       >
         <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-          {trimName(users[0].name[0]) ?? ""}
+          {trimUserName(users[0])[0]}
         </Avatar>
         <Box>
           <Typography
@@ -63,7 +63,7 @@ const Question = (props: QuestionProps) => {
               overflow: "hidden",
             }}
           >
-            {trimName(users[0].name) ?? ""}
+            {trimUserName(users[0])}
           </Typography>
           <Typography
             style={{
@@ -106,7 +106,7 @@ const Question = (props: QuestionProps) => {
         <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
           {question.tags.map((tag) => (
             <Box
-              key={tag}
+              key={tag.choice}
               border={1}
               borderColor="#73777F"
               borderRadius="10px"
@@ -115,7 +115,7 @@ const Question = (props: QuestionProps) => {
               color="#43474E"
             >
               <Typography sx={{ fontWeight: 500, fontSize: 14 }}>
-                {tag}
+                {tag.choice}
               </Typography>
             </Box>
           ))}

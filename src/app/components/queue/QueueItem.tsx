@@ -1,7 +1,9 @@
-import { IdentifiableQuestion } from "@interfaces/type";
-import { Grid, Stack, Typography } from "@mui/material";
+import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
+import { Grid, Typography } from "@mui/material";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
-import { trimName } from "@utils/index";
+import { trimUserName } from "@utils/index";
+import React from "react";
+import { getUsers } from "@services/client/user";
 
 interface QueueItemProps {
   order: number;
@@ -10,6 +12,14 @@ interface QueueItemProps {
 
 const QueueItem = (props: QueueItemProps) => {
   const { order, question } = props;
+  const [users, setUsers] = React.useState<IdentifiableUsers>([]);
+  React.useEffect(() => {
+    const fetchUsers = async () => {
+      const fetchedUsers = await getUsers(question.group);
+      setUsers(fetchedUsers);
+    };
+    fetchUsers();
+  }, [question]);
   return (
     <Grid container columnSpacing="2px" alignItems="center">
       <Grid item xs={1}>
@@ -34,7 +44,7 @@ const QueueItem = (props: QueueItemProps) => {
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          {question.group.map(trimName).join(", ")}
+          {users.map(trimUserName).join(", ")}
         </Typography>
       </Grid>
       <Grid item xs={1}>

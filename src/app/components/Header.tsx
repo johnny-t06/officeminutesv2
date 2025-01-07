@@ -12,12 +12,13 @@ const Header = (props: IHeader) => {
   const { title, leftIcon, rightIcon, alignCenter } = props;
   return (
     <AppBar position="static" elevation={0} color="inherit">
-      <Toolbar disableGutters>
+      <Toolbar disableGutters sx={{ marginLeft: "1%" }}>
         {leftIcon}
         <Typography
           variant="h6"
           component="div"
           className={`flex-grow ${alignCenter ? "text-center" : "text-start"}`}
+          sx={{ fontWeight: 400, marginLeft: alignCenter ? "0" : "5%" }}
         >
           {title}
         </Typography>

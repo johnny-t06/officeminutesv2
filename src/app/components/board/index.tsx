@@ -4,7 +4,7 @@ import Question from "./Question";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
-import { compareQuestions } from "@utils/index";
+import { sortQuestionsChronologically } from "@utils/index";
 
 interface BoardProps {
   questions: IdentifiableQuestions;
@@ -14,7 +14,8 @@ interface BoardProps {
 const SELECT_ALL = "All";
 
 const _Board = (props: BoardProps) => {
-  const questions = props.questions.sort(compareQuestions).reverse();
+  const { questions } = props;
+  const sortedQuestions = sortQuestionsChronologically(questions);
 
   if (questions.length === 0) {
     return (
@@ -37,7 +38,7 @@ const _Board = (props: BoardProps) => {
         rowGap="16px"
         paddingBottom="128px"
       >
-        {questions.map((question) => (
+        {sortedQuestions.map((question) => (
           <Question
             key={question.id}
             question={question}
@@ -63,7 +64,7 @@ const Board = (props: BoardProps) => {
       return questions;
     } else {
       return questions.filter((question) =>
-        question.tags.find((tag) => topics.includes(tag))
+        question.tags.find((tag) => topics.includes(tag.choice))
       );
     }
   };
