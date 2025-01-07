@@ -4,6 +4,7 @@ import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import { trimUserName } from "@utils/index";
 import React from "react";
 import { getUsers } from "@services/client/user";
+import { useRouter } from "next/navigation";
 
 interface QueueItemProps {
   order: number;
@@ -13,15 +14,25 @@ interface QueueItemProps {
 const QueueItem = (props: QueueItemProps) => {
   const { order, question } = props;
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
+  const [loading, setLoading] = React.useState(true);
+  const router = useRouter();
+
   React.useEffect(() => {
     const fetchUsers = async () => {
       const fetchedUsers = await getUsers(question.group);
       setUsers(fetchedUsers);
+      setLoading(false);
     };
     fetchUsers();
   }, [question]);
+
   return (
-    <Grid container columnSpacing="2px" alignItems="center">
+    <Grid
+      container
+      columnSpacing="2px"
+      alignItems="center"
+      onClick={() => router.push(`queue/${question.id}`)}
+    >
       <Grid item xs={1}>
         <Typography color="#545F70" fontWeight={700} fontSize="16px">
           {order}
@@ -44,7 +55,7 @@ const QueueItem = (props: QueueItemProps) => {
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          {users.map(trimUserName).join(", ")}
+          {loading ? "Loading..." : users.map(trimUserName).join(", ")}
         </Typography>
       </Grid>
       <Grid item xs={1}>

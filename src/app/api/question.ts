@@ -13,6 +13,8 @@ export const defaultQuestion = () => {
     timestamp: Timestamp.now(),
     group: [],
     tags: [],
+    helpedBy: "",
+    helpedAt: Timestamp.now(),
   } as IdentifiableQuestion;
 };
 
@@ -43,6 +45,8 @@ export const createQuestion = async (props: CreateQuestionProps) => {
     timestamp: timestamp,
     group: group,
     tags: tags,
+    helpedBy: "",
+    helpedAt: timestamp,
   };
 
   await addQuestion(question, courseId);

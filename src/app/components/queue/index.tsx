@@ -16,7 +16,7 @@ const Queue = () => {
   } = getActiveQuestionsByState(questions);
 
   const studentsEnqueued = pendingQuestions.length + inProgressQuestions.length;
-  const queueClosed = course.onDuty.length === 0;
+  const queueClosed = course.onDuty.length === 0 || !course.isOpen;
 
   const { isUserTA } = useCourseData({ fetchUsers: false });
 
@@ -25,12 +25,12 @@ const Queue = () => {
       <Box>
         <Stack spacing="36px" display={queueClosed ? "none" : "block"}>
           <QueueList
-            header="Currently Helping"
+            header={isUserTA ? "Other TAs are helping" : "Currently Helping"}
             displayEnqueued={false}
             questions={sortQuestionsChronologically(inProgressQuestions)}
           />
           <QueueList
-            header="Queue"
+            header={isUserTA ? "Start helping" : "Queue"}
             displayEnqueued
             questions={sortQuestionsChronologically(pendingQuestions)}
           />
