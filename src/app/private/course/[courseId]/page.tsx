@@ -10,6 +10,7 @@ import { getUserSessionOrRedirect } from "@utils/index";
 import React from "react";
 import { IdentifiableUsers } from "@interfaces/type";
 import Spinner from "@components/Spinner";
+import { useCourseData } from "@hooks/useCourseData";
 
 interface PageProps {
   params: {
@@ -22,32 +23,9 @@ const Page = (props: PageProps) => {
     params: { courseId },
   } = props;
 
-  const user = getUserSessionOrRedirect();
-
-  const [tas, setTAs] = React.useState<IdentifiableUsers>([]);
-  const [students, setStudents] = React.useState<IdentifiableUsers>([]);
-  const [loading, setLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const courseData = await getCourse(courseId);
-        const tasData = await getUsers(courseData.tas);
-        const studentData = await getUsers(courseData.students);
-        setTAs(tasData);
-        setStudents(studentData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [courseId]);
-
-  const isUserTA = tas.some((ta) => ta.id === user.id);
-
+  const { tas, students, loading, isUserTA } = useCourseData({
+    fetchUsers: true,
+  });
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen ">
