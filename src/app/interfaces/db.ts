@@ -35,6 +35,7 @@ export interface Course {
   onDuty: string[];
   tags: Tags;
   announcement: string;
+  isOpen: boolean;
 }
 
 export enum QuestionState {
@@ -51,6 +52,8 @@ export interface Question {
   timestamp: Timestamp;
   group: string[];
   tags: TagOption[];
+  helpedBy: string;
+  helpedAt: Timestamp;
 }
 
 export type Questions = Question[];

@@ -14,9 +14,8 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { getCourses, updateCourse } from "services/client/course";
+import { getCourses, joinCourse } from "services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
-import { updateUser } from "@services/client/user";
 import { getUserSessionOrRedirect } from "@utils/index";
 
 const Page = () => {
@@ -46,17 +45,9 @@ const Page = () => {
             return;
           }
 
-          const newCourse = {
-            ...course,
-            students: [...course.students, user.id],
-          };
-          await updateCourse(newCourse);
-
-          const newUser = { ...user, courses: [...user.courses, course.id] };
-          await updateUser(newUser);
-
+          await joinCourse(course.id, user.id);
           router.push(`/private/course/${course.id}`);
-          setUser(newUser);
+          setUser({ ...user, courses: [...user.courses, course.id] });
         } else {
           setNotFoundError(true);
         }

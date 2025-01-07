@@ -15,7 +15,7 @@ const SELECT_ALL = "All";
 
 const _Board = (props: BoardProps) => {
   const { questions } = props;
-  const sortedQuestions = sortQuestionsChronologically(questions);
+  const sortedQuestions = sortQuestionsChronologically(questions).reverse();
 
   if (questions.length === 0) {
     return (
