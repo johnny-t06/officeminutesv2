@@ -6,6 +6,7 @@ import CreateQuestion from "@components/queue/CreateQuestion";
 import Queue from "@components/queue";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box } from "@mui/material";
+import { EditQuestion } from "@components/queue/EditQuestion";
 
 const Page = () => {
   const { course } = useOfficeHour();
@@ -22,6 +23,7 @@ const Page = () => {
         title={course.name}
         alignCenter
       />
+      <EditQuestion />
       <CreateQuestion/>
       <Queue />
     </Box>
