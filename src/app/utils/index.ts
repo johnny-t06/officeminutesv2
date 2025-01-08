@@ -89,6 +89,13 @@ export const hasPassed = (question: IdentifiableQuestion) => {
 };
 
 export const getActiveQuestions = (
+  questions: IdentifiableQuestions
+) =>
+  questions.filter(
+    (question) => !hasPassed(question)
+  );
+
+export const getActivePublicQuestion = (
   questions: IdentifiableQuestions,
   isPublic: boolean = true
 ) =>
@@ -101,7 +108,7 @@ export const getActiveQuestionsByState = (
   isPublic: boolean = true
 ) => {
   const activeQuestions = Object.groupBy(
-    getActiveQuestions(questions, isPublic),
+    getActiveQuestions(questions),
     ({ state }) => state
   );
   return {
