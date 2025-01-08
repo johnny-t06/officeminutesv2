@@ -86,7 +86,8 @@ const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
         <Box sx={{ padding: "16px, 16px", height: "48%", overflow: "auto" }}>
           <DisplayTas tas={tas} />
         </Box>
-        <CustomButton
+        {/* ToDO (johnnyt-06) Implement TA support wall*/}
+        {/* <CustomButton
           variant="contained"
           sx={{
             marginTop: "16px",
@@ -104,7 +105,7 @@ const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
           >
             Show Support to TAs
           </Typography>
-        </CustomButton>
+        </CustomButton> */}
       </Box>
     </Box>
   );

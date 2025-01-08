@@ -46,6 +46,7 @@ export enum QuestionState {
   PENDING = 1,
   IN_PROGRESS,
   RESOLVED,
+  MISSING,
 }
 
 export interface Question {

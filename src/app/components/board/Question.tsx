@@ -1,5 +1,6 @@
 import { CustomButton } from "@components/buttons/CustomButton";
 import Spinner from "@components/Spinner";
+import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
@@ -37,12 +38,22 @@ const Question = (props: QuestionProps) => {
     fetchUsers();
   }, []);
 
+  const beingHelped = question.state === QuestionState.IN_PROGRESS;
   return loading ? (
     <div className="h-screen absolute top-[50vh] left-[calc(50vw-24px)]">
       <Spinner />
     </div>
   ) : (
-    <Box sx={{ backgroundColor: "#F2F3FA" }} padding="16px" borderRadius="8px">
+    <Box
+      sx={{
+        backgroundColor: "#F2F3FA",
+        outlineColor: beingHelped ? theme.palette.primary.main : null,
+        outlineStyle: beingHelped ? "solid" : null,
+        outlineWidth: "2px",
+      }}
+      padding="16px"
+      borderRadius="8px"
+    >
       <Box
         height="48px"
         display="flex"

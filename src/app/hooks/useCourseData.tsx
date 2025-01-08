@@ -12,7 +12,14 @@ export const useCourseData = (props: CourseDataProps) => {
   const { fetchUsers } = props;
   const user = getUserSessionOrRedirect();
   const { course } = useOfficeHour();
-
+  if (!fetchUsers) {
+    return {
+      loading: false,
+      isUserTA: course.tas.includes(user.id),
+      tas: [],
+      students: [],
+    };
+  }
   const [tas, setTAs] = React.useState<IdentifiableUsers>([]);
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState(true);

@@ -5,6 +5,7 @@ import { trimUserName } from "@utils/index";
 import React from "react";
 import { getUsers } from "@services/client/user";
 import { useRouter } from "next/navigation";
+import { useCourseData } from "@hooks/useCourseData";
 
 interface QueueItemProps {
   order: number;
@@ -16,7 +17,7 @@ const QueueItem = (props: QueueItemProps) => {
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState(true);
   const router = useRouter();
-
+  const { isUserTA } = useCourseData({ fetchUsers: false });
   React.useEffect(() => {
     const fetchUsers = async () => {
       const fetchedUsers = await getUsers(question.group);
@@ -31,7 +32,11 @@ const QueueItem = (props: QueueItemProps) => {
       container
       columnSpacing="2px"
       alignItems="center"
-      onClick={() => router.push(`queue/${question.id}`)}
+      onClick={() => {
+        if (isUserTA) {
+          router.push(`queue/${question.id}`);
+        }
+      }}
     >
       <Grid item xs={1}>
         <Typography color="#545F70" fontWeight={700} fontSize="16px">

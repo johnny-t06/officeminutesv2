@@ -85,24 +85,23 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
 
       {editable && (
         <Box position="fixed" bottom={80} right={10} zIndex={100}>
-          <Button onClick={onCreate}>
-            <Fab
-              aria-label="Create Announcement"
-              variant="extended"
-              color="primary"
-              sx={{
-                color: "#FFF",
-                textTransform: "none",
-                paddingY: "18px",
-                paddingX: "16px",
-                borderRadius: "16px",
-                minHeight: "56px",
-              }}
-            >
-              <AddIcon sx={{ marginRight: "12px" }} />
-              <Typography fontWeight={500}>Create Announcement</Typography>
-            </Fab>
-          </Button>
+          <Fab
+            aria-label="Create Announcement"
+            variant="extended"
+            color="primary"
+            sx={{
+              color: "#FFF",
+              textTransform: "none",
+              paddingY: "18px",
+              paddingX: "16px",
+              borderRadius: "16px",
+              minHeight: "56px",
+            }}
+            onClick={onCreate}
+          >
+            <AddIcon sx={{ marginRight: "12px" }} />
+            <Typography fontWeight={500}>Create Announcement</Typography>
+          </Fab>
         </Box>
       )}
     </Box>

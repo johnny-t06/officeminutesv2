@@ -107,12 +107,8 @@ export const hasPassed = (question: IdentifiableQuestion) => {
   return now > postedAt || question.state === QuestionState.RESOLVED;
 };
 
-export const getActiveQuestions = (
-  questions: IdentifiableQuestions
-) =>
-  questions.filter(
-    (question) => !hasPassed(question)
-  );
+export const getActiveQuestions = (questions: IdentifiableQuestions) =>
+  questions.filter((question) => !hasPassed(question));
 
 export const getActivePublicQuestion = (
   questions: IdentifiableQuestions,
@@ -122,10 +118,7 @@ export const getActivePublicQuestion = (
     (question) => !hasPassed(question) && question.questionPublic === isPublic
   );
 
-export const getActiveQuestionsByState = (
-  questions: IdentifiableQuestions,
-  isPublic: boolean = true
-) => {
+export const getActiveQuestionsByState = (questions: IdentifiableQuestions) => {
   const activeQuestions = Object.groupBy(
     getActiveQuestions(questions),
     ({ state }) => state
@@ -134,6 +127,7 @@ export const getActiveQuestionsByState = (
     [QuestionState.PENDING]: activeQuestions[QuestionState.PENDING] ?? [],
     [QuestionState.IN_PROGRESS]:
       activeQuestions[QuestionState.IN_PROGRESS] ?? [],
+    [QuestionState.MISSING]: activeQuestions[QuestionState.MISSING] ?? [],
   };
 };
 
@@ -153,7 +147,11 @@ export const getUserSessionOrRedirect = () => {
   return user;
 };
 
-export const timeSince = (date: Date) => {
+export const timeSince = (timestamp: Timestamp | undefined) => {
+  if (timestamp === undefined || timestamp === null) {
+    return "00:00";
+  }
+  const date = timestamp.toDate();
   const now = new Date();
   const diffInMs = now.getTime() - date.getTime();
   const totalSeconds = Math.floor(diffInMs / 1000);

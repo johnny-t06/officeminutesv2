@@ -13,6 +13,7 @@ const Queue = () => {
   const {
     [QuestionState.PENDING]: pendingQuestions,
     [QuestionState.IN_PROGRESS]: inProgressQuestions,
+    [QuestionState.MISSING]: missingQuestions,
   } = getActiveQuestionsByState(questions);
 
   const studentsEnqueued = pendingQuestions.length + inProgressQuestions.length;
@@ -28,6 +29,11 @@ const Queue = () => {
             header={isUserTA ? "Other TAs are helping" : "Currently Helping"}
             displayEnqueued={false}
             questions={sortQuestionsChronologically(inProgressQuestions)}
+          />
+          <QueueList
+            header="Missing"
+            displayEnqueued={false}
+            questions={sortQuestionsChronologically(missingQuestions)}
           />
           <QueueList
             header={isUserTA ? "Start helping" : "Queue"}

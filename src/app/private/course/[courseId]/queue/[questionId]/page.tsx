@@ -2,6 +2,7 @@
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { useCourseData } from "@hooks/useCourseData";
 import { ArrowBack } from "@mui/icons-material";
 import Link from "next/link";
 
@@ -18,7 +19,7 @@ const Page = (props: PageProps) => {
   } = props;
   const { questions } = useOfficeHour();
   const question = questions.find((q) => q.id === questionId);
-
+  const { isUserTA } = useCourseData({ fetchUsers: false });
   if (!question) {
     throw new Error();
   }
@@ -32,7 +33,11 @@ const Page = (props: PageProps) => {
           </Link>
         }
       />
-      <QuestionDetails courseId={courseId} question={question} fromTAQueue />
+      <QuestionDetails
+        courseId={courseId}
+        question={question}
+        fromTAQueue={isUserTA}
+      />
     </div>
   );
 };

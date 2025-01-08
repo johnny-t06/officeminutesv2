@@ -29,9 +29,7 @@ const Page = () => {
   >(undefined);
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState(true);
-  const [time, setTime] = React.useState(
-    timeSince(helpingQuestion?.helpedAt.toDate() ?? new Date())
-  );
+  const [time, setTime] = React.useState(timeSince(helpingQuestion?.helpedAt));
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +41,7 @@ const Page = () => {
         );
         setHelpingQuestion(helpingQuestion);
         if (helpingQuestion) {
-          setTime(timeSince(helpingQuestion.helpedAt.toDate()));
+          setTime(timeSince(helpingQuestion.helpedAt));
           const studentData = await getUsers(helpingQuestion.group);
           setStudents(studentData);
         } else {
@@ -61,7 +59,7 @@ const Page = () => {
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setTime(timeSince(helpingQuestion?.helpedAt.toDate() ?? new Date()));
+      setTime(timeSince(helpingQuestion?.helpedAt));
     }, 1000);
 
     return () => clearInterval(interval);

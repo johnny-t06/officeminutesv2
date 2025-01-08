@@ -21,7 +21,7 @@ import Spinner from "@components/Spinner";
 import { CustomButton } from "@components/buttons/CustomButton";
 import { QuestionState } from "@interfaces/db";
 import { useRouter } from "next/navigation";
-import { serverTimestamp, Timestamp } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
@@ -31,7 +31,12 @@ interface QuestionDetailsProps {
 }
 
 export const QuestionDetails = (props: QuestionDetailsProps) => {
-  const { question, courseId, fromTAQueue, fromCurrentlyHelping } = props;
+  const {
+    question,
+    courseId,
+    fromTAQueue = false,
+    fromCurrentlyHelping = false,
+  } = props;
   const user = getUserSessionOrRedirect();
   const router = useRouter();
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
@@ -58,8 +63,20 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     }
     setJoinGroup(!joinGroup);
   };
-
+  const onMissingRemove = async () => {
+    if (question.state === QuestionState.PENDING) {
+      await partialUpdateQuestion(question.id, courseId, {
+        state: QuestionState.MISSING,
+      });
+    } else if (question.state === QuestionState.MISSING) {
+      await partialUpdateQuestion(question.id, courseId, {
+        state: QuestionState.RESOLVED,
+      });
+      router.push(`/private/course/${courseId}/queue`);
+    }
+  };
   const questionInProgess = question.state === QuestionState.IN_PROGRESS;
+  const questionMissing = question.state === QuestionState.MISSING;
   return (
     <Box>
       {loading ? (
@@ -214,7 +231,6 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                 }}
                 onClick={async () => {
                   await partialUpdateQuestion(question.id, courseId, {
-                    title: "In progress",
                     state: QuestionState.IN_PROGRESS,
                     helpedBy: user.id,
                     helpedAt: serverTimestamp(),
@@ -236,8 +252,9 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                     width: "100%",
                     color: "#000",
                   }}
+                  onClick={onMissingRemove}
                 >
-                  Mark as missing
+                  {questionMissing ? "Resolve or remove" : "Mark as missing"}
                 </CustomButton>
               )}
             </Box>
