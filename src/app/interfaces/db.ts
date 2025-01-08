@@ -25,6 +25,10 @@ export interface TagOption {
   colorFill: boolean;
 }
 
+export interface Announcement {
+  message: string;
+  createdAt: Timestamp;
+}
 export interface Course {
   name: string;
   code: string;
@@ -34,7 +38,7 @@ export interface Course {
   tas: string[];
   onDuty: string[];
   tags: Tags;
-  announcement: string;
+  announcements: Announcement[];
   isOpen: boolean;
 }
 

@@ -1,22 +1,14 @@
 "use client";
 
 import Header from "@components/Header";
-import {
-  Backdrop,
-  Box,
-  Button,
-  Fade,
-  IconButton,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, IconButton, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { getCourses, joinCourse } from "services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
 import { getUserSessionOrRedirect } from "@utils/index";
+import { CustomModal } from "@components/CustomModal";
 
 const Page = () => {
   const router = useRouter();
@@ -27,6 +19,29 @@ const Page = () => {
   const [enrolledError, setEnrolledError] = React.useState(false);
   const [notFoundError, setNotFoundError] = React.useState(false);
 
+  const EnrolledButtons = [
+    {
+      text: "Ok",
+      onClick: () => {
+        setEnrolledError(false);
+      },
+    },
+  ];
+
+  const NotFoundButtons = [
+    {
+      text: "Visit Piazza",
+      onClick: () => {
+        router.push("https://piazza.com");
+      },
+    },
+    {
+      text: "Ok",
+      onClick: () => {
+        setNotFoundError(false);
+      },
+    },
+  ];
   const joinClicked = () => {
     try {
       if (code.length < 6 || code.length > 8) {
@@ -56,73 +71,6 @@ const Page = () => {
       console.error("Error:", error);
     }
   };
-
-  const errorModal = (
-    title: string,
-    subtitle: string,
-    open: boolean,
-    setOpen: (open: boolean) => void
-  ) => (
-    <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
-      open={open}
-      onClose={() => setOpen(false)}
-      closeAfterTransition
-      slots={{ backdrop: Backdrop }}
-      slotProps={{
-        backdrop: {
-          timeout: 500,
-        },
-      }}
-    >
-      <Fade in={open}>
-        <Box
-          sx={{
-            position: "absolute" as "absolute",
-            top: "50%",
-            left: "50%",
-            width: "75%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "#ECEDF4",
-            boxShadow: 24,
-            px: 3,
-            py: 4,
-            borderRadius: "28px",
-          }}
-        >
-          <Typography id="transition-modal-title" variant="h5" component="h2">
-            {title}
-          </Typography>
-          <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-            {subtitle}
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginTop: "36px",
-              gap: "24px",
-            }}
-          >
-            <Button style={{ textTransform: "none", padding: 0, minWidth: 0 }}>
-              <Typography color="#38608F" fontWeight={500}>
-                Visit Piazza
-              </Typography>
-            </Button>
-            <Button
-              style={{ textTransform: "none", padding: 0, minWidth: 0 }}
-              onClick={() => setOpen(false)}
-            >
-              <Typography color="#38608F" fontWeight={500}>
-                OK
-              </Typography>
-            </Button>
-          </Box>
-        </Box>
-      </Fade>
-    </Modal>
-  );
 
   return (
     <div>
@@ -172,18 +120,20 @@ const Page = () => {
           </li>
         </ul>
       </div>
-      {errorModal(
-        "Already enrolled",
-        "You are already enrolled in this course!",
-        enrolledError,
-        setEnrolledError
-      )}
-      {errorModal(
-        "Class not found",
-        "No class with that class code",
-        notFoundError,
-        setNotFoundError
-      )}
+      <CustomModal
+        title="Already enrolled"
+        subtitle="You are already enrolled in this course!"
+        buttons={EnrolledButtons}
+        open={enrolledError}
+        setOpen={setEnrolledError}
+      />
+      <CustomModal
+        title="Class not found"
+        subtitle="No class with that class code"
+        buttons={NotFoundButtons}
+        open={notFoundError}
+        setOpen={setNotFoundError}
+      />
     </div>
   );
 };

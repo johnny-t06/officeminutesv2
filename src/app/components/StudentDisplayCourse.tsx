@@ -5,6 +5,8 @@ import DisplayTas from "./tas";
 import { IdentifiableUsers } from "@interfaces/type";
 import { usePathname, useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { DisplayAnnouncements } from "./DisplayAnnouncements";
+import { CustomButton } from "./buttons/CustomButton";
 
 interface StudentDisplayCourseProps {
   tas: IdentifiableUsers;
@@ -25,27 +27,10 @@ const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
         height: "100vh",
       }}
     >
-      <Box>
-        <Typography
-          variant="h6"
-          color={theme.palette.text.primary}
-          sx={{ fontWeight: "bold" }}
-        >
-          Announcement
-        </Typography>
-        <Box
-          sx={{
-            padding: "16px 16px",
-            bgcolor: "#F8F9FF",
-            borderRadius: "16px",
-            marginY: "16px",
-          }}
-        >
-          <Typography variant="body2" color={theme.palette.text.secondary}>
-            {course.announcement}
-          </Typography>
-        </Box>
-      </Box>
+      <DisplayAnnouncements
+        announcements={course.announcements}
+        editable={false}
+      />
       <Box>
         <Typography
           variant="h6"
@@ -101,22 +86,13 @@ const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
         <Box sx={{ padding: "16px, 16px", height: "48%", overflow: "auto" }}>
           <DisplayTas tas={tas} />
         </Box>
-        <Button
+        <CustomButton
           variant="contained"
           sx={{
             marginTop: "16px",
             borderRadius: "16px",
-            bgcolor: theme.palette.primary.light,
-            "&:hover": {
-              bgcolor: theme.palette.primary.light, // Prevent hover color from changing
-            },
-            "&:active": {
-              bgcolor: theme.palette.primary.light, // Prevent active color from changing
-            },
-            "&:focus-visible": {
-              bgcolor: theme.palette.primary.light, // Prevent focus-visible color from changing
-            },
           }}
+          customColor={theme.palette.primary.light}
         >
           <Typography
             variant="subtitle2"
@@ -128,7 +104,7 @@ const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
           >
             Show Support to TAs
           </Typography>
-        </Button>
+        </CustomButton>
       </Box>
     </Box>
   );

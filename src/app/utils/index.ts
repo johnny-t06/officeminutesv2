@@ -1,5 +1,5 @@
 import { useUserSession } from "@context/UserSessionContext";
-import { QuestionState } from "@interfaces/db";
+import { Announcement, QuestionState } from "@interfaces/db";
 import {
   IdentifiableQuestion,
   IdentifiableQuestions,
@@ -44,6 +44,25 @@ export const sortQuestionsChronologically = (
   questions: IdentifiableQuestions
 ) => {
   return questions.toSorted(compareQuestions);
+};
+
+export const compareAnnouncements = (
+  announcement1: Announcement,
+  announcement2: Announcement
+) => {
+  const date1 =
+    announcement1.createdAt instanceof Timestamp
+      ? announcement1.createdAt.toDate()
+      : new Date();
+  const date2 =
+    announcement2.createdAt instanceof Timestamp
+      ? announcement2.createdAt.toDate()
+      : new Date();
+  return compareDate(date1, date2);
+};
+
+export const sortAnnouncements = (announcements: Announcement[]) => {
+  return announcements.toSorted(compareAnnouncements);
 };
 
 export const formatTimeDifference = (

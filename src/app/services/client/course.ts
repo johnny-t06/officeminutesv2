@@ -16,7 +16,9 @@ import {
   PartialWithFieldValue,
   writeBatch,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
+import { Announcement } from "@interfaces/db";
 
 export const addCourse = async (course: IdentifiableCourse) => {
   const courseDoc: DocumentReference = doc(
@@ -70,6 +72,62 @@ export const partialUpdateCourse = async (
   await updateDoc(courseDoc, data);
 
   return courseId;
+};
+
+/* 
+Can't populate createdAt field with serverTimestamp because announcments
+is a list. Optimistically rely on client (tas) time for now.
+*/
+export const addCourseAnnouncement = async (
+  courseId: string,
+  announcement: Announcement
+) => {
+  const courseDoc = doc(db, `courses/${courseId}`).withConverter(
+    courseConverter
+  );
+
+  await updateDoc(courseDoc, {
+    announcements: arrayUnion(announcement),
+  });
+  return;
+};
+/* Remove and re-add announcement to list for race safety */
+export const editCourseAnnouncement = async (
+  courseId: string,
+  oldAnnouncement: Announcement,
+  newAnnouncement: Announcement
+) => {
+  if (oldAnnouncement.message === newAnnouncement.message) {
+    return;
+  }
+  const courseDoc = doc(db, `courses/${courseId}`).withConverter(
+    courseConverter
+  );
+  const batch = writeBatch(db);
+  batch.update(courseDoc, {
+    announcements: arrayRemove(oldAnnouncement),
+  });
+  batch.update(courseDoc, {
+    announcements: arrayUnion(newAnnouncement),
+  });
+  await batch.commit();
+
+  return;
+};
+
+export const deleteCourseAnnouncement = async (
+  courseId: string,
+  announcement: Announcement
+) => {
+  const courseDoc = doc(db, `courses/${courseId}`).withConverter(
+    courseConverter
+  );
+
+  await updateDoc(courseDoc, {
+    announcements: arrayRemove(announcement),
+  });
+
+  return;
 };
 export const getCourse = async (courseID: String) => {
   const courseDoc = await getDoc(

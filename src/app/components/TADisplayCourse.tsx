@@ -1,11 +1,12 @@
 "use client";
-import { Box, Button, Fab, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import theme from "theme";
 import DisplayTas from "./tas";
 import { IdentifiableUsers } from "@interfaces/type";
 import { usePathname, useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import AddIcon from "@mui/icons-material/Add";
+import { DisplayAnnouncements } from "./DisplayAnnouncements";
+import React from "react";
 
 interface TADisplayCourseProps {
   tas: IdentifiableUsers;
@@ -16,7 +17,6 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { course } = useOfficeHour();
-
   return (
     <Box
       sx={{
@@ -28,38 +28,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
         paddingBottom: "1130px",
       }}
     >
-      <Box>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography
-            variant="h6"
-            color={theme.palette.text.primary}
-            sx={{ fontWeight: "bold" }}
-          >
-            Announcement
-          </Typography>
-          <Typography color={"#38608F"} variant="subtitle2">
-            Edit
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            padding: "16px 16px",
-            bgcolor: "#F8F9FF",
-            borderRadius: "16px",
-            marginY: "16px",
-          }}
-        >
-          <Typography variant="body2" color={theme.palette.text.secondary}>
-            {course.announcement}
-          </Typography>
-        </Box>
-      </Box>
+      <DisplayAnnouncements announcements={course.announcements} editable />
       <Box>
         <Typography
           variant="h6"
@@ -184,53 +153,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
           >
             <DisplayTas tas={tas} />
           </Box>
-          <Button
-            variant="contained"
-            sx={{
-              marginTop: "16px",
-              borderRadius: "16px",
-              bgcolor: theme.palette.primary.light,
-              "&:hover": {
-                bgcolor: theme.palette.primary.light, // Prevent hover color from changing
-              },
-              "&:active": {
-                bgcolor: theme.palette.primary.light, // Prevent active color from changing
-              },
-              "&:focus-visible": {
-                bgcolor: theme.palette.primary.light, // Prevent focus-visible color from changing
-              },
-            }}
-          >
-            <Typography
-              variant="subtitle2"
-              color={theme.palette.text.primary}
-              sx={{
-                fontWeight: "bold",
-                textTransform: "none",
-              }}
-            >
-              Show Support to TAs
-            </Typography>
-          </Button>
         </Box>
-      </Box>
-      <Box position="fixed" bottom={80} right={10}>
-        <Fab
-          aria-label="Create Announcement"
-          variant="extended"
-          color="primary"
-          sx={{
-            color: "#FFF",
-            textTransform: "none",
-            paddingY: "18px",
-            paddingX: "16px",
-            borderRadius: "16px",
-            minHeight: "56px",
-          }}
-        >
-          <AddIcon sx={{ marginRight: "12px" }} />
-          <Typography fontWeight={500}>Create Announcement</Typography>
-        </Fab>
       </Box>
     </Box>
   );
