@@ -1,14 +1,10 @@
 "use client";
 
 import Header from "@components/Header";
-import { getCourse } from "@services/client/course";
-import { getUsers } from "@services/client/user";
 import StudentDisplayCourse from "@components/StudentDisplayCourse";
 import TADisplayCourse from "@components/TADisplayCourse";
 import MenuButton from "@components/buttons/MenuButton";
-import { getUserSessionOrRedirect } from "@utils/index";
 import React from "react";
-import { IdentifiableUsers } from "@interfaces/type";
 import Spinner from "@components/Spinner";
 import { useCourseData } from "@hooks/useCourseData";
 

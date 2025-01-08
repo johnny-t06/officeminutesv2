@@ -9,8 +9,6 @@ import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import { useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
-import { getCourse } from "@services/client/course";
-import { getUsers } from "@services/client/user";
 import Spinner from "@components/Spinner";
 import { useCourseData } from "@hooks/useCourseData";
 
