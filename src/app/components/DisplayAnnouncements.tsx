@@ -41,7 +41,10 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
     }
     setIsEdit(!isEdit);
   };
-
+  const onUndo = () => {
+    setCurrAnnouncements(announcements);
+    setIsEdit(false);
+  };
   return (
     <Box>
       <Box
@@ -83,6 +86,7 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
               announcement={announcement}
               isEdit={isEdit}
               startEdit={announcement.message === ""}
+              onCreateUndo={onUndo}
             />
           ))}
         </Box>

@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import theme from "theme";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -11,15 +11,16 @@ import {
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Announcement } from "@interfaces/db";
 import { CustomModal } from "./CustomModal";
-
+import UndoIcon from "@mui/icons-material/Undo";
 interface AnnouncementTileProps {
   announcement: Announcement;
   isEdit: boolean;
   startEdit?: boolean;
+  onCreateUndo?: () => void;
 }
 
 export const AnnouncementTile = (props: AnnouncementTileProps) => {
-  const { announcement, isEdit, startEdit = false } = props;
+  const { announcement, isEdit, startEdit = false, onCreateUndo } = props;
   const { course } = useOfficeHour();
 
   const [editing, setEditing] = React.useState<boolean>(false);
@@ -62,6 +63,14 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
     setDeleteVisible(false);
   };
 
+  const onUndo = () => {
+    if (startEdit) {
+      onCreateUndo?.();
+    }
+    setNewMessage(announcement.message);
+    setEditing(false);
+    setError("");
+  };
   const DeleteButtons = [
     {
       text: "Yes",
@@ -84,17 +93,34 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
         gap: "16px",
       }}
     >
-      <TextField
-        multiline
-        fullWidth
-        label={"Announcement"}
-        focused
-        inputProps={{ style: { color: theme.palette.text.secondary } }}
-        defaultValue={announcement.message}
-        onChange={(e) => setNewMessage(e.target.value)}
-        error={error !== ""}
-        helperText={error}
-      />
+      <Box sx={{ position: "relative", width: "100%" }}>
+        <TextField
+          multiline
+          fullWidth
+          label={"Announcement"}
+          focused
+          inputProps={{ style: { color: theme.palette.text.secondary } }}
+          defaultValue={announcement.message}
+          onChange={(e) => setNewMessage(e.target.value)}
+          error={error !== ""}
+          helperText={error}
+        />
+        <IconButton
+          sx={{
+            position: "absolute",
+            bottom: error ? 30 : 10,
+            right: 10,
+            gap: "4px",
+          }}
+          onClick={onUndo}
+        >
+          <UndoIcon fontSize="small" />
+          <Typography variant="caption">
+            {startEdit ? "Cancel" : "Undo"}
+          </Typography>
+        </IconButton>
+      </Box>
+
       <Button
         fullWidth
         variant="contained"
