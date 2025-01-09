@@ -15,7 +15,6 @@ import DisplayTas from "@components/tas";
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import { getUsers } from "@services/client/user";
 import { QuestionState } from "@interfaces/db";
-import { useCourseData } from "@hooks/useCourseData";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import { partialUpdateCourse } from "@services/client/course";
@@ -23,8 +22,7 @@ import { partialUpdateCourse } from "@services/client/course";
 const Page = () => {
   const user = getUserSessionOrRedirect();
   const { course, questions } = useOfficeHour();
-  const { isUserTA } = useCourseData({ fetchUsers: false });
-
+  const isUserTA = course.tas.includes(user.id);
   const [helpingQuestion, setHelpingQuestion] = React.useState<
     IdentifiableQuestion | undefined
   >(undefined);

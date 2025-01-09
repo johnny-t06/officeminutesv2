@@ -1,4 +1,4 @@
-import { Box, Button, Fab, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import theme from "theme";
 import { AnnouncementTile } from "./AnnouncementTile";
 import React from "react";
@@ -6,6 +6,7 @@ import { Announcement } from "@interfaces/db";
 import { sortAnnouncements } from "@utils/index";
 import AddIcon from "@mui/icons-material/Add";
 import { Timestamp } from "firebase/firestore";
+import { CustomFloatingButton } from "./buttons/CustomFloatingButton";
 
 interface DisplayAnnouncementsProps {
   announcements: Announcement[];
@@ -88,30 +89,11 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
       )}
 
       {editable && (
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            textTransform: "initial",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 1.5,
-            paddingTop: 1.5,
-            paddingBottom: 1.5,
-            paddingRight: 2.5,
-            paddingLeft: 2.5,
-            borderRadius: 4,
-            position: "fixed",
-            bottom: 70,
-            right: 15,
-            zIndex: 99,
-          }}
+        <CustomFloatingButton
+          text="Create Announcement"
+          icon={<AddIcon />}
           onClick={onCreate}
-        >
-          <AddIcon />
-          <Typography fontWeight={500}>Create Announcement</Typography>
-        </Button>
+        />
       )}
     </Box>
   );
