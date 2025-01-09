@@ -12,6 +12,8 @@ import React from "react";
 import { auth } from "@project/firebase";
 import { addUser, getUser } from "@services/client/user";
 import { useRouter } from "next/navigation";
+import Spinner from "@components/Spinner";
+import { Box } from "@mui/material";
 
 interface Session {
   isAuthenticated: boolean;
@@ -110,7 +112,11 @@ export const UserSessionContextProvider = ({
       console.error(e);
     }
   };
-  return (
+  return session.isLoading ? (
+    <Box className="flex h-screen w-screen flex-col items-center justify-center">
+      <Spinner />
+    </Box>
+  ) : (
     <UserSessionContext.Provider
       value={{ user, session, onSignIn, onSignOut, setUser }}
     >

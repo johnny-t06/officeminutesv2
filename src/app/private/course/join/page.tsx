@@ -23,7 +23,7 @@ const Page = () => {
   const router = useRouter();
   const { setUser } = useUserSession();
   const user = getUserSessionOrRedirect();
-
+  if (!user) return null;
   const [code, setCode] = React.useState("");
   const [enrolledError, setEnrolledError] = React.useState(false);
   const [notFoundError, setNotFoundError] = React.useState(false);

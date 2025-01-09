@@ -6,7 +6,7 @@ import {
   IdentifiableUser,
 } from "@interfaces/type";
 import { Timestamp } from "firebase/firestore";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const trimUserName = (user: IdentifiableUser | undefined) => {
   if (user === undefined) {
@@ -88,12 +88,8 @@ export const hasPassed = (question: IdentifiableQuestion) => {
   return now > postedAt || question.state === QuestionState.RESOLVED;
 };
 
-export const getActiveQuestions = (
-  questions: IdentifiableQuestions
-) =>
-  questions.filter(
-    (question) => !hasPassed(question)
-  );
+export const getActiveQuestions = (questions: IdentifiableQuestions) =>
+  questions.filter((question) => !hasPassed(question));
 
 export const getActivePublicQuestion = (
   questions: IdentifiableQuestions,
@@ -128,8 +124,9 @@ export const getExpiredQuestions = (
 
 export const getUserSessionOrRedirect = () => {
   const { user } = useUserSession();
+  const router = useRouter();
   if (user === null) {
-    redirect("/");
+    router.push("/");
   }
   return user;
 };
