@@ -22,6 +22,7 @@ const Page = (props: PageProps) => {
   const { tas, students, loading, isUserTA } = useCourseData({
     fetchUsers: true,
   });
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen ">

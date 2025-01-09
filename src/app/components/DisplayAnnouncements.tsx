@@ -14,6 +14,7 @@ interface DisplayAnnouncementsProps {
 
 export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
   const { announcements, editable } = props;
+
   const [isEdit, setIsEdit] = React.useState<boolean>(false);
   const [currAnnouncements, setCurrAnnouncements] =
     React.useState<Announcement[]>(announcements);
@@ -21,6 +22,7 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
   React.useEffect(() => {
     setCurrAnnouncements(announcements);
   }, [announcements]);
+
   const onCreate = () => {
     setCurrAnnouncements([
       ...currAnnouncements,
@@ -31,12 +33,14 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
     ]);
     setIsEdit(true);
   };
+
   const onEditDone = () => {
     if (isEdit && currAnnouncements.length > announcements.length) {
       setCurrAnnouncements(announcements);
     }
     setIsEdit(!isEdit);
   };
+
   return (
     <Box>
       <Box
@@ -84,25 +88,30 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
       )}
 
       {editable && (
-        <Box position="fixed" bottom={80} right={10} zIndex={100}>
-          <Fab
-            aria-label="Create Announcement"
-            variant="extended"
-            color="primary"
-            sx={{
-              color: "#FFF",
-              textTransform: "none",
-              paddingY: "18px",
-              paddingX: "16px",
-              borderRadius: "16px",
-              minHeight: "56px",
-            }}
-            onClick={onCreate}
-          >
-            <AddIcon sx={{ marginRight: "12px" }} />
-            <Typography fontWeight={500}>Create Announcement</Typography>
-          </Fab>
-        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            textTransform: "initial",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 1.5,
+            paddingTop: 1.5,
+            paddingBottom: 1.5,
+            paddingRight: 2.5,
+            paddingLeft: 2.5,
+            borderRadius: 4,
+            position: "fixed",
+            bottom: 70,
+            right: 15,
+            zIndex: 99,
+          }}
+          onClick={onCreate}
+        >
+          <AddIcon />
+          <Typography fontWeight={500}>Create Announcement</Typography>
+        </Button>
       )}
     </Box>
   );

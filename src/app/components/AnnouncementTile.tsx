@@ -11,20 +11,24 @@ import {
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Announcement } from "@interfaces/db";
 import { CustomModal } from "./CustomModal";
+
 interface AnnouncementTileProps {
   announcement: Announcement;
   isEdit: boolean;
   startEdit?: boolean;
 }
+
 export const AnnouncementTile = (props: AnnouncementTileProps) => {
   const { announcement, isEdit, startEdit = false } = props;
+  const { course } = useOfficeHour();
+
   const [editing, setEditing] = React.useState<boolean>(false);
   const [newMessage, setNewMessage] = React.useState<string>(
     announcement.message
   );
   const [deleteVisible, setDeleteVisible] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
-  const { course } = useOfficeHour();
+
   React.useEffect(() => {
     if (!isEdit) {
       setNewMessage(announcement.message);

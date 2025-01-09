@@ -37,12 +37,13 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     fromTAQueue = false,
     fromCurrentlyHelping = false,
   } = props;
+
   const user = getUserSessionOrRedirect();
   const router = useRouter();
+
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
     question.group.includes(user.id)
   );
-
   const [loading, setLoading] = React.useState<boolean>(true);
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
 
@@ -63,6 +64,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     }
     setJoinGroup(!joinGroup);
   };
+
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
       await partialUpdateQuestion(question.id, courseId, {
@@ -75,8 +77,10 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
       router.push(`/private/course/${courseId}/queue`);
     }
   };
+
   const questionInProgess = question.state === QuestionState.IN_PROGRESS;
   const questionMissing = question.state === QuestionState.MISSING;
+
   return (
     <Box>
       {loading ? (

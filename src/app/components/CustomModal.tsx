@@ -5,6 +5,7 @@ export interface ModalButton {
   text: string;
   onClick: () => void;
 }
+
 interface CustomModalProps {
   title: string;
   subtitle: string;
@@ -12,6 +13,7 @@ interface CustomModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
+
 export const CustomModal = (props: CustomModalProps) => {
   const { title, subtitle, buttons, open, setOpen } = props;
 

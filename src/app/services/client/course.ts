@@ -42,6 +42,7 @@ export const updateCourse = async (course: IdentifiableCourse) => {
 
   return course;
 };
+
 export const joinCourse = async (courseId: string, userId: string) => {
   const batch = writeBatch(db);
 
@@ -61,6 +62,7 @@ export const joinCourse = async (courseId: string, userId: string) => {
 
   return;
 };
+
 export const partialUpdateCourse = async (
   courseId: string,
   data: PartialWithFieldValue<IdentifiableCourse>
@@ -91,6 +93,7 @@ export const addCourseAnnouncement = async (
   });
   return;
 };
+
 /* Remove and re-add announcement to list for race safety */
 export const editCourseAnnouncement = async (
   courseId: string,
@@ -129,6 +132,7 @@ export const deleteCourseAnnouncement = async (
 
   return;
 };
+
 export const getCourse = async (courseID: String) => {
   const courseDoc = await getDoc(
     doc(db, `courses/${courseID}`).withConverter(courseConverter)

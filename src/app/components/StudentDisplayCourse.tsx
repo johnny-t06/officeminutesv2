@@ -6,11 +6,11 @@ import { IdentifiableUsers } from "@interfaces/type";
 import { usePathname, useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { DisplayAnnouncements } from "./DisplayAnnouncements";
-import { CustomButton } from "./buttons/CustomButton";
 
 interface StudentDisplayCourseProps {
   tas: IdentifiableUsers;
 }
+
 const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
   const { tas } = props;
   const router = useRouter();

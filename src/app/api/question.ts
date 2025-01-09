@@ -27,6 +27,7 @@ interface CreateQuestionProps {
   tags: TagOption[];
   courseId: string;
 }
+
 export const createQuestion = async (props: CreateQuestionProps) => {
   const {
     title,

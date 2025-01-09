@@ -24,6 +24,7 @@ const Page = () => {
   const user = getUserSessionOrRedirect();
   const { course, questions } = useOfficeHour();
   const { isUserTA } = useCourseData({ fetchUsers: false });
+
   const [helpingQuestion, setHelpingQuestion] = React.useState<
     IdentifiableQuestion | undefined
   >(undefined);

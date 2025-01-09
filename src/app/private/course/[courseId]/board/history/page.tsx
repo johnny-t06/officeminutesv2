@@ -18,9 +18,9 @@ interface PageProps {
 
 const Page = (props: PageProps) => {
   const { courseId } = props.params;
+
   const { questions } = useOfficeHour();
   const expiredQuestions = getExpiredQuestions(questions);
-
   const { loading, isUserTA } = useCourseData({ fetchUsers: false });
 
   if (loading) {

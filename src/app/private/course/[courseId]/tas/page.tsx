@@ -12,6 +12,7 @@ const Page = async (props: PageProps) => {
   const {
     params: { courseId },
   } = props;
+
   const course = await getCourse(courseId);
   const tas = await getUsers(course.tas);
   const offDutyTas = tas.filter((ta) => !course.onDuty.includes(ta.id));

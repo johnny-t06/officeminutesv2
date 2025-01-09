@@ -27,8 +27,8 @@ const Page = (props: PageProps) => {
   const { course } = useOfficeHour();
   const { onSignOut } = useUserSession();
   const user = getUserSessionOrRedirect();
-
   const { loading, isUserTA } = useCourseData({ fetchUsers: false });
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen ">

@@ -14,10 +14,13 @@ interface QueueItemProps {
 
 const QueueItem = (props: QueueItemProps) => {
   const { order, question } = props;
-  const [users, setUsers] = React.useState<IdentifiableUsers>([]);
-  const [loading, setLoading] = React.useState(true);
+
   const router = useRouter();
   const { isUserTA } = useCourseData({ fetchUsers: false });
+
+  const [users, setUsers] = React.useState<IdentifiableUsers>([]);
+  const [loading, setLoading] = React.useState(true);
+
   React.useEffect(() => {
     const fetchUsers = async () => {
       const fetchedUsers = await getUsers(question.group);

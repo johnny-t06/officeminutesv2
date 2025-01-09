@@ -12,11 +12,13 @@ interface TADisplayCourseProps {
   tas: IdentifiableUsers;
   students: IdentifiableUsers;
 }
+
 const TADisplayCourse = (props: TADisplayCourseProps) => {
   const { tas, students } = props;
   const router = useRouter();
   const pathname = usePathname();
   const { course } = useOfficeHour();
+
   return (
     <Box
       sx={{

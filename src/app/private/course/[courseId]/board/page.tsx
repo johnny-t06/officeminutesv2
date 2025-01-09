@@ -19,6 +19,7 @@ interface PageProps {
 
 const Page = (props: PageProps) => {
   const { courseId } = props.params;
+
   const { questions } = useOfficeHour();
   const activeQuestions = getActivePublicQuestion(questions);
   const { loading, isUserTA } = useCourseData({ fetchUsers: false });
