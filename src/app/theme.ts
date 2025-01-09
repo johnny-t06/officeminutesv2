@@ -19,6 +19,7 @@ const theme: Theme = createTheme({
     },
     text: {
       primary: "#000000", // Black text
+      secondary: "#79747E", // Gray text
     },
     error: {
       main: "#FF0000", // Red color

@@ -4,7 +4,6 @@ import ThemeProviderWrapper from "@context/ThemeProviderWrapper";
 import { UserSessionContextProvider } from "@context/UserSessionContext";
 import { SidebarProvider } from "@context/SidebarContext";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
-import Sidebar from "@components/Sidebar";
 
 export const metadata: Metadata = {
   title: "OfficeMinutes",

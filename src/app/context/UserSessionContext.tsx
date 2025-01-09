@@ -59,8 +59,6 @@ export const UserSessionContextProvider = ({
       } else {
         setUser(null);
         setSession({ isAuthenticated: false, isLoading: false, error: null });
-
-        router.push("/");
       }
     });
     return () => unsub();

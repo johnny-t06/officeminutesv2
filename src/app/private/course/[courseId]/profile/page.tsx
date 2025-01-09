@@ -8,6 +8,7 @@ import theme from "theme";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import { useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import React from "react";
 
 interface PageProps {
   params: {
@@ -24,6 +25,7 @@ const Page = (props: PageProps) => {
   const { course } = useOfficeHour();
   const { onSignOut } = useUserSession();
   const user = getUserSessionOrRedirect();
+  const isUserTA = course.tas.includes(user.id);
 
   return (
     <div>
@@ -53,23 +55,25 @@ const Page = (props: PageProps) => {
           <div>
             <div className="text-lg">Classes</div>
             <div className="text-[#43474E] text-sm">
-              Manage your enrolled classes here
+              Manage your classes here
             </div>
           </div>
           <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
         </div>
-        <div
-          className="flex justify-between items-center"
-          onClick={() =>
-            router.push(`/private/course/${course.id}/profile/help`)
-          }
-        >
-          <div>
-            <div className="text-lg">Get Help</div>
-            <div className="text-[#43474E] text-sm">Read our FAQ</div>
+        {!isUserTA && (
+          <div
+            className="flex justify-between items-center"
+            onClick={() =>
+              router.push(`/private/course/${course.id}/profile/help`)
+            }
+          >
+            <div>
+              <div className="text-lg">Get Help</div>
+              <div className="text-[#43474E] text-sm">Read our FAQ</div>
+            </div>
+            <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
           </div>
-          <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
-        </div>
+        )}
         <div
           className="flex justify-between items-center"
           onClick={() =>
