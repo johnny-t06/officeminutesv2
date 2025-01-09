@@ -12,6 +12,7 @@ const Page = async (props: PageProps) => {
   const {
     params: { courseId },
   } = props;
+  
   const course = await getCourse(courseId);
   const students = await getUsers(course.students);
 

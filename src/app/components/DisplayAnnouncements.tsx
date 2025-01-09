@@ -15,6 +15,7 @@ interface DisplayAnnouncementsProps {
 
 export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
   const { announcements, editable } = props;
+
   const [isEdit, setIsEdit] = React.useState<boolean>(false);
   const [currAnnouncements, setCurrAnnouncements] =
     React.useState<Announcement[]>(announcements);
@@ -22,6 +23,7 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
   React.useEffect(() => {
     setCurrAnnouncements(announcements);
   }, [announcements]);
+
   const onCreate = () => {
     setCurrAnnouncements([
       ...currAnnouncements,
@@ -32,6 +34,7 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
     ]);
     setIsEdit(true);
   };
+  
   const onEditDone = () => {
     if (isEdit && currAnnouncements.length > announcements.length) {
       setCurrAnnouncements(announcements);

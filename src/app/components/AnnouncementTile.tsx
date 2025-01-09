@@ -29,6 +29,7 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
   );
   const [deleteVisible, setDeleteVisible] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
+  
   React.useEffect(() => {
     if (!isEdit) {
       setNewMessage(announcement.message);

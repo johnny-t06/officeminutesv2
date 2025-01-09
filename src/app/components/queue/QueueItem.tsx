@@ -22,6 +22,7 @@ const QueueItem = (props: QueueItemProps) => {
 
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState(true);
+  
   React.useEffect(() => {
     const fetchUsers = async () => {
       const fetchedUsers = await getUsers(question.group);

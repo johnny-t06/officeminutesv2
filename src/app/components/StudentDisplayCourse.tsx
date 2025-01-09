@@ -10,6 +10,7 @@ import { DisplayAnnouncements } from "./DisplayAnnouncements";
 interface StudentDisplayCourseProps {
   tas: IdentifiableUsers;
 }
+
 const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
   const { tas } = props;
   const router = useRouter();

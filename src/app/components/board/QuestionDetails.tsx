@@ -64,6 +64,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     }
     setJoinGroup(!joinGroup);
   };
+  
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
       await partialUpdateQuestion(question.id, courseId, {
