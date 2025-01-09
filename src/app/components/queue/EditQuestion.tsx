@@ -14,22 +14,6 @@ export const EditQuestion = () => {
   const { queuePos, currQuestion } = getQueuePosition(questions, user);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
 
-  const editButton = (
-    <Button
-      sx={{
-        fontWeight: 500,
-        fontSize: 14,
-        textTransform: "initial",
-        borderRadius: "100px",
-        flexGrow: 1,
-      }}
-      fullWidth
-      variant="outlined"
-    >
-      Edit submission
-    </Button>
-  );
-
   const leaveQueue = () => {
     deleteQuestion(course.id, currQuestion.id);
     console.log("leave queue");
@@ -46,6 +30,22 @@ export const EditQuestion = () => {
       onClick: leaveQueue,
     },
   ];
+
+  const editButton = (
+    <Button
+      sx={{
+        fontWeight: 500,
+        fontSize: 14,
+        textTransform: "initial",
+        borderRadius: "100px",
+        flexGrow: 1,
+      }}
+      fullWidth
+      variant="outlined"
+    >
+      Edit submission
+    </Button>
+  );
 
   return (
     <>
@@ -71,8 +71,8 @@ export const EditQuestion = () => {
             alignItems: "center",
           }}
         >
-          {/* if you're at position 5 in the queue, does that mean
-              there are 4 queue ahead of you? */}
+          {/* if you're at position 5 in the queue, does that mean there are 
+              4 queue ahead of you? Which number should I show here? */}
           <Box sx={{ fontWeight: 700, fontSize: 57 }}>{queuePos}</Box>
           <Box sx={{ fontWeight: 500, fontSize: 11, color: "#545F70" }}>
             Queues ahead of you
