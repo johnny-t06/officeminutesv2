@@ -13,13 +13,11 @@ const Page = async (props: PageProps) => {
     params: { courseId },
   } = props;
   const course = await getCourse(courseId);
-  const tas = await getUsers(course.tas);
-  const offDutyTas = tas.filter((ta) => !course.onDuty.includes(ta.id));
-  const onDutyTas = tas.filter((ta) => course.onDuty.includes(ta.id));
+  const students = await getUsers(course.students);
 
   return (
     <div>
-      <DisplayUsersPage onDutyTas={onDutyTas} offDutyTas={offDutyTas} />
+      <DisplayUsersPage students={students} />
     </div>
   );
 };

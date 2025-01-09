@@ -1,8 +1,12 @@
+"use client";
+
 import Header from "@components/Header";
-import { getCourse } from "@services/client/course";
-import { getUsers } from "@services/client/user";
-import DisplayCourse from "@components/DisplayCourse";
+import StudentDisplayCourse from "@components/StudentDisplayCourse";
+import TADisplayCourse from "@components/TADisplayCourse";
 import MenuButton from "@components/buttons/MenuButton";
+import React from "react";
+import Spinner from "@components/Spinner";
+import { useCourseData } from "@hooks/useCourseData";
 
 interface PageProps {
   params: {
@@ -10,12 +14,22 @@ interface PageProps {
   };
 }
 
-const Page = async (props: PageProps) => {
+const Page = (props: PageProps) => {
   const {
     params: { courseId },
   } = props;
-  const course = await getCourse(courseId);
-  const tas = await getUsers(course.tas);
+
+  const { tas, students, loading, isUserTA } = useCourseData({
+    fetchUsers: true,
+  });
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen ">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Header
@@ -23,7 +37,11 @@ const Page = async (props: PageProps) => {
         title={courseId.toUpperCase()}
         alignCenter
       />
-      <DisplayCourse tas={tas} />
+      {isUserTA ? (
+        <TADisplayCourse tas={tas} students={students} />
+      ) : (
+        <StudentDisplayCourse tas={tas} />
+      )}
     </div>
   );
 };

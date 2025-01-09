@@ -6,28 +6,37 @@ import {
   sortQuestionsChronologically,
 } from "@utils/index";
 import QueueList from "./QueueList";
+import { useCourseData } from "@hooks/useCourseData";
 
 const Queue = () => {
   const { course, questions } = useOfficeHour();
   const {
     [QuestionState.PENDING]: pendingQuestions,
     [QuestionState.IN_PROGRESS]: inProgressQuestions,
+    [QuestionState.MISSING]: missingQuestions,
   } = getActiveQuestionsByState(questions);
 
   const studentsEnqueued = pendingQuestions.length + inProgressQuestions.length;
-  const queueClosed = course.onDuty.length === 0;
+  const queueClosed = course.onDuty.length === 0 || !course.isOpen;
+
+  const { isUserTA } = useCourseData({ fetchUsers: false });
 
   return (
     <>
       <Box>
         <Stack spacing="36px" display={queueClosed ? "none" : "block"}>
           <QueueList
-            header="Currently Helping"
+            header={isUserTA ? "Other TAs are helping" : "Currently Helping"}
             displayEnqueued={false}
             questions={sortQuestionsChronologically(inProgressQuestions)}
           />
           <QueueList
-            header="Queue"
+            header="Missing"
+            displayEnqueued={false}
+            questions={sortQuestionsChronologically(missingQuestions)}
+          />
+          <QueueList
+            header={isUserTA ? "Start helping" : "Queue"}
             displayEnqueued
             questions={sortQuestionsChronologically(pendingQuestions)}
           />

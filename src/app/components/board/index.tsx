@@ -8,13 +8,14 @@ import { sortQuestionsChronologically } from "@utils/index";
 
 interface BoardProps {
   questions: IdentifiableQuestions;
+  isUserTA: boolean;
 }
 
 const SELECT_ALL = "All";
 
 const _Board = (props: BoardProps) => {
   const { questions } = props;
-  const sortedQuestions = sortQuestionsChronologically(questions);
+  const sortedQuestions = sortQuestionsChronologically(questions).reverse();
 
   if (questions.length === 0) {
     return (
@@ -38,7 +39,11 @@ const _Board = (props: BoardProps) => {
         paddingBottom="128px"
       >
         {sortedQuestions.map((question) => (
-          <Question key={question.id} question={question} />
+          <Question
+            key={question.id}
+            question={question}
+            isUserTA={props.isUserTA}
+          />
         ))}
       </Box>
     );
@@ -46,7 +51,7 @@ const _Board = (props: BoardProps) => {
 };
 
 const Board = (props: BoardProps) => {
-  const { questions } = props;
+  const { questions, isUserTA } = props;
   const { course } = useOfficeHour();
   const topics = [SELECT_ALL, ...Object.keys(course.tags).sort()];
 
@@ -141,7 +146,10 @@ const Board = (props: BoardProps) => {
           ))}
         </Stack>
       </ToggleButtonGroup>
-      <_Board questions={getQuestionsByTopic(selectedTopics)} />
+      <_Board
+        questions={getQuestionsByTopic(selectedTopics)}
+        isUserTA={isUserTA}
+      />
     </div>
   );
 };

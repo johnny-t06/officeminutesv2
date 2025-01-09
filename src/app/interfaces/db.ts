@@ -25,6 +25,10 @@ export interface TagOption {
   colorFill: boolean;
 }
 
+export interface Announcement {
+  message: string;
+  createdAt: Timestamp;
+}
 export interface Course {
   name: string;
   code: string;
@@ -34,13 +38,15 @@ export interface Course {
   tas: string[];
   onDuty: string[];
   tags: Tags;
-  announcement: string;
+  announcements: Announcement[];
+  isOpen: boolean;
 }
 
 export enum QuestionState {
   PENDING = 1,
   IN_PROGRESS,
   RESOLVED,
+  MISSING,
 }
 
 export interface Question {
@@ -51,6 +57,8 @@ export interface Question {
   timestamp: Timestamp;
   group: string[];
   tags: TagOption[];
+  helpedBy: string;
+  helpedAt: Timestamp;
 }
 
 export type Questions = Question[];
