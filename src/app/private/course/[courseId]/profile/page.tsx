@@ -9,8 +9,6 @@ import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import { useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
-import Spinner from "@components/Spinner";
-import { useCourseData } from "@hooks/useCourseData";
 
 interface PageProps {
   params: {
@@ -27,15 +25,7 @@ const Page = (props: PageProps) => {
   const { course } = useOfficeHour();
   const { onSignOut } = useUserSession();
   const user = getUserSessionOrRedirect();
-
-  const { loading, isUserTA } = useCourseData({ fetchUsers: false });
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </div>
-    );
-  }
+  const isUserTA = course.tas.includes(user.id);
 
   return (
     <div>

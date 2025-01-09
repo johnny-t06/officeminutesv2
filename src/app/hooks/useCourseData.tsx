@@ -10,8 +10,14 @@ interface CourseDataProps {
 
 export const useCourseData = (props: CourseDataProps) => {
   const { fetchUsers } = props;
+
   const user = getUserSessionOrRedirect();
   const { course } = useOfficeHour();
+  const isUserTA = course.tas.includes(user.id);
+  const [tas, setTAs] = React.useState<IdentifiableUsers>([]);
+  const [students, setStudents] = React.useState<IdentifiableUsers>([]);
+  const [loading, setLoading] = React.useState(true);
+
   if (!fetchUsers) {
     return {
       loading: false,
@@ -20,10 +26,6 @@ export const useCourseData = (props: CourseDataProps) => {
       students: [],
     };
   }
-  const [tas, setTAs] = React.useState<IdentifiableUsers>([]);
-  const [students, setStudents] = React.useState<IdentifiableUsers>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [isUserTA, setIsUserTA] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -34,8 +36,6 @@ export const useCourseData = (props: CourseDataProps) => {
           setTAs(tasData);
           setStudents(studentData);
         }
-
-        setIsUserTA(course.tas.includes(user.id));
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

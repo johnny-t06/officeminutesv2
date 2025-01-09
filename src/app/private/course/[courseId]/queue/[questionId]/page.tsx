@@ -2,8 +2,8 @@
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { useCourseData } from "@hooks/useCourseData";
 import { ArrowBack } from "@mui/icons-material";
+import { getUserSessionOrRedirect } from "@utils/index";
 import Link from "next/link";
 
 interface PageProps {
@@ -17,9 +17,10 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
-  const { questions } = useOfficeHour();
+  const { course, questions } = useOfficeHour();
+  const user = getUserSessionOrRedirect();
   const question = questions.find((q) => q.id === questionId);
-  const { isUserTA } = useCourseData({ fetchUsers: false });
+  const isUserTA = course.tas.includes(user.id);
   if (!question) {
     throw new Error();
   }

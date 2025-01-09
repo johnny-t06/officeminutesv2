@@ -1,11 +1,11 @@
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Grid, Typography } from "@mui/material";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
-import { trimUserName } from "@utils/index";
+import { getUserSessionOrRedirect, trimUserName } from "@utils/index";
 import React from "react";
 import { getUsers } from "@services/client/user";
 import { useRouter } from "next/navigation";
-import { useCourseData } from "@hooks/useCourseData";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 
 interface QueueItemProps {
   order: number;
@@ -14,10 +14,14 @@ interface QueueItemProps {
 
 const QueueItem = (props: QueueItemProps) => {
   const { order, question } = props;
+
+  const router = useRouter();
+  const { course } = useOfficeHour();
+  const user = getUserSessionOrRedirect();
+  const isUserTA = course.tas.includes(user.id);
+
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState(true);
-  const router = useRouter();
-  const { isUserTA } = useCourseData({ fetchUsers: false });
   React.useEffect(() => {
     const fetchUsers = async () => {
       const fetchedUsers = await getUsers(question.group);

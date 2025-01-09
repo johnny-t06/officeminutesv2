@@ -6,7 +6,10 @@ import Spinner from "@components/Spinner";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { useCourseData } from "@hooks/useCourseData";
 import { Box, Button, Typography } from "@mui/material";
-import { getActivePublicQuestion } from "@utils/index";
+import {
+  getActivePublicQuestion,
+  getUserSessionOrRedirect,
+} from "@utils/index";
 import Link from "next/link";
 
 import React from "react";
@@ -19,17 +22,11 @@ interface PageProps {
 
 const Page = (props: PageProps) => {
   const { courseId } = props.params;
-  const { questions } = useOfficeHour();
-  const activeQuestions = getActivePublicQuestion(questions);
-  const { loading, isUserTA } = useCourseData({ fetchUsers: false });
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </div>
-    );
-  }
+  const { course, questions } = useOfficeHour();
+  const user = getUserSessionOrRedirect();
+  const isUserTA = course.tas.includes(user.id);
+  const activeQuestions = getActivePublicQuestion(questions);
 
   return (
     <Box>

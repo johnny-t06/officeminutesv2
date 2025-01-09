@@ -1,4 +1,4 @@
-import { Box, Button, Fab, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import theme from "theme";
 import { AnnouncementTile } from "./AnnouncementTile";
 import React from "react";
@@ -6,6 +6,7 @@ import { Announcement } from "@interfaces/db";
 import { sortAnnouncements } from "@utils/index";
 import AddIcon from "@mui/icons-material/Add";
 import { Timestamp } from "firebase/firestore";
+import { CustomFloatingButton } from "./buttons/CustomFloatingButton";
 
 interface DisplayAnnouncementsProps {
   announcements: Announcement[];
@@ -36,6 +37,10 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
       setCurrAnnouncements(announcements);
     }
     setIsEdit(!isEdit);
+  };
+  const onUndo = () => {
+    setCurrAnnouncements(announcements);
+    setIsEdit(false);
   };
   return (
     <Box>
@@ -78,31 +83,18 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
               announcement={announcement}
               isEdit={isEdit}
               startEdit={announcement.message === ""}
+              onCreateUndo={onUndo}
             />
           ))}
         </Box>
       )}
 
       {editable && (
-        <Box position="fixed" bottom={80} right={10} zIndex={100}>
-          <Fab
-            aria-label="Create Announcement"
-            variant="extended"
-            color="primary"
-            sx={{
-              color: "#FFF",
-              textTransform: "none",
-              paddingY: "18px",
-              paddingX: "16px",
-              borderRadius: "16px",
-              minHeight: "56px",
-            }}
-            onClick={onCreate}
-          >
-            <AddIcon sx={{ marginRight: "12px" }} />
-            <Typography fontWeight={500}>Create Announcement</Typography>
-          </Fab>
-        </Box>
+        <CustomFloatingButton
+          text="Create Announcement"
+          icon={<AddIcon />}
+          onClick={onCreate}
+        />
       )}
     </Box>
   );

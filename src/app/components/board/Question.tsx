@@ -23,6 +23,7 @@ const Question = (props: QuestionProps) => {
   const { question, isUserTA } = props;
   const router = useRouter();
   const user = getUserSessionOrRedirect();
+
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [joinGroup] = React.useState<boolean>(
