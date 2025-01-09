@@ -164,3 +164,5 @@ export const timeSince = (timestamp: Timestamp | undefined) => {
 
   return `${formattedMinutes}:${formattedSeconds}`;
 };
+
+export const getQueuePosition = () => {}

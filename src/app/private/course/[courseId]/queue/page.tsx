@@ -19,6 +19,7 @@ import { useCourseData } from "@hooks/useCourseData";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import { partialUpdateCourse } from "@services/client/course";
+import { EditQuestion } from "@components/queue/EditQuestion";
 
 const Page = () => {
   const user = getUserSessionOrRedirect();
@@ -126,7 +127,10 @@ const Page = () => {
               </Box>
             </Button>
           ) : (
-            <CreateQuestion />
+            <>
+              {isUserTA ? null : <EditQuestion />}
+              <CreateQuestion />
+            </>
           )}
           <Queue />
         </>
