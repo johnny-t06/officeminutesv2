@@ -127,7 +127,7 @@ const Page = () => {
             </Button>
           ) : (
             <>
-              {isUserTA ? null : <EditQuestion />}
+              <EditQuestion />
               <CreateQuestion />
             </>
           )}

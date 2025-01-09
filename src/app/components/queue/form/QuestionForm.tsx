@@ -17,6 +17,7 @@ import { IdentifiableQuestion } from "@interfaces/type";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getUserSessionOrRedirect } from "@utils/index";
 import Header from "@components/Header";
+import { updateQuestion } from "@services/client/question";
 
 interface QuestionFormProps {
   // button to open the form
@@ -88,7 +89,16 @@ const QuestionForm = (props: QuestionFormProps) => {
           courseId: course.id,
         });
       }
-      // if title === edit submission
+      if (title === "Edit submission") {
+        await updateQuestion(
+          {
+            ...newQuestion,
+            tags: tagsArr,
+            group: [user.id],
+          },
+          course.id
+        );
+      }
     } else {
       console.log("Required fields not filled");
       // TODO(lnguye2693) - Display error

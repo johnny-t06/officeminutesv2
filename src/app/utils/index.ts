@@ -1,3 +1,4 @@
+import { defaultQuestion } from "@api/question";
 import { useUserSession } from "@context/UserSessionContext";
 import { Announcement, QuestionState } from "@interfaces/db";
 import {
@@ -165,4 +166,17 @@ export const timeSince = (timestamp: Timestamp | undefined) => {
   return `${formattedMinutes}:${formattedSeconds}`;
 };
 
-export const getQueuePosition = () => {}
+export const getQueuePosition = (
+  questions: IdentifiableQuestions,
+  user: IdentifiableUser
+) => {
+  const activeQuestions = getActiveQuestions(questions);
+  const position: number = sortQuestionsChronologically(
+    activeQuestions
+  ).findIndex((q) => q.group[0] === user.id);
+
+  return {
+    queuePos: position + 1,
+    currQuestion: activeQuestions[position] ?? defaultQuestion(),
+  };
+};
