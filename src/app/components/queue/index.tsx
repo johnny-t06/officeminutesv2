@@ -3,31 +3,40 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { QuestionState } from "@interfaces/db";
 import {
   getActiveQuestionsByState,
+  getUserSessionOrRedirect,
   sortQuestionsChronologically,
 } from "@utils/index";
 import QueueList from "./QueueList";
 
 const Queue = () => {
   const { course, questions } = useOfficeHour();
+  const user = getUserSessionOrRedirect();
+  const isUserTA = course.tas.includes(user.id);
   const {
     [QuestionState.PENDING]: pendingQuestions,
     [QuestionState.IN_PROGRESS]: inProgressQuestions,
+    [QuestionState.MISSING]: missingQuestions,
   } = getActiveQuestionsByState(questions);
 
   const studentsEnqueued = pendingQuestions.length + inProgressQuestions.length;
-  const queueClosed = course.onDuty.length === 0;
+  const queueClosed = course.onDuty.length === 0 || !course.isOpen;
 
   return (
     <>
       <Box>
         <Stack spacing="36px" display={queueClosed ? "none" : "block"}>
           <QueueList
-            header="Currently Helping"
+            header={isUserTA ? "Other TAs are helping" : "Currently Helping"}
             displayEnqueued={false}
             questions={sortQuestionsChronologically(inProgressQuestions)}
           />
           <QueueList
-            header="Queue"
+            header="Missing"
+            displayEnqueued={false}
+            questions={sortQuestionsChronologically(missingQuestions)}
+          />
+          <QueueList
+            header={isUserTA ? "Start helping" : "Queue"}
             displayEnqueued
             questions={sortQuestionsChronologically(pendingQuestions)}
           />
@@ -43,7 +52,9 @@ const Queue = () => {
           >
             <Typography fontSize={16}>The queue is not opened yet.</Typography>
             <Typography fontSize={16}>
-              Visit Piazza if your TA is not present.
+              {isUserTA
+                ? "Open the queue to let students join."
+                : "Visit Piazza if your TA is not present."}
             </Typography>
           </Box>
         ) : studentsEnqueued === 0 ? (
@@ -56,8 +67,11 @@ const Queue = () => {
             fontWeight={400}
           >
             <Typography fontSize={16}>No one is on the queue yet.</Typography>
+
             <Typography fontSize={16}>
-              Get help from a TA by joining the queue.
+              {isUserTA
+                ? "You will be notified when someone joins."
+                : "Get help from a TA by joining the queue."}
             </Typography>
           </Box>
         ) : null}

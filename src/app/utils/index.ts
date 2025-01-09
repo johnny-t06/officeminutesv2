@@ -1,5 +1,5 @@
 import { useUserSession } from "@context/UserSessionContext";
-import { QuestionState } from "@interfaces/db";
+import { Announcement, QuestionState } from "@interfaces/db";
 import {
   IdentifiableQuestion,
   IdentifiableQuestions,
@@ -46,6 +46,25 @@ export const sortQuestionsChronologically = (
   return questions.toSorted(compareQuestions);
 };
 
+export const compareAnnouncements = (
+  announcement1: Announcement,
+  announcement2: Announcement
+) => {
+  const date1 =
+    announcement1.createdAt instanceof Timestamp
+      ? announcement1.createdAt.toDate()
+      : new Date();
+  const date2 =
+    announcement2.createdAt instanceof Timestamp
+      ? announcement2.createdAt.toDate()
+      : new Date();
+  return compareDate(date1, date2);
+};
+
+export const sortAnnouncements = (announcements: Announcement[]) => {
+  return announcements.toSorted(compareAnnouncements);
+};
+
 export const formatTimeDifference = (
   question: IdentifiableQuestion
 ): string => {
@@ -88,12 +107,8 @@ export const hasPassed = (question: IdentifiableQuestion) => {
   return now > postedAt || question.state === QuestionState.RESOLVED;
 };
 
-export const getActiveQuestions = (
-  questions: IdentifiableQuestions
-) =>
-  questions.filter(
-    (question) => !hasPassed(question)
-  );
+export const getActiveQuestions = (questions: IdentifiableQuestions) =>
+  questions.filter((question) => !hasPassed(question));
 
 export const getActivePublicQuestion = (
   questions: IdentifiableQuestions,
@@ -103,10 +118,7 @@ export const getActivePublicQuestion = (
     (question) => !hasPassed(question) && question.questionPublic === isPublic
   );
 
-export const getActiveQuestionsByState = (
-  questions: IdentifiableQuestions,
-  isPublic: boolean = true
-) => {
+export const getActiveQuestionsByState = (questions: IdentifiableQuestions) => {
   const activeQuestions = Object.groupBy(
     getActiveQuestions(questions),
     ({ state }) => state
@@ -115,6 +127,7 @@ export const getActiveQuestionsByState = (
     [QuestionState.PENDING]: activeQuestions[QuestionState.PENDING] ?? [],
     [QuestionState.IN_PROGRESS]:
       activeQuestions[QuestionState.IN_PROGRESS] ?? [],
+    [QuestionState.MISSING]: activeQuestions[QuestionState.MISSING] ?? [],
   };
 };
 
@@ -132,4 +145,22 @@ export const getUserSessionOrRedirect = () => {
     redirect("/");
   }
   return user;
+};
+
+export const timeSince = (timestamp: Timestamp | undefined) => {
+  if (timestamp === undefined || timestamp === null) {
+    return "00:00";
+  }
+  const date = timestamp.toDate();
+  const now = new Date();
+  const diffInMs = now.getTime() - date.getTime();
+  const totalSeconds = Math.floor(diffInMs / 1000);
+
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedSeconds = String(seconds).padStart(2, "0");
+
+  return `${formattedMinutes}:${formattedSeconds}`;
 };

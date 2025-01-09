@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 
+/* Why not pass in a Question type */
 type AddQuestion = Pick<
   Question,
   "title" | "description" | "questionPublic" | "group" | "tags"
@@ -32,6 +33,7 @@ export const addQuestion = async (question: AddQuestion, courseId: string) => {
   const questionDoc = await addDoc(questionsColection, {
     ...question,
     timestamp: serverTimestamp(),
+    helpedAt: serverTimestamp(),
   });
   return { id: questionDoc.id, ...question } as IdentifiableQuestion;
 };
@@ -53,6 +55,26 @@ export const updateQuestion = async (
   }
 
   return question;
+};
+
+export const partialUpdateQuestion = async (
+  questionId: string,
+  courseId: string,
+  question: PartialWithFieldValue<IdentifiableQuestion>
+) => {
+  const questionDoc: DocumentReference = doc(
+    db,
+    `courses/${courseId}/questions/${questionId}`
+  ).withConverter(questionConverter);
+
+  const { id, ...res } = question;
+  if (Array.isArray(res.group) && res.group.length === 0) {
+    await deleteDoc(questionDoc);
+  } else {
+    await updateDoc(questionDoc, { ...res });
+  }
+  // Difficult to return the updated question here without another read
+  return;
 };
 
 export const joinQuestionGroup = async (

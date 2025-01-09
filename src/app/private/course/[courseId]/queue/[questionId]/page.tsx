@@ -3,6 +3,7 @@ import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { ArrowBack } from "@mui/icons-material";
+import { getUserSessionOrRedirect } from "@utils/index";
 import Link from "next/link";
 
 interface PageProps {
@@ -16,9 +17,10 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
-  const { questions } = useOfficeHour();
+  const { course, questions } = useOfficeHour();
+  const user = getUserSessionOrRedirect();
   const question = questions.find((q) => q.id === questionId);
-
+  const isUserTA = course.tas.includes(user.id);
   if (!question) {
     throw new Error();
   }
@@ -27,7 +29,7 @@ const Page = (props: PageProps) => {
     <div>
       <Header
         leftIcon={
-          <Link href={`/private/course/${courseId}/board`}>
+          <Link href={`/private/course/${courseId}/queue`}>
             <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
           </Link>
         }
@@ -35,7 +37,7 @@ const Page = (props: PageProps) => {
       <QuestionDetails
         courseId={courseId}
         question={question}
-        fromTAQueue={false}
+        fromTAQueue={isUserTA}
       />
     </div>
   );

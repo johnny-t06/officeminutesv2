@@ -1,9 +1,13 @@
 "use client";
+
 import Board from "@components/board";
 import Header from "@components/Header";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box, Button, Typography } from "@mui/material";
-import { getActivePublicQuestion } from "@utils/index";
+import {
+  getActivePublicQuestion,
+  getUserSessionOrRedirect,
+} from "@utils/index";
 import Link from "next/link";
 
 import React from "react";
@@ -16,8 +20,12 @@ interface PageProps {
 
 const Page = (props: PageProps) => {
   const { courseId } = props.params;
-  const { questions } = useOfficeHour();
+
+  const { course, questions } = useOfficeHour();
+  const user = getUserSessionOrRedirect();
+  const isUserTA = course.tas.includes(user.id);
   const activeQuestions = getActivePublicQuestion(questions);
+
   return (
     <Box>
       <Header
@@ -30,12 +38,15 @@ const Page = (props: PageProps) => {
                 padding: 0,
               }}
             >
-              <Typography variant="subtitle2">View History</Typography>
+              <Typography variant="subtitle2">
+                View {isUserTA ? "Response" : null} History
+              </Typography>
             </Button>
           </Link>
         }
       />
-      <Board questions={activeQuestions} />
+
+      <Board questions={activeQuestions} isUserTA={isUserTA} />
     </Box>
   );
 };
