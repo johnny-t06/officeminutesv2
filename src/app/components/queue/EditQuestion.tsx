@@ -16,7 +16,6 @@ export const EditQuestion = () => {
 
   const leaveQueue = () => {
     deleteQuestion(course.id, currQuestion.id);
-    console.log("leave queue");
     setLeaveQueueModal(false);
   };
 

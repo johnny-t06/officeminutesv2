@@ -171,12 +171,13 @@ export const getQueuePosition = (
   user: IdentifiableUser
 ) => {
   const activeQuestions = getActiveQuestions(questions);
-  const position: number = sortQuestionsChronologically(
-    activeQuestions
-  ).findIndex((q) => q.group[0] === user.id);
+  const sortedActiveQuestions = sortQuestionsChronologically(activeQuestions);
+  const position: number = sortedActiveQuestions.findIndex(
+    (q) => q.group[0] === user.id
+  );
 
   return {
     queuePos: position + 1,
-    currQuestion: activeQuestions[position] ?? defaultQuestion(),
+    currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
   };
 };
