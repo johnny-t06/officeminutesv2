@@ -7,9 +7,10 @@ import {
 } from "@interfaces/type";
 import { Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import React from "react";
 
-export const trimUserName = (user: IdentifiableUser | undefined) => {
-  if (user === undefined) {
+export const trimUserName = (user: IdentifiableUser | undefined | null) => {
+  if (user === undefined || user === null) {
     return " "; // empty string to prevent error in rendering avatar character
   }
   const [firstName, lastName] = user.name.split(" ");
@@ -142,10 +143,13 @@ export const getExpiredQuestions = (
 export const getUserSessionOrRedirect = () => {
   const { user } = useUserSession();
   const router = useRouter();
-  if (user === null) {
-    router.push("/");
-  }
-  return user;
+  React.useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
+  return user ?? null;
 };
 
 export const timeSince = (timestamp: Timestamp | undefined) => {

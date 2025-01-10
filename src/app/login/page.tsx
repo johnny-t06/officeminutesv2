@@ -1,11 +1,26 @@
 "use client";
 
+import Spinner from "@components/Spinner";
 import { useUserSession } from "@context/UserSessionContext";
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function Page() {
-  const { onSignIn } = useUserSession();
-
+  const { user, onSignIn } = useUserSession();
+  const router = useRouter();
+  React.useEffect(() => {
+    if (user) {
+      router.replace("/private/course");
+    }
+  }, [user]);
+  if (user) {
+    return (
+      <Box className="flex h-screen w-screen flex-col items-center justify-center">
+        <Spinner width={64} height={64} />
+      </Box>
+    );
+  }
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col items-center">
