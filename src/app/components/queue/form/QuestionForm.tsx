@@ -241,7 +241,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               sx={{ textTransform: "initial", borderRadius: 5 }}
               onClick={onSubmitForm}
             >
-              Join now
+              {title === "Join queue" ? <>Join now</> : <>Edit submission</>}
             </Button>
           </Box>
         </Box>
