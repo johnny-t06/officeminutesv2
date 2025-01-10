@@ -56,6 +56,8 @@ const QuestionForm = (props: QuestionFormProps) => {
   const trigger = React.cloneElement(triggerButton, {
     onClick: () => {
       setOpenForm(true);
+      setNewQuestion(currentQuestion);
+      setQuestionTags(defaultTags());
       if (typeof triggerButton.props.onClick === "function") {
         triggerButton.props.onClick();
       }
@@ -118,6 +120,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               <IconButton
                 onClick={() => {
                   setOpenForm(false);
+                  resetForm();
                 }}
               >
                 <CloseIcon />
