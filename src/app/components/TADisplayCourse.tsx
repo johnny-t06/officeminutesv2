@@ -26,8 +26,6 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
         flexDirection: "column",
         gap: "32px",
         marginTop: "24px",
-        height: "calc(100vh)",
-        paddingBottom: "1130px",
       }}
     >
       <DisplayAnnouncements announcements={course.announcements} editable />
@@ -100,13 +98,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
               <Typography variant="subtitle2">View All</Typography>
             </Button>
           </Box>
-          <Box
-            sx={{
-              padding: "16px, 16px",
-              maxHeight: "30vh",
-              overflow: "auto",
-            }}
-          >
+          <Box height="256px" overflow="scroll">
             <DisplayTas tas={students} />
           </Box>
         </Box>
@@ -115,9 +107,6 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
             display: "flex",
             flexDirection: "column",
             gap: "10px",
-            flexBasis: 0,
-            flexGrow: 1,
-            minHeight: "fit-content",
           }}
         >
           <Box
@@ -146,13 +135,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
               <Typography variant="subtitle2">View All</Typography>
             </Button>
           </Box>
-          <Box
-            sx={{
-              padding: "16px, 16px",
-              overflow: "auto",
-              maxHeight: "30vh",
-            }}
-          >
+          <Box maxHeight="256px" overflow="scroll">
             <DisplayTas tas={tas} />
           </Box>
         </Box>
