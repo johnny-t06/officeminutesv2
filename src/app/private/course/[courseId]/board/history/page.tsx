@@ -27,16 +27,6 @@ const Page = (props: PageProps) => {
   const isUserTA = course.tas.includes(user.id);
   const expiredQuestions = getExpiredQuestions(questions);
 
-  const { loading, isUserTA } = useCourseData({ fetchUsers: false });
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </div>
-    );
-  }
-
   return (
     <Box>
       <Header
