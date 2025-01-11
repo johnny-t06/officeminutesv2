@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "@components/Spinner";
 import { Box } from "@mui/material";
 import { setSessionCookie } from "@api/auth/route.client";
+import { logOutCookie } from "@api/logout/route.client";
 
 interface Session {
   isAuthenticated: boolean;
@@ -73,7 +74,6 @@ export const UserSessionContextProvider = ({
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
       await setSessionCookie(idToken);
-
       const resUser = result.user;
       const maybeUser = await getUser(resUser.uid);
       if (maybeUser === null) {
@@ -105,6 +105,7 @@ export const UserSessionContextProvider = ({
     try {
       setSession((prev) => ({ ...prev, isLoading: true }));
       await signOut(auth);
+      await logOutCookie();
       setUser(null);
       setSession({ isAuthenticated: false, isLoading: false, error: null });
       router.push("/");
