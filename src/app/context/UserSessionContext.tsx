@@ -61,6 +61,7 @@ export const UserSessionContextProvider = ({
     });
     return () => unsub();
   }, []);
+
   const onSignIn = async () => {
     try {
       await setPersistence(auth, browserLocalPersistence);
