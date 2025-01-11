@@ -28,7 +28,6 @@ const Sidebar = () => {
   const { user } = useUserSession();
   const router = useRouter();
 
-  console.log(user);
   React.useEffect(() => {
     const loadCourses = async () => {
       if (user && user.courses.length > 0) {
