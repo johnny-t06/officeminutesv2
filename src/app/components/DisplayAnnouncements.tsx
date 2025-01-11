@@ -34,7 +34,7 @@ export const DisplayAnnouncements = (props: DisplayAnnouncementsProps) => {
     ]);
     setIsEdit(true);
   };
-  
+
   const onEditDone = () => {
     if (isEdit && currAnnouncements.length > announcements.length) {
       setCurrAnnouncements(announcements);

@@ -13,7 +13,9 @@ export const EditQuestion = () => {
   const user = getUserSessionOrRedirect();
   const { queuePos, currQuestion } = getQueuePosition(questions, user);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
-
+  if (queuePos === -1) {
+    return null;
+  }
   const leaveQueue = () => {
     deleteQuestion(course.id, currQuestion.id);
     setLeaveQueueModal(false);
@@ -57,82 +59,82 @@ export const EditQuestion = () => {
         setOpen={setLeaveQueueModal}
       />
 
-      {queuePos === 0 ? null : (
-        <Container
-          sx={{
-            bgcolor: "primary.light",
-            padding: "16px",
-            borderRadius: "12px",
-            display: "flex",
-            flexDirection: "column",
-            rowGap: "12px",
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          {/* if you're at position 5 in the queue, does that mean there are 
-              4 queue ahead of you? Which number should I show here? */}
-          <Box sx={{ fontWeight: 700, fontSize: 57 }}>{queuePos}</Box>
-          <Box sx={{ fontWeight: 500, fontSize: 11, color: "#545F70" }}>
+      <Container
+        sx={{
+          bgcolor: "primary.light",
+          padding: "16px",
+          borderRadius: "12px",
+          display: "flex",
+          flexDirection: "column",
+          rowGap: "12px",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        <Box sx={{ fontWeight: 700, fontSize: queuePos === 0 ? 35 : 55 }}>
+          {queuePos === 0 ? "You're Next!" : queuePos}
+        </Box>
+        {queuePos !== 0 && (
+          <Box sx={{ fontWeight: 500, fontSize: 10, color: "#545F70" }}>
             Queues ahead of you
           </Box>
-          <Box
-            sx={{
-              fontWeight: 400,
-              fontSize: 12,
-              display: "flex",
-              flexDirection: "row",
-              columnGap: 0.5,
-              color: "#545F70",
-            }}
-          >
-            <NotificationAddOutlinedIcon style={{ fontSize: "16px" }} />
-            <Box> We'll notify you when it's your turn</Box>
+        )}
+        <Box
+          sx={{
+            fontWeight: 400,
+            fontSize: 12,
+            display: "flex",
+            flexDirection: "row",
+            columnGap: 0.5,
+            color: "#545F70",
+          }}
+        >
+          <NotificationAddOutlinedIcon style={{ fontSize: "16px" }} />
+          <Box> We'll notify you when it's your turn</Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: 1,
+            columnGap: "8px",
+            fontWeight: 500,
+            fontSize: "14px",
+            marginLeft: 2,
+            marginRight: 2,
+          }}
+        >
+          <Box sx={{ flexGrow: 1 }}>
+            <Button
+              variant="contained"
+              sx={{
+                fontWeight: 500,
+                fontSize: 14,
+                textTransform: "initial",
+                borderRadius: "100px",
+                display: "flex",
+                flexDirection: "row",
+                columnGap: 1,
+              }}
+              style={{ boxShadow: "none" }}
+              fullWidth
+              onClick={() => setLeaveQueueModal(true)}
+            >
+              <KeyboardReturnOutlinedIcon style={{ fontSize: "14px" }} />
+              <Box>Leave queue</Box>
+            </Button>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: 1,
-              columnGap: "8px",
-              fontWeight: 500,
-              fontSize: "14px",
-              marginLeft: 2,
-              marginRight: 2,
-            }}
-          >
-            <Box sx={{ flexGrow: 1 }}>
-              <Button
-                variant="contained"
-                sx={{
-                  fontWeight: 500,
-                  fontSize: 14,
-                  textTransform: "initial",
-                  borderRadius: "100px",
-                  display: "flex",
-                  flexDirection: "row",
-                  columnGap: 1,
-                }}
-                style={{ boxShadow: "none" }}
-                fullWidth
-                onClick={() => setLeaveQueueModal(true)}
-              >
-                <KeyboardReturnOutlinedIcon style={{ fontSize: "14px" }} />
-                <Box>Leave queue</Box>
-              </Button>
-            </Box>
 
-            <Box sx={{ flexGrow: 1 }}>
-              <QuestionForm
-                triggerButton={editButton}
-                title="Edit submission"
-                currentQuestion={currQuestion}
-              />
-            </Box>
+          <Box sx={{ flexGrow: 1 }}>
+            <QuestionForm
+              triggerButton={editButton}
+              title="Edit submission"
+              currentQuestion={currQuestion}
+            />
           </Box>
-        </Container>
-      )}
+        </Box>
+      </Container>
     </>
   );
 };

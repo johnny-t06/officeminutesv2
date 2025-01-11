@@ -7,7 +7,6 @@ import {
   sortQuestionsChronologically,
 } from "@utils/index";
 import QueueList from "./QueueList";
-import { useCourseData } from "@hooks/useCourseData";
 
 const Queue = () => {
   const { course, questions } = useOfficeHour();

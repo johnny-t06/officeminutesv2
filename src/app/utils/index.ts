@@ -177,7 +177,7 @@ export const getQueuePosition = (
   );
 
   return {
-    queuePos: position + 1,
+    queuePos: position,
     currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
   };
 };
