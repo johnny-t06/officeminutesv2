@@ -12,7 +12,7 @@ export default function Page() {
 
   React.useEffect(() => {
     if (user) {
-      router.replace("/private/course");
+      router.push("/private/course");
     }
   }, [user]);
 
