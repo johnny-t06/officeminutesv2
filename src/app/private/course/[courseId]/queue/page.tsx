@@ -23,13 +23,17 @@ import { EditQuestion } from "@components/queue/EditQuestion";
 const Page = () => {
   const user = getUserSessionOrRedirect();
   const { course, questions } = useOfficeHour();
-  const isUserTA = course.tas.includes(user.id);
   const [helpingQuestion, setHelpingQuestion] = React.useState<
     IdentifiableQuestion | undefined
   >(undefined);
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState(true);
   const [time, setTime] = React.useState(timeSince(helpingQuestion?.helpedAt));
+
+  if (!user) {
+    return null;
+  }
+  const isUserTA = course.tas.includes(user.id);
 
   React.useEffect(() => {
     const fetchData = async () => {

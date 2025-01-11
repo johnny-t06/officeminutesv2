@@ -25,6 +25,9 @@ const Page = (props: PageProps) => {
 
   const { course, questions } = useOfficeHour();
   const user = getUserSessionOrRedirect();
+  if (!user) {
+    return null;
+  }
   const isUserTA = course.tas.includes(user.id);
   const activeQuestions = getActivePublicQuestion(questions);
 

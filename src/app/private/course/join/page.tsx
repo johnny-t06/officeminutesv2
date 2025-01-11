@@ -19,6 +19,10 @@ const Page = () => {
   const [enrolledError, setEnrolledError] = React.useState(false);
   const [notFoundError, setNotFoundError] = React.useState(false);
 
+  if (!user) {
+    return null;
+  }
+
   const EnrolledButtons = [
     {
       text: "Ok",

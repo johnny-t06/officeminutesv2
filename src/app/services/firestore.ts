@@ -24,7 +24,12 @@ export const userConverter = {
     return user;
   },
   fromFirestore(snapshot: QueryDocumentSnapshot, options: any): User {
-    return snapshot.data(options) as User;
+    const data = snapshot.data(options) as User;
+    return {
+      ...data,
+      role: data.role ?? "user",
+      courses: data.courses ?? [],
+    };
   },
 };
 

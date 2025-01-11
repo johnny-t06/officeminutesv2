@@ -20,9 +20,7 @@ export default function RootLayout({
         <div id="__next">
           <AppRouterCacheProvider>
             <UserSessionContextProvider>
-              <ThemeProviderWrapper>
-                <SidebarProvider>{children}</SidebarProvider>
-              </ThemeProviderWrapper>
+              <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
             </UserSessionContextProvider>
           </AppRouterCacheProvider>
         </div>

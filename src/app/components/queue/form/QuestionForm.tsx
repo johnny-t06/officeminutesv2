@@ -49,6 +49,10 @@ const QuestionForm = (props: QuestionFormProps) => {
     Record<string, TagOption[]>
   >(defaultTags());
 
+  if (!user) {
+    return null;
+  }
+
   const updateQuestionTags = (tagsKey: string, newTags: TagOption[]) => {
     setQuestionTags({ ...questionTags, [tagsKey]: newTags });
   };
