@@ -1,4 +1,5 @@
 import { Backdrop, Box, Button, Fade, Modal, Typography } from "@mui/material";
+import React from "react";
 import theme from "theme";
 
 export interface ModalButton {
@@ -24,7 +25,7 @@ export const CustomModal = (props: CustomModalProps) => {
       aria-describedby="transition-modal-description"
       open={open}
       onClose={() => setOpen(false)}
-      closeAfterTransition
+      closeAfterTransition={false}
       slots={{ backdrop: Backdrop }}
       slotProps={{
         backdrop: {

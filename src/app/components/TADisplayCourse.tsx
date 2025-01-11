@@ -18,7 +18,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { course } = useOfficeHour();
-
+  
   return (
     <Box
       sx={{

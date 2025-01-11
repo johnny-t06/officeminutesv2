@@ -7,7 +7,7 @@ import MenuButton from "@components/buttons/MenuButton";
 
 const Page = () => {
   const router = useRouter();
-
+  
   return (
     <div className="flex flex-col min-h-screen">
       <Header leftIcon={<MenuButton />} title="Classes" />

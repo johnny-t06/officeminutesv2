@@ -2,7 +2,9 @@
 
 import Board from "@components/board";
 import Header from "@components/Header";
+import Spinner from "@components/Spinner";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { useCourseData } from "@hooks/useCourseData";
 import { Box, Button, Typography } from "@mui/material";
 import {
   getActivePublicQuestion,

@@ -41,7 +41,7 @@ const Question = (props: QuestionProps) => {
   }, []);
 
   const beingHelped = question.state === QuestionState.IN_PROGRESS;
-
+  
   return loading ? (
     <div className="h-screen absolute top-[50vh] left-[calc(50vw-24px)]">
       <Spinner />
