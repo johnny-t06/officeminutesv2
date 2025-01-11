@@ -11,7 +11,9 @@ export const POST = async (request: NextRequest) => {
       { status: 200 }
     );
   } catch (error) {
-    console.log("Error verifying token:", error);
-    return NextResponse.json({ message: "Invalid token" }, { status: 500 });
+    console.log("Failed to veriy session", error);
+    const response = NextResponse.json({ message: "Reauthenticate" });
+    response.cookies.delete("session");
+    return response;
   }
 };

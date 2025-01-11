@@ -108,7 +108,7 @@ export const UserSessionContextProvider = ({
       await logOutCookie();
       setUser(null);
       setSession({ isAuthenticated: false, isLoading: false, error: null });
-      router.push("/");
+      router.push("/login");
     } catch (e: any) {
       setSession({
         isAuthenticated: false,
@@ -118,6 +118,7 @@ export const UserSessionContextProvider = ({
       console.error(e);
     }
   };
+
   return session.isLoading ? (
     <Box className="flex h-screen w-screen flex-col items-center justify-center">
       <Spinner />

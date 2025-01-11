@@ -9,11 +9,13 @@ import React from "react";
 export default function Page() {
   const { user, onSignIn } = useUserSession();
   const router = useRouter();
+
   React.useEffect(() => {
     if (user) {
       router.replace("/private/course");
     }
   }, [user]);
+
   if (user) {
     return (
       <Box className="flex h-screen w-screen flex-col items-center justify-center">
@@ -21,6 +23,7 @@ export default function Page() {
       </Box>
     );
   }
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col items-center">
