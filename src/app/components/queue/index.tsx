@@ -11,6 +11,10 @@ import QueueList from "./QueueList";
 const Queue = () => {
   const { course, questions } = useOfficeHour();
   const user = getUserSessionOrRedirect();
+
+  if (!user) {
+    return null;
+  }
   const isUserTA = course.tas.includes(user.id);
   const {
     [QuestionState.PENDING]: pendingQuestions,

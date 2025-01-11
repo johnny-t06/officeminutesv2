@@ -12,6 +12,9 @@ import React from "react";
 import { auth } from "@project/firebase";
 import { addUser, getUser } from "@services/client/user";
 import { useRouter } from "next/navigation";
+import Spinner from "@components/Spinner";
+import { Box } from "@mui/material";
+import { setSessionCookie } from "@api/auth/route.client";
 
 interface Session {
   isAuthenticated: boolean;
@@ -68,21 +71,26 @@ export const UserSessionContextProvider = ({
       const provider = new GoogleAuthProvider();
 
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      if ((await getUser(user.uid)) == null) {
-        await addUser({
-          id: user.uid,
-          name: user.displayName ?? "",
-          tufts_username: "",
-          email: user.email ?? "",
-          role: "user",
-          courses: [],
-        });
+      const idToken = await result.user.getIdToken();
+      await setSessionCookie(idToken);
+
+      const resUser = result.user;
+      const maybeUser = await getUser(resUser.uid);
+      if (maybeUser === null) {
+        setUser(
+          await addUser({
+            id: resUser.uid,
+            name: resUser.displayName ?? "",
+            tufts_username: "",
+            email: resUser.email ?? "",
+            role: "user",
+            courses: [],
+          })
+        );
+      } else {
+        setUser(maybeUser);
       }
-      setSession((prev) => ({
-        ...prev,
-        isLoading: true,
-      }));
+      setSession({ isLoading: false, isAuthenticated: true, error: null });
       router.push("/private/course");
     } catch (e: any) {
       setSession({
@@ -109,7 +117,11 @@ export const UserSessionContextProvider = ({
       console.error(e);
     }
   };
-  return (
+  return session.isLoading ? (
+    <Box className="flex h-screen w-screen flex-col items-center justify-center">
+      <Spinner />
+    </Box>
+  ) : (
     <UserSessionContext.Provider
       value={{ user, session, onSignIn, onSignOut, setUser }}
     >

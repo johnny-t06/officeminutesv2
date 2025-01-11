@@ -14,14 +14,17 @@ interface QueueItemProps {
 
 const QueueItem = (props: QueueItemProps) => {
   const { order, question } = props;
+  const [users, setUsers] = React.useState<IdentifiableUsers>([]);
+  const [loading, setLoading] = React.useState(true);
 
   const router = useRouter();
   const { course } = useOfficeHour();
   const user = getUserSessionOrRedirect();
-  const isUserTA = course.tas.includes(user.id);
 
-  const [users, setUsers] = React.useState<IdentifiableUsers>([]);
-  const [loading, setLoading] = React.useState(true);
+  if (!user) {
+    return null;
+  }
+  const isUserTA = course.tas.includes(user.id);
 
   React.useEffect(() => {
     const fetchUsers = async () => {

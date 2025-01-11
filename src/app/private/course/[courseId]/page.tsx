@@ -5,8 +5,10 @@ import StudentDisplayCourse from "@components/StudentDisplayCourse";
 import TADisplayCourse from "@components/TADisplayCourse";
 import MenuButton from "@components/buttons/MenuButton";
 import React from "react";
-import Spinner from "@components/Spinner";
-import { useCourseData } from "@hooks/useCourseData";
+import { getUserSessionOrRedirect } from "@utils/index";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { IdentifiableUsers } from "@interfaces/type";
+import { getUsers } from "@services/client/user";
 
 interface PageProps {
   params: {
@@ -19,18 +21,29 @@ const Page = (props: PageProps) => {
     params: { courseId },
   } = props;
 
-  const { tas, students, loading, isUserTA } = useCourseData({
-    fetchUsers: true,
-  });
+  const user = getUserSessionOrRedirect();
+  const { course } = useOfficeHour();
+  const [tas, setTAs] = React.useState<IdentifiableUsers>([]);
+  const [students, setStudents] = React.useState<IdentifiableUsers>([]);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const tasData = await getUsers(course.tas);
+        const studentData = await getUsers(course.students);
+        setTAs(tasData);
+        setStudents(studentData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </div>
-    );
+    fetchData();
+  }, [course]);
+
+  if (!user) {
+    return null;
   }
-
+  const isUserTA = course.tas.includes(user.id);
   return (
     <div>
       <Header

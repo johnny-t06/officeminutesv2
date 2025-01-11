@@ -40,9 +40,8 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
 
   const user = getUserSessionOrRedirect();
   const router = useRouter();
-
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
-    question.group.includes(user.id)
+    question.group.includes(user!.id)
   );
   const [loading, setLoading] = React.useState<boolean>(true);
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
@@ -55,6 +54,9 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     };
     fetchUsers();
   }, [question]);
+  if (!user) {
+    return null;
+  }
 
   const onJoinGroup = async () => {
     if (joinGroup) {

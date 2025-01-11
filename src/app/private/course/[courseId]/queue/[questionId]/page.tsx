@@ -19,8 +19,12 @@ const Page = (props: PageProps) => {
   } = props;
   const { course, questions } = useOfficeHour();
   const user = getUserSessionOrRedirect();
-  const question = questions.find((q) => q.id === questionId);
+  if (!user) {
+    return null;
+  }
   const isUserTA = course.tas.includes(user.id);
+  const question = questions.find((q) => q.id === questionId);
+
   if (!question) {
     throw new Error();
   }
