@@ -1,4 +1,4 @@
-export const logOutCookie = async () => {
+export const logOut = async () => {
   const response = await fetch("/api/logout", {
     method: "POST",
     headers: {
