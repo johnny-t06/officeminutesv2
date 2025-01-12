@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "@components/Spinner";
 import { Box } from "@mui/material";
 import { setSessionCookie } from "@api/auth/route.client";
+import { logOut } from "@api/logout/route.client";
 
 interface Session {
   isAuthenticated: boolean;
@@ -73,7 +74,6 @@ export const UserSessionContextProvider = ({
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
       await setSessionCookie(idToken);
-
       const resUser = result.user;
       const maybeUser = await getUser(resUser.uid);
       if (maybeUser === null) {
@@ -105,9 +105,10 @@ export const UserSessionContextProvider = ({
     try {
       setSession((prev) => ({ ...prev, isLoading: true }));
       await signOut(auth);
+      await logOut();
       setUser(null);
       setSession({ isAuthenticated: false, isLoading: false, error: null });
-      router.push("/");
+      router.push("/login");
     } catch (e: any) {
       setSession({
         isAuthenticated: false,
@@ -117,6 +118,7 @@ export const UserSessionContextProvider = ({
       console.error(e);
     }
   };
+
   return session.isLoading ? (
     <Box className="flex h-screen w-screen flex-col items-center justify-center">
       <Spinner />
