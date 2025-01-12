@@ -6,15 +6,7 @@ export const POST = async () => {
       { message: "Successfully logged out" },
       { status: 200 }
     );
-
-    // Remove the session cookie by setting Max-Age to 0
-    response.headers.set(
-      "Set-Cookie",
-      `session=; Max-Age=0; Path=/; HttpOnly; Secure = ${
-        process.env.NODE_ENV === "production"
-      }`
-    );
-
+    response.cookies.delete("session");
     return response;
   } catch (error) {
     console.error("Error logging out:", error);

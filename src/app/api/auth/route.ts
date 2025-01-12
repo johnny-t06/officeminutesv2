@@ -15,19 +15,14 @@ export const POST = async (request: NextRequest) => {
     const options = {
       maxAge: expiresIn,
       httpOnly: true,
-      secure: true, // Use secure cookies in production
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
     };
 
     const response = NextResponse.json(
       { message: "Session cookie created" },
       { status: 200 }
     );
-    response.headers.set(
-      "Set-Cookie",
-      `session=${sessionCookie}; Max-Age=${
-        options.maxAge
-      }; Path=/; HttpOnly; Secure = ${process.env.NODE_ENV === "production"}`
-    );
+    response.cookies.set("session", sessionCookie, options);
     return response;
   } catch (error) {
     console.error("Error creating session cookie:", error);
