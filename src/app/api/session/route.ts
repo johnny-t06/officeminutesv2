@@ -11,7 +11,7 @@ export const POST = async (request: NextRequest) => {
       { status: 200 }
     );
   } catch (error) {
-    console.log("Failed to veriy session", error);
+    console.log("Failed to verify session", error);
     const response = NextResponse.json({ message: "Reauthenticate" });
     response.cookies.delete("session");
     return response;
