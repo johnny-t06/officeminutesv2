@@ -83,7 +83,7 @@ const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
             <Typography variant="subtitle2">View All</Typography>
           </Button>
         </Box>
-        <Box sx={{ padding: "16px, 16px", height: "48%", overflow: "auto" }}>
+        <Box height="256px" overflow="scroll">
           <DisplayTas tas={tas} />
         </Box>
         {/* ToDO (johnnyt-06) Implement TA support wall*/}
