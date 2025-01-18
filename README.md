@@ -22,7 +22,9 @@ Students can view class information add public or private questions, and join pu
 
 
 ## To run locally
-You will need to initialize a Firebase project and extract the following keys. Download packages with npm and run ``` npm run dev ```. View on localhost:3000. 
+You will need to initialize a Firebase project and extract the following keys and populate a .env file. 
+
+Download packages with npm and run ``` npm run dev ```. View on localhost:3000. 
 
 ### Environment Variables
 
