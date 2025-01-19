@@ -33,3 +33,17 @@ export const POST = async (request: NextRequest) => {
     );
   }
 };
+
+export const GET = async (request: NextRequest) => {
+  const sessionCookie = request.cookies.get("session");
+  if (!sessionCookie) {
+    return NextResponse.json(
+      { message: "Cookie is not defined" },
+      { status: 500 }
+    );
+  }
+  return NextResponse.json(
+    { message: "Cookie is defined", data: sessionCookie },
+    { status: 200 }
+  );
+};

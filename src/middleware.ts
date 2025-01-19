@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const middleware = async (request: NextRequest) => {
   const sessionCookie = request.cookies.get("session");
+  if (process.env.BYPASS_SESSION === "true") {
+    console.warn("Session middleware bypassed with env var");
+    return NextResponse.next();
+  }
 
   if (!sessionCookie) {
     return NextResponse.redirect(new URL("/login", request.url));

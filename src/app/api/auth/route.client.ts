@@ -10,3 +10,12 @@ export const setSessionCookie = async (idToken: string) => {
   const data = await response.json();
   return data;
 };
+
+export const getSessionCookie = async () => {
+  const response = await fetch("/api/auth", {
+    method: "GET",
+  });
+
+  const data = await response.json();
+  return data;
+};
