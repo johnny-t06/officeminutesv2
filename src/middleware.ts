@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const redirectToLogin = (request: NextRequest, hasCookie: Boolean) => {
+const redirectToLogin = (request: NextRequest) => {
   const loginUrl = new URL("/login", request.url);
   loginUrl.searchParams.set("loggedOut", "true");
   const response = NextResponse.redirect(loginUrl);
-  if (hasCookie) {
-    response.cookies.delete("session");
-  }
+  response.cookies.delete("session");
+  response.headers.set("x-middleware-cache", "no-cache");
   return response;
 };
 
@@ -19,7 +18,7 @@ export const middleware = async (request: NextRequest) => {
 
   if (!sessionCookie) {
     console.error("Session cookie not found");
-    return redirectToLogin(request, false);
+    return redirectToLogin(request);
   }
 
   const origin = request.nextUrl.origin;
@@ -34,13 +33,13 @@ export const middleware = async (request: NextRequest) => {
 
     if (!res.ok) {
       console.error("Invalid session cookie", res.statusText);
-      return redirectToLogin(request, true);
+      return redirectToLogin(request);
     }
 
     return NextResponse.next();
   } catch (error) {
     console.error("Error verifying session cookie:", error);
-    return redirectToLogin(request, true);
+    return redirectToLogin(request);
   }
 };
 

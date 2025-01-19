@@ -17,6 +17,7 @@ export const POST = async (request: NextRequest) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
+      sameSite: true,
     };
 
     const response = NextResponse.json(
