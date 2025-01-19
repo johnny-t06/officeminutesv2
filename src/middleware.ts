@@ -18,6 +18,7 @@ export const middleware = async (request: NextRequest) => {
   }
 
   if (!sessionCookie) {
+    console.error("Session cookie not found");
     return redirectToLogin(request, false);
   }
 
@@ -32,7 +33,7 @@ export const middleware = async (request: NextRequest) => {
     });
 
     if (!res.ok) {
-      console.error("Error verifying session cookie:", res.statusText);
+      console.error("Invalid session cookie", res.statusText);
       return redirectToLogin(request, true);
     }
 

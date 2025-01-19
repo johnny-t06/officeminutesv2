@@ -15,7 +15,7 @@ export const POST = async (request: NextRequest) => {
     const options = {
       maxAge: expiresIn,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      secure: process.env.NODE_ENV === "production",
       path: "/",
     };
 
