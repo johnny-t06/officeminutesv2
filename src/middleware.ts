@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const redirectToLogin = (request: NextRequest, hasCookie: Boolean) => {
+  const loginUrl = new URL("/login", request.url);
+  loginUrl.searchParams.set("loggedOut", "true");
+  const response = NextResponse.redirect(loginUrl);
+  if (hasCookie) {
+    response.cookies.delete("session");
+  }
+  return response;
+};
+
 export const middleware = async (request: NextRequest) => {
   const sessionCookie = request.cookies.get("session");
   if (process.env.BYPASS_SESSION === "true") {
@@ -8,7 +18,7 @@ export const middleware = async (request: NextRequest) => {
   }
 
   if (!sessionCookie) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return redirectToLogin(request, false);
   }
 
   const origin = request.nextUrl.origin;
@@ -23,12 +33,13 @@ export const middleware = async (request: NextRequest) => {
 
     if (!res.ok) {
       console.error("Error verifying session cookie:", res.statusText);
-      return NextResponse.redirect(new URL("/login", request.url));
+      return redirectToLogin(request, true);
     }
+
     return NextResponse.next();
   } catch (error) {
     console.error("Error verifying session cookie:", error);
-    return NextResponse.redirect(new URL("/login", request.url));
+    return redirectToLogin(request, true);
   }
 };
 

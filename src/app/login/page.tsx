@@ -3,12 +3,19 @@
 import Spinner from "@components/Spinner";
 import { useUserSession } from "@context/UserSessionContext";
 import { Box, Button, Typography } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 export default function Page() {
-  const { user, onSignIn } = useUserSession();
+  const { user, onSignIn, onSignOut } = useUserSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  React.useEffect(() => {
+    if (searchParams.get("loggedOut") === "true") {
+      onSignOut();
+    }
+  }, [searchParams]);
 
   React.useEffect(() => {
     if (user) {
