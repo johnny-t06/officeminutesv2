@@ -11,6 +11,9 @@ import QuestionForm from "./form/QuestionForm";
 export const EditQuestion = () => {
   const { course, questions } = useOfficeHour();
   const user = getUserSessionOrRedirect();
+  if (!user) {
+    return null;
+  }
   const { queuePos, currQuestion } = getQueuePosition(questions, user);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
   if (queuePos === -1) {
