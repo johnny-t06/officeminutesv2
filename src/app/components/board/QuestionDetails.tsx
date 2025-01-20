@@ -2,11 +2,19 @@
 
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
-import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
+// import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
+import {
+  formatTimeDifference,
+  getActiveQuestionsByState,
+  // getUserSessionOrRedirect,
+  hasPassed,
+  sortQuestionsChronologically,
+  trimUserName,
+} from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { getUsers } from "@services/client/user";
+import { getUser, getUsers } from "@services/client/user";
 import {
   joinQuestionGroup,
   leaveQuestionGroup,
@@ -19,6 +27,8 @@ import { useRouter } from "next/navigation";
 import { serverTimestamp } from "firebase/firestore";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { sendEmail } from "@api/send-email/route.client";
+import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
@@ -38,6 +48,11 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
   } = props;
 
   const user = useUserOrRedirect();
+  // const user = getUserSessionOrRedirect();
+  const { questions } = useOfficeHour();
+  const sortedQuestions = sortQuestionsChronologically(questions);
+  const { [QuestionState.PENDING]: pendingQuestions } =
+    getActiveQuestionsByState(sortedQuestions);
   const router = useRouter();
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)
@@ -70,6 +85,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
   });
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
+      await sendTopUserNotif();
       await partialUpdateQuestion(question.id, courseId, {
         state: QuestionState.MISSING,
       });
@@ -78,6 +94,21 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
         state: QuestionState.RESOLVED,
       });
       router.push(`/private/course/${courseId}/queue`);
+    }
+  };
+
+  const sendTopUserNotif = async () => {
+    if (pendingQuestions.length > 1 && pendingQuestions[0].id === question.id) {
+      pendingQuestions[1].group.forEach(async (userId) => {
+        const user = await getUser(userId);
+        if (user) {
+          await sendEmail({
+            email: user.email,
+            subject: "You are at the top of the queue!",
+            body: "You will receive another notification when a TA is ready to help.",
+          });
+        }
+      });
     }
   };
 
@@ -238,10 +269,18 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                   width: "100%",
                 }}
                 onClick={async () => {
+                  await sendTopUserNotif();
                   await partialUpdateQuestion(question.id, courseId, {
                     state: QuestionState.IN_PROGRESS,
                     helpedBy: user.id,
                     helpedAt: serverTimestamp(),
+                  });
+                  users.forEach(async (user) => {
+                    await sendEmail({
+                      email: user.email,
+                      subject: "The TAs are ready to help!",
+                      body: "The TAs are ready to help you now! Please listen for your name.",
+                    });
                   });
                   router.push(`/private/course/${courseId}/queue`);
                 }}
