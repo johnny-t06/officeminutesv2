@@ -17,6 +17,7 @@ import { IdentifiableQuestion } from "@interfaces/type";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getUserSessionOrRedirect } from "@utils/index";
 import Header from "@components/Header";
+import { updateQuestion } from "@services/client/question";
 
 interface QuestionFormProps {
   // button to open the form
@@ -59,6 +60,8 @@ const QuestionForm = (props: QuestionFormProps) => {
   const trigger = React.cloneElement(triggerButton, {
     onClick: () => {
       setOpenForm(true);
+      setNewQuestion(currentQuestion);
+      setQuestionTags(defaultTags());
       if (typeof triggerButton.props.onClick === "function") {
         triggerButton.props.onClick();
       }
@@ -92,7 +95,16 @@ const QuestionForm = (props: QuestionFormProps) => {
           courseId: course.id,
         });
       }
-      // if title === edit submission
+      if (title === "Edit submission") {
+        await updateQuestion(
+          {
+            ...newQuestion,
+            tags: tagsArr,
+            group: [user.id],
+          },
+          course.id
+        );
+      }
     } else {
       console.log("Required fields not filled");
       // TODO(lnguye2693) - Display error
@@ -112,6 +124,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               <IconButton
                 onClick={() => {
                   setOpenForm(false);
+                  resetForm();
                 }}
               >
                 <CloseIcon />
@@ -223,6 +236,7 @@ const QuestionForm = (props: QuestionFormProps) => {
             </FormControl>
           </Box>
 
+          {/* TODO(lnguye2693) - Flag so each student only has 1 submission */}
           <Box right={0} left={0} bottom={0} padding={2}>
             <Button
               fullWidth
@@ -231,7 +245,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               sx={{ textTransform: "initial", borderRadius: 5 }}
               onClick={onSubmitForm}
             >
-              Join now
+              {title === "Join queue" ? <>Join now</> : <>Edit submission</>}
             </Button>
           </Box>
         </Box>

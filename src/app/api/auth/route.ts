@@ -1,4 +1,4 @@
-import admin from "@project/firebaseAdmin";
+import { getFirebaseAdminApp } from "@project/firebaseAdmin";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (request: NextRequest) => {
@@ -7,6 +7,7 @@ export const POST = async (request: NextRequest) => {
 
   try {
     // Create the session cookie
+    const admin = getFirebaseAdminApp();
     const sessionCookie = await admin
       .auth()
       .createSessionCookie(idToken, { expiresIn });
@@ -18,10 +19,12 @@ export const POST = async (request: NextRequest) => {
       secure: true, // Use secure cookies in production
     };
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Session cookie created" },
       { status: 200 }
-    ).cookies.set("session", sessionCookie, options);
+    );
+    response.cookies.set("session", sessionCookie, options);
+    return response;
   } catch (error) {
     console.error("Error creating session cookie:", error);
     return NextResponse.json(

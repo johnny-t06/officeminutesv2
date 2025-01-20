@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import admin from "./firebaseAdmin";
+import { getFirebaseAdminApp } from "./firebaseAdmin";
 
 export const middleware = async (request: NextRequest) => {
+  const admin = getFirebaseAdminApp();
   const sessionCookie = request.cookies.get("session");
-
   if (!sessionCookie) {
     return NextResponse.redirect(new URL("/login", request.url));
   }

@@ -176,5 +176,4 @@ export const deleteCourse = async (courseID: String) => {
   );
 
   await deleteDoc(courseDoc);
-  console.log("Course deleted");
 };
