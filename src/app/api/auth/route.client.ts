@@ -11,11 +11,10 @@ export const setSessionCookie = async (idToken: string) => {
   return data;
 };
 
-export const getSessionCookie = async () => {
+export const getUserFromSession = async () => {
   const response = await fetch("/api/auth", {
     method: "GET",
   });
-
   const data = await response.json();
-  return data;
+  return data.user || null;
 };

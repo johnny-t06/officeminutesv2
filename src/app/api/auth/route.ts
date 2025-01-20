@@ -35,6 +35,7 @@ export const POST = async (request: NextRequest) => {
   }
 };
 
+// Returns Firebase User Object (not IdentifiableUser)
 export const GET = async (request: NextRequest) => {
   const sessionCookie = request.cookies.get("session");
   if (!sessionCookie) {
@@ -43,8 +44,22 @@ export const GET = async (request: NextRequest) => {
       { status: 500 }
     );
   }
-  return NextResponse.json(
-    { message: "Cookie is defined", data: sessionCookie },
-    { status: 200 }
-  );
+  const admin = getFirebaseAdminApp();
+  try {
+    const decodedToken = await admin
+      .auth()
+      .verifySessionCookie(sessionCookie.value);
+
+    const user = await admin.auth().getUser(decodedToken.uid);
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: "Valid user", user }, { status: 200 });
+  } catch (error) {
+    console.log("Failed to verify session", error);
+    const response = NextResponse.json({ message: "Reauthenticate" });
+    response.cookies.delete("session");
+    return response;
+  }
 };
