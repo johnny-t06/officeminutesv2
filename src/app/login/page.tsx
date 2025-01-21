@@ -9,13 +9,6 @@ import React from "react";
 export default function Page() {
   const { user, onSignIn, onSignOut } = useUserSession();
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  React.useEffect(() => {
-    if (searchParams.get("loggedOut") === "true") {
-      onSignOut();
-    }
-  }, [searchParams]);
 
   React.useEffect(() => {
     if (user) {

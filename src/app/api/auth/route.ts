@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (request: NextRequest) => {
   const { idToken } = await request.json();
-  const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+  // const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+  const expiresIn = 300000;
   const admin = getFirebaseAdminApp();
   try {
     // Create the session cookie
