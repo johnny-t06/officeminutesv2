@@ -7,13 +7,30 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Page() {
-  const { user, onSignIn } = useUserSession();
+  const { user, onSignIn, session } = useUserSession();
+  const [popupBlocked, setPopupBlocked] = React.useState(false);
   const router = useRouter();
+
   React.useEffect(() => {
     if (user) {
-      router.replace("/private/course");
+      router.push("/private/course");
     }
   }, [user]);
+
+  React.useEffect(() => {
+    const testPopup = window.open("", "_blank", "width=1,height=1");
+    if (
+      !testPopup ||
+      testPopup.closed ||
+      typeof testPopup.closed === "undefined"
+    ) {
+      setPopupBlocked(true);
+      return;
+    }
+    testPopup.close();
+    setPopupBlocked(false);
+  }, []);
+
   if (user) {
     return (
       <Box className="flex h-screen w-screen flex-col items-center justify-center">
@@ -21,6 +38,7 @@ export default function Page() {
       </Box>
     );
   }
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col items-center">
@@ -40,13 +58,25 @@ export default function Page() {
         </div>
         <div className="mt-1">Answers in minutes, Not hours</div>
         <Button
-          className="py-2.5 px-6 bg-[#38608F] rounded-full mt-6 normal-case"
+          className={`py-2.5 px-6 bg-[#38608F] rounded-full mt-6 normal-case ${
+            popupBlocked
+              ? "bg-[#BCC6D4] cursor-not-allowed"
+              : "bg-[#38608F] cursor-pointer"
+          }`}
           onClick={() => onSignIn()}
+          disabled={popupBlocked}
         >
           <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
             Get started
           </Typography>
         </Button>
+        {popupBlocked && (
+          <Box className="flex text-center my-6">
+            <Typography variant="subtitle2" color="#000000" fontWeight={600}>
+              Please enable popups to login with Google for OfficeMintues!
+            </Typography>
+          </Box>
+        )}
       </div>
     </div>
   );

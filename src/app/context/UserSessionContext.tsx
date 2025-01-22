@@ -16,6 +16,7 @@ import Spinner from "@components/Spinner";
 import { Box } from "@mui/material";
 import { setSessionCookie } from "@api/auth/route.client";
 
+const PROD_ENV = process.env.NEXT_PUBLIC_APP_ENV === "production";
 interface Session {
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -45,6 +46,7 @@ export const UserSessionContextProvider = ({
     isLoading: true,
     error: null,
   });
+
   const router = useRouter();
 
   React.useEffect(() => {
@@ -53,6 +55,10 @@ export const UserSessionContextProvider = ({
       return;
     }
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser?.email?.endsWith("@tufts.edu") && PROD_ENV) {
+        await onSignOut();
+        return;
+      }
       if (firebaseUser) {
         const currUser = await getUser(firebaseUser?.uid);
         setUser(currUser);
@@ -71,10 +77,15 @@ export const UserSessionContextProvider = ({
       const provider = new GoogleAuthProvider();
 
       const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken();
+      const resUser = result.user;
+      if (!resUser.email?.endsWith("@tufts.edu") && PROD_ENV) {
+        alert("Please login with your Tufts email");
+        return;
+      }
+
+      const idToken = await resUser.getIdToken();
       await setSessionCookie(idToken);
 
-      const resUser = result.user;
       const maybeUser = await getUser(resUser.uid);
       if (maybeUser === null) {
         setUser(
@@ -103,24 +114,16 @@ export const UserSessionContextProvider = ({
 
   const onSignOut = async () => {
     try {
-      const testPopup = window.open("", "_blank", "width=1,height=1");
-      if (
-        !testPopup ||
-        testPopup.closed ||
-        typeof testPopup.closed === "undefined"
-      ) {
-        alert(
-          "It seems that popups are blocked in your browser. Please enable popups to sign in to OfficeMinutes!"
-        );
-        return;
-      }
-      testPopup.close(); // Close the test popup if it opened successfully
-
       setSession((prev) => ({ ...prev, isLoading: true }));
       await signOut(auth);
       setUser(null);
-      setSession({ isAuthenticated: false, isLoading: false, error: null });
-      router.push("/");
+      setSession({
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      });
+      router.push("/login");
+      router.refresh();
     } catch (e: any) {
       setSession({
         isAuthenticated: false,
@@ -130,6 +133,7 @@ export const UserSessionContextProvider = ({
       console.error(e);
     }
   };
+
   return session.isLoading ? (
     <Box className="flex h-screen w-screen flex-col items-center justify-center">
       <Spinner />
