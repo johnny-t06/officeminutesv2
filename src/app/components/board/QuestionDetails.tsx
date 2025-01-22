@@ -28,6 +28,7 @@ interface QuestionDetailsProps {
   courseId: string;
   fromTAQueue?: boolean;
   fromCurrentlyHelping?: boolean;
+  fromStudentCurrentHelping?: boolean;
 }
 
 export const QuestionDetails = (props: QuestionDetailsProps) => {
@@ -36,7 +37,10 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     courseId,
     fromTAQueue = false,
     fromCurrentlyHelping = false,
+    fromStudentCurrentHelping = false,
   } = props;
+
+  console.log(fromTAQueue, fromCurrentlyHelping);
 
   const user = getUserSessionOrRedirect();
   const router = useRouter();
@@ -93,9 +97,14 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
         <>
           <Box
             sx={{
-              backgroundColor: fromCurrentlyHelping ? "#F2F3FA" : "",
-              borderRadius: fromCurrentlyHelping ? "12px" : "",
-              padding: fromCurrentlyHelping ? "12px" : "",
+              backgroundColor:
+                fromCurrentlyHelping || fromStudentCurrentHelping
+                  ? "#F2F3FA"
+                  : "",
+              borderRadius:
+                fromCurrentlyHelping || fromStudentCurrentHelping ? "12px" : "",
+              padding:
+                fromCurrentlyHelping || fromStudentCurrentHelping ? "12px" : "",
             }}
           >
             <Box
@@ -105,7 +114,10 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               gap="16px"
               alignItems="center"
               sx={{
-                marginTop: fromCurrentlyHelping ? "" : "24px",
+                marginTop:
+                  fromCurrentlyHelping || fromStudentCurrentHelping
+                    ? ""
+                    : "24px",
               }}
             >
               <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
@@ -264,7 +276,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                 </CustomButton>
               )}
             </Box>
-          ) : (
+          ) : fromStudentCurrentHelping ? null : (
             <Box
               marginTop="8px"
               display={hasPassed(question) ? "none" : "flex"}
