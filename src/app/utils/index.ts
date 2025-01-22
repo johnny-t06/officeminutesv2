@@ -142,13 +142,13 @@ export const getExpiredQuestions = (
   );
 
 export const getUserSessionOrRedirect = () => {
-  const { user } = useUserSession();
+  const { user, session } = useUserSession();
   const router = useRouter();
   React.useEffect(() => {
-    if (!user) {
+    if (!user && !session.isLoading) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, router, session]);
 
   return user ?? null;
 };
