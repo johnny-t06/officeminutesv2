@@ -2,10 +2,11 @@
 import { IdentifiableUser } from "@interfaces/type";
 import {
   browserLocalPersistence,
+  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   setPersistence,
-  signInWithPopup,
+  signInWithRedirect,
   signOut,
 } from "firebase/auth";
 import React from "react";
@@ -47,14 +48,22 @@ export const UserSessionContextProvider = ({
   });
   const router = useRouter();
 
+  const handleError = (message: string) => {
+    setSession({
+      isAuthenticated: false,
+      isLoading: false,
+      error: message,
+    });
+  };
+
   React.useEffect(() => {
     // TODO: on password change, add additional check
-    if (user !== null) {
+    if (user !== null || session.isLoading || !session.isAuthenticated) {
       return;
     }
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const currUser = await getUser(firebaseUser?.uid);
+      const currUser = await getUser(firebaseUser?.uid ?? "");
+      if (firebaseUser && currUser !== null) {
         setUser(currUser);
         setSession({ isAuthenticated: true, isLoading: false, error: null });
       } else {
@@ -65,39 +74,62 @@ export const UserSessionContextProvider = ({
     return () => unsub();
   }, []);
 
+  React.useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+
+        if (!result) {
+          handleError("No result from redirect");
+          return;
+        }
+
+        const { user } = result;
+
+        if (!user.email?.endsWith("@tufts.edu")) {
+          handleError("No result from redirect");
+          await onSignOut();
+          return;
+        }
+
+        const idToken = await user.getIdToken();
+        await setSessionCookie(idToken);
+
+        const userData = await fetchOrCreateUser(user);
+        setUser(userData);
+
+        setSession({ isLoading: false, isAuthenticated: true, error: null });
+        router.push("/private/course");
+      } catch (error: any) {
+        handleError("Error signing in");
+      }
+    };
+
+    const fetchOrCreateUser = async (user: any) => {
+      const maybeUser = await getUser(user.uid);
+      if (maybeUser) return maybeUser;
+
+      return await addUser({
+        id: user.uid,
+        name: user.displayName ?? "",
+        tufts_username: "",
+        email: user.email ?? "",
+        role: "user",
+        courses: [],
+      });
+    };
+
+    handleRedirectResult();
+  }, []);
+
   const onSignIn = async () => {
     try {
       await setPersistence(auth, browserLocalPersistence);
       const provider = new GoogleAuthProvider();
-
-      const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken();
-      await setSessionCookie(idToken);
-
-      const resUser = result.user;
-      const maybeUser = await getUser(resUser.uid);
-      if (maybeUser === null) {
-        setUser(
-          await addUser({
-            id: resUser.uid,
-            name: resUser.displayName ?? "",
-            tufts_username: "",
-            email: resUser.email ?? "",
-            role: "user",
-            courses: [],
-          })
-        );
-      } else {
-        setUser(maybeUser);
-      }
-      setSession({ isLoading: false, isAuthenticated: true, error: null });
-      router.push("/private/course");
-    } catch (e: any) {
-      setSession({
-        isAuthenticated: false,
-        isLoading: false,
-        error: e.message,
-      });
+      await signInWithRedirect(auth, provider);
+      setSession({ isAuthenticated: false, isLoading: true, error: null });
+    } catch (error: any) {
+      handleError("Failed to start sign-in process");
     }
   };
 
@@ -109,14 +141,10 @@ export const UserSessionContextProvider = ({
       setSession({ isAuthenticated: false, isLoading: false, error: null });
       router.push("/");
     } catch (e: any) {
-      setSession({
-        isAuthenticated: false,
-        isLoading: false,
-        error: e.message,
-      });
-      console.error(e);
+      handleError("Failed to sign out");
     }
   };
+
   return session.isLoading ? (
     <Box className="flex h-screen w-screen flex-col items-center justify-center">
       <Spinner />

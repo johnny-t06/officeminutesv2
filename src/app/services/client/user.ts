@@ -20,6 +20,9 @@ export const addUser = async (user: IdentifiableUser) => {
 export const getUser = async (
   userID: string
 ): Promise<IdentifiableUser | null> => {
+  if (userID === "") {
+    return null;
+  }
   try {
     const userDoc = await getDoc(
       doc(db, `users/${userID}`).withConverter(userConverter)
