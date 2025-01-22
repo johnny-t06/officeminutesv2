@@ -17,6 +17,7 @@ import Spinner from "@components/Spinner";
 import { Box } from "@mui/material";
 import { setSessionCookie } from "@api/auth/route.client";
 
+const PROD_ENV = process.env.NODE_ENV === "production";
 interface Session {
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -86,7 +87,7 @@ export const UserSessionContextProvider = ({
 
         const { user } = result;
 
-        if (!user.email?.endsWith("@tufts.edu")) {
+        if (!user.email?.endsWith("@tufts.edu") && PROD_ENV) {
           handleError("No result from redirect");
           await onSignOut();
           return;

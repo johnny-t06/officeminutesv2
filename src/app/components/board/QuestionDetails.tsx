@@ -22,6 +22,7 @@ import { CustomButton } from "@components/buttons/CustomButton";
 import { QuestionState } from "@interfaces/db";
 import { useRouter } from "next/navigation";
 import { serverTimestamp } from "firebase/firestore";
+import useApiThrottle from "@hooks/useApiThrottle";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
@@ -66,7 +67,9 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     }
     setJoinGroup(!joinGroup);
   };
-  
+  const { fn: throttledOnJoinGroup } = useApiThrottle({
+    fn: onJoinGroup,
+  });
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
       await partialUpdateQuestion(question.id, courseId, {
@@ -285,7 +288,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                   width: "100%",
                   color: joinGroup ? "#000" : "#fff",
                 }}
-                onClick={onJoinGroup}
+                onClick={throttledOnJoinGroup}
               >
                 {joinGroup ? "Leave group" : "Join group"}
               </CustomButton>

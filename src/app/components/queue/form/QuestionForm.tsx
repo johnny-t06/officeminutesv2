@@ -18,6 +18,8 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getUserSessionOrRedirect } from "@utils/index";
 import Header from "@components/Header";
 import { updateQuestion } from "@services/client/question";
+import { CustomModal } from "@components/CustomModal";
+import useApiThrottle from "@hooks/useApiThrottle";
 
 interface QuestionFormProps {
   // button to open the form
@@ -32,6 +34,11 @@ const QuestionForm = (props: QuestionFormProps) => {
   const [openForm, setOpenForm] = React.useState(false);
   const { course } = useOfficeHour();
   const user = getUserSessionOrRedirect();
+
+  if (!user) {
+    return null;
+  }
+
   const [newQuestion, setNewQuestion] =
     React.useState<IdentifiableQuestion>(currentQuestion);
 
@@ -49,9 +56,12 @@ const QuestionForm = (props: QuestionFormProps) => {
     Record<string, TagOption[]>
   >(defaultTags());
 
-  if (!user) {
-    return null;
-  }
+  const [isErrorVisible, setIsErrorVisible] = React.useState<boolean>(false);
+  const [errorFields, setErrorFields] = React.useState<{
+    title: boolean;
+    description: boolean;
+    tags: boolean;
+  }>({ title: false, description: false, tags: false });
 
   const updateQuestionTags = (tagsKey: string, newTags: TagOption[]) => {
     setQuestionTags({ ...questionTags, [tagsKey]: newTags });
@@ -71,6 +81,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   const resetForm = () => {
     setNewQuestion(defaultQuestion());
     setQuestionTags(defaultTags());
+    setErrorFields({ title: false, description: false, tags: false });
   };
 
   const onSubmitForm = async () => {
@@ -105,19 +116,40 @@ const QuestionForm = (props: QuestionFormProps) => {
           course.id
         );
       }
+      setOpenForm(false);
+      resetForm();
     } else {
-      console.log("Required fields not filled");
-      // TODO(lnguye2693) - Display error
+      setIsErrorVisible(true);
+      setErrorFields({
+        title: newQuestion.title === "",
+        description: newQuestion.description === "",
+        tags: tagsValidate.length > 0,
+      });
     }
-
-    setOpenForm(false);
-    resetForm();
   };
-
+  const { fetching, fn: throttledOnSubmit } = useApiThrottle({
+    fn: onSubmitForm,
+  });
+  const ErrorModalButtons = [
+    {
+      text: "Ok",
+      onClick: () => {
+        setIsErrorVisible(false);
+      },
+    },
+  ];
   return (
     <Box>
       {trigger}
+
       <Drawer open={openForm} anchor="bottom">
+        <CustomModal
+          title={"There was an error"}
+          subtitle={"All required fields are not filled"}
+          open={isErrorVisible}
+          setOpen={setIsErrorVisible}
+          buttons={ErrorModalButtons}
+        />
         <Box height="100vh" width="100vw" overflow="scroll">
           <Header
             leftIcon={
@@ -146,8 +178,13 @@ const QuestionForm = (props: QuestionFormProps) => {
               focused
               value={newQuestion.title}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setNewQuestion({ ...newQuestion, title: event.target.value });
+                setNewQuestion({
+                  ...newQuestion,
+                  title: event.target.value.trim(),
+                });
               }}
+              error={errorFields.title}
+              helperText={errorFields.title ? "Title is required" : ""}
             />
 
             <TextField
@@ -161,9 +198,13 @@ const QuestionForm = (props: QuestionFormProps) => {
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setNewQuestion({
                   ...newQuestion,
-                  description: event.target.value,
+                  description: event.target.value.trim(),
                 });
               }}
+              error={errorFields.description}
+              helperText={
+                errorFields.description ? "Description is required" : ""
+              }
             />
 
             {/* TODO(lnguyen2693) - Add index for tags, sort and display them 
@@ -243,9 +284,10 @@ const QuestionForm = (props: QuestionFormProps) => {
               color="primary"
               variant="contained"
               sx={{ textTransform: "initial", borderRadius: 5 }}
-              onClick={onSubmitForm}
+              onClick={throttledOnSubmit}
+              disabled={fetching}
             >
-              {title === "Join queue" ? <>Join now</> : <>Edit submission</>}
+              {title === "Join queue" ? "Join now" : "Edit submission"}
             </Button>
           </Box>
         </Box>

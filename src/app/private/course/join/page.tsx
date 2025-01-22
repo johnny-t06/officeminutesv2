@@ -9,6 +9,7 @@ import { getCourses, joinCourse } from "services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
 import { getUserSessionOrRedirect } from "@utils/index";
 import { CustomModal } from "@components/CustomModal";
+import useApiThrottle from "@hooks/useApiThrottle";
 
 const Page = () => {
   const router = useRouter();
@@ -46,36 +47,45 @@ const Page = () => {
       },
     },
   ];
-  const joinClicked = () => {
+
+  const joinClicked = async () => {
     try {
       if (code.length < 6 || code.length > 8) {
         return;
       }
 
-      getCourses().then(async (courses) => {
-        const course = courses.find((course) => course.code === code);
+      const courses = await getCourses();
+      const course = courses.find((course) => course.code === code);
 
-        if (course && user) {
-          if (
-            course.students.includes(user.id) ||
-            user.courses.includes(course.id)
-          ) {
-            setEnrolledError(true);
-            return;
-          }
-
-          await joinCourse(course.id, user.id);
-          router.push(`/private/course/${course.id}`);
-          setUser({ ...user, courses: [...user.courses, course.id] });
-        } else {
-          setNotFoundError(true);
+      if (course && user) {
+        if (
+          course.students.includes(user.id) ||
+          user.courses.includes(course.id)
+        ) {
+          setEnrolledError(true);
+          return;
         }
-      });
+
+        await joinCourse(course.id, user.id);
+        router.push(`/private/course/${course.id}`);
+        setUser({ ...user, courses: [...user.courses, course.id] });
+      } else {
+        setNotFoundError(true);
+      }
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
+  const { fetching, fn: throttledJoinClicked } = useApiThrottle({
+    fn: joinClicked,
+  });
+  const joinDisabled =
+    code.length < 6 ||
+    code.length > 8 ||
+    fetching ||
+    enrolledError ||
+    notFoundError;
   return (
     <div>
       <Header
@@ -88,12 +98,12 @@ const Page = () => {
         rightIcon={
           <Button
             className={`py-2.5 px-6 rounded-full mr-2 normal-case ${
-              code.length < 6 || code.length > 8
+              joinDisabled
                 ? "bg-[#BCC6D4] cursor-not-allowed"
                 : "bg-[#38608F] cursor-pointer"
             }`}
-            onClick={joinClicked}
-            disabled={code.length < 6 || code.length > 8}
+            onClick={throttledJoinClicked}
+            disabled={joinDisabled}
           >
             <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
               Join
