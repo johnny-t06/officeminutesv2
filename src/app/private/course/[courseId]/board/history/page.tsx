@@ -20,7 +20,7 @@ const Page = (props: PageProps) => {
   const { courseId } = props.params;
   const { course, questions } = useOfficeHour();
   const user = getUserSessionOrRedirect();
-  const isUserTA = course.tas.includes(user.id);
+  // const isUserTA = course.tas.includes(user.id);
   const expiredQuestions = getExpiredQuestions(questions);
 
   const { loading, isUserTA } = useCourseData({ fetchUsers: false });
