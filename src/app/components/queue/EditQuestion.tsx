@@ -1,24 +1,110 @@
 import { Box, Button, Container } from "@mui/material";
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
+import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getQueuePosition, getUserSessionOrRedirect } from "@utils/index";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
 import { deleteQuestion } from "@services/client/question";
 import QuestionForm from "./form/QuestionForm";
+import TaCard from "@components/tas/TaCard";
+import { useCourseData } from "@hooks/useCourseData";
+import Spinner from "@components/Spinner";
+import { QuestionDetails } from "@components/board/QuestionDetails";
 
 export const EditQuestion = () => {
   const { course, questions } = useOfficeHour();
+  const { tas, loading } = useCourseData({
+    fetchUsers: true,
+  });
   const user = getUserSessionOrRedirect();
   if (!user) {
     return null;
   }
   const { queuePos, currQuestion } = getQueuePosition(questions, user);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
+
   if (queuePos === -1) {
     return null;
   }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen ">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (currQuestion.helpedBy !== "") {
+    const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
+
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          color: "#43474E",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            columnGap: "10px",
+            padding: "16px",
+            bgcolor: "#D7E3F8",
+            justifyContent: "center",
+            marginLeft: "-16px",
+            marginTop: "-18px",
+            width: "100vw",
+          }}
+        >
+          <NotificationsActiveOutlinedIcon style={{ fontSize: "20px" }} />
+          <Box fontWeight={500} fontSize="14px">
+            It's your turn
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            paddingTop: "20px",
+            paddingRight: "10px",
+            paddingLeft: "10px",
+            fontWeight: 700,
+            color: "#545F70",
+            fontSize: "18.98px",
+          }}
+        >
+          Your TA
+        </Box>
+        <Box sx={{ paddingLeft: "10px" }}>
+          <TaCard ta={ta!} />
+        </Box>
+
+        <Box
+          sx={{
+            paddingTop: "20px",
+            paddingRight: "10px",
+            paddingLeft: "10px",
+            fontWeight: 700,
+            color: "#545F70",
+            fontSize: "18.98px",
+          }}
+        >
+          Your Question
+        </Box>
+          <QuestionDetails
+            question={currQuestion}
+            courseId={course.id}
+            fromStudentCurrentHelping
+          />
+      </Box>
+    );
+  }
+
   const leaveQueue = () => {
     deleteQuestion(course.id, currQuestion.id);
     setLeaveQueueModal(false);

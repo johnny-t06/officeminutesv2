@@ -7,7 +7,11 @@ import Queue from "@components/queue";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import { getUserSessionOrRedirect, timeSince } from "@utils/index";
+import {
+  getQueuePosition,
+  getUserSessionOrRedirect,
+  timeSince,
+} from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import Spinner from "@components/Spinner";
 import theme from "theme";
@@ -34,6 +38,7 @@ const Page = () => {
     return null;
   }
   const isUserTA = course.tas.includes(user.id);
+  const { currQuestion } = getQueuePosition(questions, user);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -132,10 +137,17 @@ const Page = () => {
           ) : (
             <>
               <EditQuestion />
-              <CreateQuestion />
+              {currQuestion.helpedBy === "" ? <CreateQuestion /> : null}
             </>
           )}
-          <Queue />
+
+          {isUserTA ? (
+            <Queue />
+          ) : currQuestion.helpedBy === "" ? (
+            <Queue />
+          ) : null}
+
+          {/* <Queue /> */}
         </>
       ) : (
         <Box>
