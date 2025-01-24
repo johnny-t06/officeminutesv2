@@ -2,12 +2,7 @@
 
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
-import {
-  formatTimeDifference,
-  getUserSessionOrRedirect,
-  hasPassed,
-  trimUserName,
-} from "@utils/index";
+import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -23,6 +18,7 @@ import { QuestionState } from "@interfaces/db";
 import { useRouter } from "next/navigation";
 import { serverTimestamp } from "firebase/firestore";
 import useApiThrottle from "@hooks/useApiThrottle";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
@@ -39,7 +35,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     fromCurrentlyHelping = false,
   } = props;
 
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   const router = useRouter();
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)

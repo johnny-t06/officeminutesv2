@@ -15,11 +15,11 @@ import { TagOption } from "@interfaces/db";
 import { createQuestion, defaultQuestion } from "api/question";
 import { IdentifiableQuestion } from "@interfaces/type";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { getUserSessionOrRedirect } from "@utils/index";
 import Header from "@components/Header";
 import { updateQuestion } from "@services/client/question";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 interface QuestionFormProps {
   // button to open the form
@@ -33,7 +33,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   const { triggerButton, title, currentQuestion } = props;
   const [openForm, setOpenForm] = React.useState(false);
   const { course } = useOfficeHour();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
 
   if (!user) {
     return null;

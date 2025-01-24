@@ -7,14 +7,14 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { getCourses, joinCourse } from "services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
-import { getUserSessionOrRedirect } from "@utils/index";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 const Page = () => {
   const router = useRouter();
   const { setUser } = useUserSession();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
 
   const [code, setCode] = React.useState("");
   const [enrolledError, setEnrolledError] = React.useState(false);

@@ -16,7 +16,6 @@ import Spinner from "@components/Spinner";
 import { Box } from "@mui/material";
 import { setSessionCookie } from "@api/auth/route.client";
 
-const PROD_ENV = process.env.NEXT_PUBLIC_APP_ENV === "production";
 interface Session {
   isAuthenticated: boolean;
   isLoading: boolean;

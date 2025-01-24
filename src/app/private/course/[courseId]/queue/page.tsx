@@ -7,7 +7,7 @@ import Queue from "@components/queue";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import { getUserSessionOrRedirect, timeSince } from "@utils/index";
+import { timeSince } from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import Spinner from "@components/Spinner";
 import theme from "theme";
@@ -19,9 +19,10 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import { partialUpdateCourse } from "@services/client/course";
 import { EditQuestion } from "@components/queue/EditQuestion";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 const Page = () => {
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   const { course, questions } = useOfficeHour();
   const [helpingQuestion, setHelpingQuestion] = React.useState<
     IdentifiableQuestion | undefined
