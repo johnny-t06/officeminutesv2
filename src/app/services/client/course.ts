@@ -170,6 +170,23 @@ export const getCoursesByIds = async (
   return coursesDocs;
 };
 
+export const getCourseByCode = async (code: String) => {
+  const courseQuery = query(
+    collection(db, `courses`).withConverter(courseConverter),
+    where("code", "==", code)
+  );
+
+  const snapshot = await getDocs(courseQuery);
+
+  if (snapshot.docs.length === 0) {
+    return null;
+  }
+
+  const courseDoc = snapshot.docs[0];
+
+  return { id: courseDoc.id, ...courseDoc.data() } as IdentifiableCourse;
+};
+
 export const deleteCourse = async (courseID: String) => {
   const courseDoc = doc(db, `courses/${courseID}`).withConverter(
     courseConverter

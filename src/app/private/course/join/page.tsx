@@ -5,7 +5,11 @@ import { Button, IconButton, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { getCourses, joinCourse } from "services/client/course";
+import {
+  getCourseByCode,
+  getCourses,
+  joinCourse,
+} from "services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
@@ -54,9 +58,7 @@ const Page = () => {
         return;
       }
 
-      const courses = await getCourses();
-      const course = courses.find((course) => course.code === code);
-
+      const course = await getCourseByCode(code);
       if (course && user) {
         if (
           course.students.includes(user.id) ||
