@@ -7,8 +7,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Page() {
-  const { user, onSignIn, session } = useUserSession();
-  const [popupBlocked, setPopupBlocked] = React.useState(false);
+  const { user, onSignIn } = useUserSession();
   const router = useRouter();
 
   React.useEffect(() => {
@@ -16,20 +15,6 @@ export default function Page() {
       router.push("/private/course");
     }
   }, [user]);
-
-  React.useEffect(() => {
-    const testPopup = window.open("", "_blank", "width=1,height=1");
-    if (
-      !testPopup ||
-      testPopup.closed ||
-      typeof testPopup.closed === "undefined"
-    ) {
-      setPopupBlocked(true);
-      return;
-    }
-    testPopup.close();
-    setPopupBlocked(false);
-  }, []);
 
   if (user) {
     return (
@@ -58,25 +43,13 @@ export default function Page() {
         </div>
         <div className="mt-1">Answers in minutes, Not hours</div>
         <Button
-          className={`py-2.5 px-6 bg-[#38608F] rounded-full mt-6 normal-case ${
-            popupBlocked
-              ? "bg-[#BCC6D4] cursor-not-allowed"
-              : "bg-[#38608F] cursor-pointer"
-          }`}
+          className={`py-2.5 px-6 bg-[#38608F] rounded-full mt-6 normal-case `}
           onClick={() => onSignIn()}
-          disabled={popupBlocked}
         >
           <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
             Get started
           </Typography>
         </Button>
-        {popupBlocked && (
-          <Box className="flex text-center my-6">
-            <Typography variant="subtitle2" color="#000000" fontWeight={600}>
-              Please enable popups to login with Google for OfficeMintues!
-            </Typography>
-          </Box>
-        )}
       </div>
     </div>
   );

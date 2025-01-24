@@ -55,10 +55,6 @@ export const UserSessionContextProvider = ({
       return;
     }
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!firebaseUser?.email?.endsWith("@tufts.edu") && PROD_ENV) {
-        await onSignOut();
-        return;
-      }
       if (firebaseUser) {
         const currUser = await getUser(firebaseUser?.uid);
         setUser(currUser);
@@ -75,14 +71,11 @@ export const UserSessionContextProvider = ({
     try {
       await setPersistence(auth, browserLocalPersistence);
       const provider = new GoogleAuthProvider();
-
+      provider.setCustomParameters({
+        hd: "tufts.edu",
+      });
       const result = await signInWithPopup(auth, provider);
       const resUser = result.user;
-      if (!resUser.email?.endsWith("@tufts.edu") && PROD_ENV) {
-        alert("Please login with your Tufts email");
-        return;
-      }
-
       const idToken = await resUser.getIdToken();
       await setSessionCookie(idToken);
 
