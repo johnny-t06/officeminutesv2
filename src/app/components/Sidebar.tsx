@@ -82,27 +82,30 @@ const Sidebar = () => {
           flexDirection: "column",
           padding: "30px 30px 0",
           height: "100vh",
+          overflow: "hidden",
         }}
       >
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h6" color={theme.palette.text.primary}>
-              My Classes
-            </Typography>
-            <MenuButton isOpen={false} />
-          </Box>
+          <Typography variant="h6" color={theme.palette.text.primary}>
+            My Classes
+          </Typography>
+          <MenuButton isOpen={false} />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            overflowY: "scroll",
+          }}
+        >
           <List>
             {courses.map((course, index) => (
               <ListItemButton
@@ -123,21 +126,21 @@ const Sidebar = () => {
               </ListItemButton>
             ))}
           </List>
+          <Divider sx={{ marginBottom: "12px" }} />
+          <Button
+            sx={{
+              justifyContent: "flex-start",
+              gap: "8px",
+              textTransform: "none",
+              color: "inherit",
+              marginBottom: "12px",
+            }}
+            onClick={handleManageCoursesClick}
+          >
+            <ModeEditOutlinedIcon />
+            <Typography variant="body1">Manage Classes</Typography>
+          </Button>
         </Box>
-        <Divider sx={{ marginBottom: "12px" }} />
-
-        <Button
-          sx={{
-            justifyContent: "flex-start",
-            gap: "8px",
-            textTransform: "none",
-            color: "inherit",
-          }}
-          onClick={handleManageCoursesClick}
-        >
-          <ModeEditOutlinedIcon />
-          <Typography variant="body1">Manage Classes</Typography>
-        </Button>
 
         <Box
           sx={{
@@ -177,7 +180,7 @@ const Sidebar = () => {
                 <Typography variant="subtitle1">
                   {trimUserName(user)}
                 </Typography>
-                <Typography variant="caption" noWrap>
+                <Typography variant="caption">
                   {user ? user.email : ""}
                 </Typography>
               </Box>
