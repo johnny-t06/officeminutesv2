@@ -16,6 +16,7 @@ import Spinner from "@components/Spinner";
 import { Box } from "@mui/material";
 import { setSessionCookie } from "@api/auth/route.client";
 
+const PROD_ENV = process.env.NEXT_PUBLIC_APP_ENV === "production";
 interface Session {
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -70,9 +71,11 @@ export const UserSessionContextProvider = ({
     try {
       await setPersistence(auth, browserLocalPersistence);
       const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({
-        hd: "tufts.edu",
-      });
+      if (PROD_ENV) {
+        provider.setCustomParameters({
+          hd: "tufts.edu",
+        });
+      }
       const result = await signInWithPopup(auth, provider);
       const resUser = result.user;
       const idToken = await resUser.getIdToken();
