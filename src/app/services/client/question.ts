@@ -17,6 +17,7 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
+import { runTransaction } from "firebase/firestore";
 
 /* Why not pass in a Question type */
 type AddQuestion = Pick<
@@ -103,9 +104,24 @@ export const leaveQuestionGroup = async (
     `courses/${courseId}/questions/${question.id}`
   ).withConverter(questionConverter);
 
-  await updateDoc(questionDoc, {
-    group: arrayRemove(userId),
+  await runTransaction(db, async (transaction) => {
+    const questionSnapshot = await transaction.get(questionDoc);
+
+    if (!questionSnapshot.exists()) {
+      return;
+    }
+
+    const currentGroup = questionSnapshot.data().group;
+
+    if (currentGroup.length <= 1) {
+      transaction.delete(questionDoc);
+    } else {
+      transaction.update(questionDoc, {
+        group: arrayRemove(userId),
+      });
+    }
   });
+
   return { ...question, group: question.group.filter((id) => id !== userId) };
 };
 

@@ -3,6 +3,7 @@ import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { ArrowBack } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface PageProps {
@@ -18,9 +19,11 @@ const Page = (props: PageProps) => {
   } = props;
   const { questions } = useOfficeHour();
   const question = questions.find((q) => q.id === questionId);
+  const router = useRouter();
 
   if (!question) {
-    throw new Error();
+    router.push(`/private/course/${courseId}/board`);
+    return;
   }
 
   return (
