@@ -92,15 +92,18 @@ const QuestionForm = (props: QuestionFormProps) => {
     const tagsValidate = Object.keys(questionTags).filter(
       (k) => course.tags[k].required && questionTags[k].length === 0
     );
-
+    const trimmedTitle = newQuestion.title.trim();
+    const trimmedDescription = newQuestion.description.trim();
     if (
-      newQuestion.title !== "" &&
-      newQuestion.description !== "" &&
+      trimmedTitle !== "" &&
+      trimmedDescription !== "" &&
       tagsValidate.length === 0
     ) {
       if (title === "Join queue") {
         await createQuestion({
           ...newQuestion,
+          title: trimmedTitle,
+          description: trimmedDescription,
           tags: tagsArr,
           group: [user.id],
           courseId: course.id,
@@ -110,6 +113,8 @@ const QuestionForm = (props: QuestionFormProps) => {
         await updateQuestion(
           {
             ...newQuestion,
+            title: trimmedTitle,
+            description: trimmedDescription,
             tags: tagsArr,
             group: [user.id],
           },
@@ -121,8 +126,8 @@ const QuestionForm = (props: QuestionFormProps) => {
     } else {
       setIsErrorVisible(true);
       setErrorFields({
-        title: newQuestion.title === "",
-        description: newQuestion.description === "",
+        title: trimmedTitle === "",
+        description: trimmedDescription === "",
         tags: tagsValidate.length > 0,
       });
     }
@@ -138,6 +143,12 @@ const QuestionForm = (props: QuestionFormProps) => {
       },
     },
   ];
+
+  const subtitle =
+    !errorFields.title && !errorFields.description
+      ? "Please select all tags"
+      : "All required fields are not filled";
+
   return (
     <Box>
       {trigger}
@@ -145,7 +156,7 @@ const QuestionForm = (props: QuestionFormProps) => {
       <Drawer open={openForm} anchor="bottom">
         <CustomModal
           title={"There was an error"}
-          subtitle={"All required fields are not filled"}
+          subtitle={subtitle}
           open={isErrorVisible}
           setOpen={setIsErrorVisible}
           buttons={ErrorModalButtons}
@@ -180,7 +191,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setNewQuestion({
                   ...newQuestion,
-                  title: event.target.value.trim(),
+                  title: event.target.value,
                 });
               }}
               error={errorFields.title}
@@ -198,7 +209,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setNewQuestion({
                   ...newQuestion,
-                  description: event.target.value.trim(),
+                  description: event.target.value,
                 });
               }}
               error={errorFields.description}
