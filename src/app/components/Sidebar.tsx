@@ -35,8 +35,8 @@ const Sidebar = () => {
   React.useEffect(() => {
     const loadCourses = async () => {
       if (user && user.courses.length > 0) {
-        const courses = await getCoursesByIds(user.courses);
-        setCourses(courses);
+        const fetchCourses = await getCoursesByIds(user.courses);
+        setCourses(fetchCourses);
       } else {
         setCourses([]);
       }
