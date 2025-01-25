@@ -106,6 +106,14 @@ export const leaveQuestionGroup = async (
   await updateDoc(questionDoc, {
     group: arrayRemove(userId),
   });
+
+  const updatedGroup = question.group.filter((id) => id !== userId);
+
+  if (updatedGroup.length === 0) {
+    await deleteQuestion(courseId, question.id);
+    return;
+  }
+
   return { ...question, group: question.group.filter((id) => id !== userId) };
 };
 

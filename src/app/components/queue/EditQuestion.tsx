@@ -5,7 +5,7 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getQueuePosition, getUserSessionOrRedirect } from "@utils/index";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
-import { deleteQuestion, leaveQuestionGroup } from "@services/client/question";
+import { leaveQuestionGroup } from "@services/client/question";
 import QuestionForm from "./form/QuestionForm";
 
 export const EditQuestion = () => {
@@ -20,11 +20,7 @@ export const EditQuestion = () => {
     return null;
   }
   const leaveQueue = () => {
-    if (currQuestion.group.length === 1) {
-      deleteQuestion(course.id, currQuestion.id);
-    } else {
-      leaveQuestionGroup(currQuestion, course.id, user.id);
-    }
+    leaveQuestionGroup(currQuestion, course.id, user.id);
     setLeaveQueueModal(false);
   };
 
