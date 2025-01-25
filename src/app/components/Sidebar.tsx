@@ -73,7 +73,7 @@ const Sidebar = () => {
       onClose={closeSidebar}
       variant="temporary"
       sx={{
-        "& .MuiDrawer-paper": { width: "100%" },
+        "& .MuiDrawer-paper": { width: "80%" },
       }}
     >
       <Box
