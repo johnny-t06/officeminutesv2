@@ -37,8 +37,8 @@ const Sidebar = () => {
   React.useEffect(() => {
     const loadCourses = async () => {
       if (user && user.courses.length > 0) {
-        const courses = await getCoursesByIds(user.courses);
-        setCourses(courses);
+        const fetchCourses = await getCoursesByIds(user.courses);
+        setCourses(fetchCourses);
       } else {
         setCourses([]);
       }
@@ -75,7 +75,7 @@ const Sidebar = () => {
       onClose={closeSidebar}
       variant="temporary"
       sx={{
-        "& .MuiDrawer-paper": { width: "100%" },
+        "& .MuiDrawer-paper": { width: "70%" },
       }}
     >
       <Box
@@ -84,27 +84,30 @@ const Sidebar = () => {
           flexDirection: "column",
           padding: "30px 30px 0",
           height: "100vh",
+          overflow: "hidden",
         }}
       >
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h6" color={theme.palette.text.primary}>
-              My Classes
-            </Typography>
-            <MenuButton isOpen={false} />
-          </Box>
+          <Typography variant="h6" color={theme.palette.text.primary}>
+            My Classes
+          </Typography>
+          <MenuButton isOpen={false} />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            overflowY: "scroll",
+          }}
+        >
           <List>
             {courses.map((course, index) => (
               <ListItemButton
@@ -125,21 +128,21 @@ const Sidebar = () => {
               </ListItemButton>
             ))}
           </List>
+          <Divider sx={{ marginBottom: "12px" }} />
+          <Button
+            sx={{
+              justifyContent: "flex-start",
+              gap: "8px",
+              textTransform: "none",
+              color: "inherit",
+              marginBottom: "12px",
+            }}
+            onClick={handleManageCoursesClick}
+          >
+            <ModeEditOutlinedIcon />
+            <Typography variant="body1">Manage Classes</Typography>
+          </Button>
         </Box>
-        <Divider sx={{ marginBottom: "12px" }} />
-
-        <Button
-          sx={{
-            justifyContent: "flex-start",
-            gap: "8px",
-            textTransform: "none",
-            color: "inherit",
-          }}
-          onClick={handleManageCoursesClick}
-        >
-          <ModeEditOutlinedIcon />
-          <Typography variant="body1">Manage Classes</Typography>
-        </Button>
 
         <Box
           sx={{
@@ -154,17 +157,15 @@ const Sidebar = () => {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: { xs: "column", sm: "row" },
               justifyContent: "space-between",
-              alignItems: "center",
             }}
           >
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
+                alignItems: "center",
                 gap: "12px",
               }}
             >
@@ -177,7 +178,7 @@ const Sidebar = () => {
               >
                 {user ? user.name[0] : ""}
               </Avatar>
-              <Box>
+              <Box width="100%" overflow="scroll">
                 <Typography variant="subtitle1">
                   {trimUserName(user)}
                 </Typography>
@@ -190,8 +191,9 @@ const Sidebar = () => {
               sx={{
                 textTransform: "none",
                 color: "inherit",
-                justifyContent: "flex-start",
+                justifyContent: "flex-end",
                 gap: "8px",
+                marginTop: { xs: "24px", sm: "0px" },
               }}
               onClick={onSignOut}
             >
