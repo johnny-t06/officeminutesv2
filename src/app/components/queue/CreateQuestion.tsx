@@ -8,11 +8,12 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
 import { useRouter } from "next/navigation";
-import { getQueuePosition, getUserSessionOrRedirect } from "@utils/index";
+import { getQueuePosition } from "@utils/index";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 const CreateQuestion = () => {
   const { course, questions } = useOfficeHour();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   if (!user) {
     return null;
   }
