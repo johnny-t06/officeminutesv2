@@ -5,7 +5,7 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { getQueuePosition, getUserSessionOrRedirect } from "@utils/index";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
-import { deleteQuestion } from "@services/client/question";
+import { deleteQuestion, leaveQuestionGroup } from "@services/client/question";
 import QuestionForm from "./form/QuestionForm";
 
 export const EditQuestion = () => {
@@ -20,7 +20,11 @@ export const EditQuestion = () => {
     return null;
   }
   const leaveQueue = () => {
-    deleteQuestion(course.id, currQuestion.id);
+    if (currQuestion.group.length === 1) {
+      deleteQuestion(course.id, currQuestion.id);
+    } else {
+      leaveQuestionGroup(currQuestion, course.id, user.id);
+    }
     setLeaveQueueModal(false);
   };
 
@@ -55,7 +59,7 @@ export const EditQuestion = () => {
     <>
       <CustomModal
         title="Leave queue?"
-        subtitle="You'll lose your place in line and 
+        subtitle="You'll lose your place in line and
                   won't receive assistance until you join again."
         buttons={leaveQueueButtons}
         open={leaveQueueModal}
