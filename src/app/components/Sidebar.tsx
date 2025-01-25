@@ -152,17 +152,15 @@ const Sidebar = () => {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: { xs: "column", sm: "row" },
               justifyContent: "space-between",
-              alignItems: "center",
             }}
           >
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
+                alignItems: "center",
                 gap: "12px",
               }}
             >
@@ -175,11 +173,11 @@ const Sidebar = () => {
               >
                 {user ? user.name[0] : ""}
               </Avatar>
-              <Box>
+              <Box width="100%" overflow="scroll">
                 <Typography variant="subtitle1">
                   {trimUserName(user)}
                 </Typography>
-                <Typography variant="caption">
+                <Typography variant="caption" noWrap>
                   {user ? user.email : ""}
                 </Typography>
               </Box>
@@ -188,8 +186,9 @@ const Sidebar = () => {
               sx={{
                 textTransform: "none",
                 color: "inherit",
-                justifyContent: "flex-start",
+                justifyContent: "flex-end",
                 gap: "8px",
+                marginTop: { xs: "24px", sm: "0px" },
               }}
               onClick={onSignOut}
             >
