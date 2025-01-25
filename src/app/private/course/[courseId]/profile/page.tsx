@@ -33,11 +33,7 @@ const Page = (props: PageProps) => {
 
   return (
     <div>
-      <Header
-        leftIcon={<MenuButton isEdge />}
-        title={courseId.toUpperCase()}
-        alignCenter
-      />
+      <Header leftIcon={<MenuButton isEdge />} title={courseId.toUpperCase()} />
       <div className="flex items-center gap-4">
         <Avatar
           sx={{ bgcolor: theme.palette.primary.main, height: 56, width: 56 }}
