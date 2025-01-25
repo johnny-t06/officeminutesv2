@@ -25,6 +25,13 @@ const QueueItem = (props: QueueItemProps) => {
     return null;
   }
   const isUserTA = course.tas.includes(user.id);
+  const isShowDetails =
+    isUserTA || question.questionPublic || question.group[0] === user.id;
+
+  const privateTemplate = {
+    title: "Private",
+    user: "Anonymous",
+  };
 
   React.useEffect(() => {
     const fetchUsers = async () => {
@@ -41,7 +48,7 @@ const QueueItem = (props: QueueItemProps) => {
       columnSpacing="2px"
       alignItems="center"
       onClick={() => {
-        if (isUserTA) {
+        if (isShowDetails) {
           router.push(`queue/${question.id}`);
         }
       }}
@@ -59,7 +66,7 @@ const QueueItem = (props: QueueItemProps) => {
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          {question.title}
+          {isShowDetails ? question.title : privateTemplate.title}
         </Typography>
         <Typography
           fontSize="14px"
@@ -68,11 +75,15 @@ const QueueItem = (props: QueueItemProps) => {
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          {loading ? "Loading..." : users.map(trimUserName).join(", ")}
+          {loading
+            ? "Loading..."
+            : isShowDetails
+            ? users.map(trimUserName).join(", ")
+            : privateTemplate.user}
         </Typography>
       </Grid>
       <Grid item xs={1}>
-        <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
+        {isShowDetails && <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />}
       </Grid>
     </Grid>
   );
