@@ -88,7 +88,10 @@ const Board = (props: BoardProps) => {
       <ToggleButtonGroup
         value={selectedTopics}
         onChange={addOrRemoveTopic}
-        fullWidth
+        sx={{
+          overflowX: "scroll",
+          width: "calc(100% + 16px)",
+        }}
       >
         <Stack
           columnGap="8px"
