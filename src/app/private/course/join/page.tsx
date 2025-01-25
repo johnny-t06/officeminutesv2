@@ -5,15 +5,20 @@ import { Button, IconButton, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { getCourses, joinCourse } from "services/client/course";
+import {
+  getCourseByCode,
+  getCourses,
+  joinCourse,
+} from "services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
-import { getUserSessionOrRedirect } from "@utils/index";
 import { CustomModal } from "@components/CustomModal";
+import useApiThrottle from "@hooks/useApiThrottle";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 const Page = () => {
   const router = useRouter();
   const { setUser } = useUserSession();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
 
   const [code, setCode] = React.useState("");
   const [enrolledError, setEnrolledError] = React.useState(false);
@@ -46,36 +51,43 @@ const Page = () => {
       },
     },
   ];
-  const joinClicked = () => {
+
+  const joinClicked = async () => {
     try {
       if (code.length < 6 || code.length > 8) {
         return;
       }
 
-      getCourses().then(async (courses) => {
-        const course = courses.find((course) => course.code === code);
-
-        if (course && user) {
-          if (
-            course.students.includes(user.id) ||
-            user.courses.includes(course.id)
-          ) {
-            setEnrolledError(true);
-            return;
-          }
-
-          await joinCourse(course.id, user.id);
-          router.push(`/private/course/${course.id}`);
-          setUser({ ...user, courses: [...user.courses, course.id] });
-        } else {
-          setNotFoundError(true);
+      const course = await getCourseByCode(code);
+      if (course && user) {
+        if (
+          course.students.includes(user.id) ||
+          user.courses.includes(course.id)
+        ) {
+          setEnrolledError(true);
+          return;
         }
-      });
+
+        await joinCourse(course.id, user.id);
+        router.push(`/private/course/${course.id}`);
+        setUser({ ...user, courses: [...user.courses, course.id] });
+      } else {
+        setNotFoundError(true);
+      }
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
+  const { fetching, fn: throttledJoinClicked } = useApiThrottle({
+    fn: joinClicked,
+  });
+  const joinDisabled =
+    code.length < 6 ||
+    code.length > 8 ||
+    fetching ||
+    enrolledError ||
+    notFoundError;
   return (
     <div>
       <Header
@@ -88,12 +100,12 @@ const Page = () => {
         rightIcon={
           <Button
             className={`py-2.5 px-6 rounded-full mr-2 normal-case ${
-              code.length < 6 || code.length > 8
+              joinDisabled
                 ? "bg-[#BCC6D4] cursor-not-allowed"
                 : "bg-[#38608F] cursor-pointer"
             }`}
-            onClick={joinClicked}
-            disabled={code.length < 6 || code.length > 8}
+            onClick={throttledJoinClicked}
+            disabled={joinDisabled}
           >
             <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
               Join

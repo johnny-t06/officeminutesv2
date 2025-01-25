@@ -16,6 +16,7 @@ import React from "react";
 import theme from "theme";
 import { addFeedback } from "@services/client/feedback";
 import { Timestamp } from "firebase/firestore";
+import useApiThrottle from "@hooks/useApiThrottle";
 
 enum Recommendation {
   VERY_UNLIKELY = 1,
@@ -80,7 +81,9 @@ const Page = () => {
       );
     }
   };
-
+  const { fetching, fn: throttledOnSend } = useApiThrottle({
+    fn: handleSendFeedback,
+  });
   return (
     <div className="flex flex-col">
       <Header
@@ -145,8 +148,8 @@ const Page = () => {
                 color: theme.palette.text.disabled,
               },
             }}
-            onClick={handleSendFeedback}
-            disabled={recommendation === null}
+            onClick={throttledOnSend}
+            disabled={recommendation === null || fetching}
           >
             Send feedback
           </Button>

@@ -45,6 +45,7 @@ export const UserSessionContextProvider = ({
     isLoading: true,
     error: null,
   });
+
   const router = useRouter();
 
   React.useEffect(() => {
@@ -69,12 +70,14 @@ export const UserSessionContextProvider = ({
     try {
       await setPersistence(auth, browserLocalPersistence);
       const provider = new GoogleAuthProvider();
-
+      provider.setCustomParameters({
+        hd: "tufts.edu",
+      });
       const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken();
+      const resUser = result.user;
+      const idToken = await resUser.getIdToken();
       await setSessionCookie(idToken);
 
-      const resUser = result.user;
       const maybeUser = await getUser(resUser.uid);
       if (maybeUser === null) {
         setUser(
@@ -106,8 +109,13 @@ export const UserSessionContextProvider = ({
       setSession((prev) => ({ ...prev, isLoading: true }));
       await signOut(auth);
       setUser(null);
-      setSession({ isAuthenticated: false, isLoading: false, error: null });
-      router.push("/");
+      setSession({
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      });
+      router.push("/login");
+      router.refresh();
     } catch (e: any) {
       setSession({
         isAuthenticated: false,
@@ -117,6 +125,7 @@ export const UserSessionContextProvider = ({
       console.error(e);
     }
   };
+
   return session.isLoading ? (
     <Box className="flex h-screen w-screen flex-col items-center justify-center">
       <Spinner />

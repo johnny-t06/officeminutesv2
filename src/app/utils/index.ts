@@ -141,18 +141,6 @@ export const getExpiredQuestions = (
     (question) => hasPassed(question) && question.questionPublic === isPublic
   );
 
-export const getUserSessionOrRedirect = () => {
-  const { user } = useUserSession();
-  const router = useRouter();
-  React.useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [user, router]);
-
-  return user ?? null;
-};
-
 export const timeSince = (timestamp: Timestamp | undefined) => {
   if (timestamp === undefined || timestamp === null) {
     return "00:00";

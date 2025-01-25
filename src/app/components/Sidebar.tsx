@@ -23,12 +23,14 @@ import MenuButton from "./buttons/MenuButton";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import { useUserSession } from "@context/UserSessionContext";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { getUserSessionOrRedirect, trimUserName } from "@utils/index";
+import { trimUserName } from "@utils/index";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+
 const Sidebar = () => {
   const [courses, setCourses] = React.useState<IdentifiableCourse[]>([]);
   const { isOpen } = useSidebarStateContext();
   const { closeSidebar } = useSidebarActionsContext();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   const { onSignOut } = useUserSession();
   const router = useRouter();
 

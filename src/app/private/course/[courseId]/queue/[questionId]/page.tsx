@@ -2,8 +2,8 @@
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { ArrowBack } from "@mui/icons-material";
-import { getUserSessionOrRedirect } from "@utils/index";
 import Link from "next/link";
 
 interface PageProps {
@@ -18,7 +18,7 @@ const Page = (props: PageProps) => {
     params: { courseId, questionId },
   } = props;
   const { course, questions } = useOfficeHour();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   if (!user) {
     return null;
   }

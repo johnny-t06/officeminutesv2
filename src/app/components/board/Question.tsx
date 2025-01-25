@@ -1,15 +1,11 @@
 import { CustomButton } from "@components/buttons/CustomButton";
 import Spinner from "@components/Spinner";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
-import {
-  formatTimeDifference,
-  getUserSessionOrRedirect,
-  hasPassed,
-  trimUserName,
-} from "@utils/index";
+import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
 import { useRouter } from "next/navigation";
 import React from "react";
 import theme from "theme";
@@ -23,7 +19,7 @@ const Question = (props: QuestionProps) => {
   const { question, isUserTA } = props;
 
   const router = useRouter();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
 
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -41,7 +37,7 @@ const Question = (props: QuestionProps) => {
   }, []);
 
   const beingHelped = question.state === QuestionState.IN_PROGRESS;
-  
+
   return loading ? (
     <div className="h-screen absolute top-[50vh] left-[calc(50vw-24px)]">
       <Spinner />

@@ -2,15 +2,16 @@ import { Box, Button, Container } from "@mui/material";
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { getQueuePosition, getUserSessionOrRedirect } from "@utils/index";
+import { getQueuePosition } from "@utils/index";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
 import { deleteQuestion } from "@services/client/question";
 import QuestionForm from "./form/QuestionForm";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 export const EditQuestion = () => {
   const { course, questions } = useOfficeHour();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   if (!user) {
     return null;
   }

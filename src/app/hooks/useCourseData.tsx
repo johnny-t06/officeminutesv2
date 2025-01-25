@@ -1,8 +1,8 @@
 import { IdentifiableUsers } from "@interfaces/type";
 import { getUsers } from "@services/client/user";
-import { getUserSessionOrRedirect } from "@utils/index";
 import React from "react";
 import { useOfficeHour } from "./oh/useOfficeHour";
+import { useUserOrRedirect } from "./useUserOrRedirect";
 
 interface CourseDataProps {
   fetchUsers: boolean;
@@ -11,7 +11,7 @@ interface CourseDataProps {
 export const useCourseData = (props: CourseDataProps) => {
   const { fetchUsers } = props;
 
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   const { course } = useOfficeHour();
   const [tas, setTAs] = React.useState<IdentifiableUsers>([]);
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);

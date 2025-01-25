@@ -2,12 +2,7 @@
 
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
-import {
-  formatTimeDifference,
-  getUserSessionOrRedirect,
-  hasPassed,
-  trimUserName,
-} from "@utils/index";
+import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -22,6 +17,8 @@ import { CustomButton } from "@components/buttons/CustomButton";
 import { QuestionState } from "@interfaces/db";
 import { useRouter } from "next/navigation";
 import { serverTimestamp } from "firebase/firestore";
+import useApiThrottle from "@hooks/useApiThrottle";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
@@ -38,7 +35,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     fromCurrentlyHelping = false,
   } = props;
 
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   const router = useRouter();
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)
@@ -66,7 +63,9 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     }
     setJoinGroup(!joinGroup);
   };
-  
+  const { fn: throttledOnJoinGroup } = useApiThrottle({
+    fn: onJoinGroup,
+  });
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
       await partialUpdateQuestion(question.id, courseId, {
@@ -285,7 +284,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                   width: "100%",
                   color: joinGroup ? "#000" : "#fff",
                 }}
-                onClick={onJoinGroup}
+                onClick={throttledOnJoinGroup}
               >
                 {joinGroup ? "Leave group" : "Join group"}
               </CustomButton>
