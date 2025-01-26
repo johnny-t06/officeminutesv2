@@ -88,7 +88,7 @@ const Page = () => {
     >
       <Header
         leftIcon={<MenuButton isEdge />}
-        title={course.name}
+        title={course.id.toUpperCase()}
         alignCenter
       />
       {!helpingQuestion ? (
