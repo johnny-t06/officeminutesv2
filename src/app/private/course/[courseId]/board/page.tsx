@@ -1,6 +1,7 @@
 "use client";
 
 import Board from "@components/board";
+import MenuButton from "@components/buttons/MenuButton";
 import Header from "@components/Header";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
@@ -30,13 +31,16 @@ const Page = (props: PageProps) => {
   return (
     <Box>
       <Header
-        title="Board"
+        title="Public Board"
+        leftIcon={<MenuButton isEdge />}
         rightIcon={
           <Link href={`/private/course/${courseId}/board/history`}>
             <Button
               style={{
                 textTransform: "none",
                 padding: 0,
+                width: "100px",
+                justifyContent: "end",
               }}
             >
               <Typography variant="subtitle2">

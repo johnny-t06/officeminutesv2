@@ -86,11 +86,7 @@ const Page = () => {
       position="relative"
       paddingBottom="112px"
     >
-      <Header
-        leftIcon={<MenuButton isEdge />}
-        title={course.id.toUpperCase()}
-        alignCenter
-      />
+      <Header leftIcon={<MenuButton isEdge />} title={course.name} />
       {!helpingQuestion ? (
         <>
           {isUserTA ? (

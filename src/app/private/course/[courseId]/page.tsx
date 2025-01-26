@@ -46,11 +46,7 @@ const Page = (props: PageProps) => {
   const isUserTA = course.tas.includes(user.id);
   return (
     <div>
-      <Header
-        leftIcon={<MenuButton isEdge />}
-        title={courseId.toUpperCase()}
-        alignCenter
-      />
+      <Header leftIcon={<MenuButton isEdge />} title={courseId.toUpperCase()} />
       {isUserTA ? (
         <TADisplayCourse tas={tas} students={students} />
       ) : (
