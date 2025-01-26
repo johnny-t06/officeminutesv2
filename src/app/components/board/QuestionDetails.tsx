@@ -5,10 +5,9 @@ import { Avatar, Box, Typography } from "@mui/material";
 // import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
 import {
   formatTimeDifference,
-  getActiveQuestionsByState,
+  // getActiveQuestionsByState,
   // getUserSessionOrRedirect,
   hasPassed,
-  sortQuestionsChronologically,
   trimUserName,
 } from "@utils/index";
 import React from "react";
@@ -16,6 +15,7 @@ import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { getUser, getUsers } from "@services/client/user";
 import {
+  getBatchedQuestions,
   joinQuestionGroup,
   leaveQuestionGroup,
   partialUpdateQuestion,
@@ -24,11 +24,11 @@ import Spinner from "@components/Spinner";
 import { CustomButton } from "@components/buttons/CustomButton";
 import { QuestionState } from "@interfaces/db";
 import { useRouter } from "next/navigation";
-import { serverTimestamp } from "firebase/firestore";
+// import { serverTimestamp } from "firebase/firestore";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { serverTimestamp, Timestamp } from "firebase/firestore";
 import { sendEmail } from "@api/send-email/route.client";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
@@ -49,10 +49,10 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
 
   const user = useUserOrRedirect();
   // const user = getUserSessionOrRedirect();
-  const { questions } = useOfficeHour();
-  const sortedQuestions = sortQuestionsChronologically(questions);
-  const { [QuestionState.PENDING]: pendingQuestions } =
-    getActiveQuestionsByState(sortedQuestions);
+  // const { questions } = useOfficeHour();
+  // const sortedQuestions = sortQuestionsChronologically(questions);
+  // const { [QuestionState.PENDING]: pendingQuestions } =
+  //   getActiveQuestionsByState(sortedQuestions);
   const router = useRouter();
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)
@@ -98,6 +98,17 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
   };
 
   const sendTopUserNotif = async () => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const nowTimestamp = Timestamp.fromDate(now);
+
+    const pendingQuestions = await getBatchedQuestions(
+      courseId,
+      2,
+      QuestionState.PENDING,
+      nowTimestamp
+    );
+
     if (pendingQuestions.length > 1 && pendingQuestions[0].id === question.id) {
       pendingQuestions[1].group.forEach(async (userId) => {
         const user = await getUser(userId);
@@ -275,12 +286,20 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                     helpedBy: user.id,
                     helpedAt: serverTimestamp(),
                   });
-                  users.forEach(async (user) => {
-                    await sendEmail({
-                      email: user.email,
-                      subject: "The TAs are ready to help!",
-                      body: "The TAs are ready to help you now! Please listen for your name.",
-                    });
+                  users.forEach(async (user, index) => {
+                    if (index === 0) {
+                      await sendEmail({
+                        email: user.email,
+                        subject: "The TAs are ready to help!",
+                        body: "The TAs are ready to help you now! Please listen for your name.",
+                      });
+                    } else {
+                      await sendEmail({
+                        email: user.email,
+                        subject: "The TAs are ready to help!",
+                        body: "The TAs are ready to help a group that you joined! Please listen for your group.",
+                      });
+                    }
                   });
                   router.push(`/private/course/${courseId}/queue`);
                 }}

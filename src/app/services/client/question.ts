@@ -1,5 +1,5 @@
 import { db } from "../../../../firebase";
-import { Question } from "@interfaces/db";
+import { Question, QuestionState } from "@interfaces/db";
 import { questionConverter } from "../firestore";
 import {
   doc,
@@ -15,6 +15,11 @@ import {
   serverTimestamp,
   arrayUnion,
   arrayRemove,
+  query,
+  where,
+  orderBy,
+  limit,
+  Timestamp,
 } from "firebase/firestore";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 import { runTransaction } from "firebase/firestore";
@@ -156,4 +161,30 @@ export const deleteQuestion = async (courseId: string, questionId: string) => {
   ).withConverter(questionConverter);
 
   await deleteDoc(questionDoc);
+};
+
+export const getBatchedQuestions = async (
+  courseId: string,
+  batchSize: number,
+  stateFilter: QuestionState,
+  fromTimestampFilter: Timestamp
+) => {
+  const questionsQuery = query(
+    collection(db, `courses/${courseId}/questions`).withConverter(
+      questionConverter
+    ),
+    where("state", "==", stateFilter),
+    where("timestamp", ">=", fromTimestampFilter),
+    orderBy("timestamp", "asc"),
+    limit(batchSize)
+  );
+
+  const snapshot = await getDocs(questionsQuery);
+
+  const questionsDocs: IdentifiableQuestions = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return questionsDocs;
 };
