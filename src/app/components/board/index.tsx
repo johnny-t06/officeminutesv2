@@ -99,6 +99,7 @@ const Board = (props: BoardProps) => {
           overflow="auto"
           paddingBottom="16px"
           marginBottom="16px"
+          paddingRight="16px"
         >
           {topics.map((topic) => (
             <ToggleButton

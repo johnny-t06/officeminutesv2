@@ -5,7 +5,6 @@ interface IHeader {
   leftIcon?: React.ReactNode;
   title?: string;
   rightIcon?: React.ReactNode;
-  alignCenter?: boolean;
 }
 
 const Header = (props: IHeader) => {
