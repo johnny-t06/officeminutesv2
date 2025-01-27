@@ -53,7 +53,7 @@ const Sidebar = () => {
 
   const handleManageCoursesClick = () => {
     if (courses.length > 0) {
-      router.push(`/private/course/${courses[0].id}/profile/edit`);
+      router.push(`/private/course/${courses[0].id}/profile/`);
     } else {
       router.push(`/private/course`);
     }
@@ -98,7 +98,7 @@ const Sidebar = () => {
           <Typography variant="h6" color={theme.palette.text.primary}>
             My Classes
           </Typography>
-          <MenuButton isOpen={false} />
+          {!isOpen && <MenuButton isOpen={false} />}
         </Box>
         <Box
           sx={{
@@ -113,7 +113,7 @@ const Sidebar = () => {
               <ListItemButton
                 key={index}
                 sx={{
-                  padding: "16px 12px",
+                  padding: "8px 12px",
                   borderRadius: "9999px",
                   "&:active": {
                     backgroundColor: theme.palette.primary.main,
@@ -191,7 +191,7 @@ const Sidebar = () => {
               sx={{
                 textTransform: "none",
                 color: "inherit",
-                justifyContent: "flex-end",
+                justifyContent: "flex-start",
                 gap: "8px",
                 marginTop: { xs: "24px", sm: "0px" },
               }}

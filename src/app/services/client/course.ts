@@ -1,5 +1,9 @@
 import { db } from "../../../../firebase";
-import { IdentifiableCourse, IdentifiableCourses } from "@interfaces/type";
+import {
+  IdentifiableCourse,
+  IdentifiableCourses,
+  IdentifiableUser,
+} from "@interfaces/type";
 import { courseConverter, userConverter } from "../firestore";
 import {
   collection,
@@ -145,6 +149,22 @@ export const getCourses = async () => {
     collection(db, `courses`).withConverter(courseConverter)
   );
   const coursesDocs: IdentifiableCourses = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return coursesDocs;
+};
+
+export const getUserCourses = async (user: IdentifiableUser) => {
+  const coursesQuery = query(
+    collection(db, "courses"),
+    where(documentId(), "in", user.courses)
+  );
+
+  const snapshot = await getDocs(coursesQuery.withConverter(courseConverter));
+
+  const coursesDocs: IdentifiableCourse[] = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }));

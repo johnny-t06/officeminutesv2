@@ -5,11 +5,7 @@ import { Button, IconButton, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
-import {
-  getCourseByCode,
-  getCourses,
-  joinCourse,
-} from "services/client/course";
+import { getCourseByCode, joinCourse } from "services/client/course";
 import { useUserSession } from "@context/UserSessionContext";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
