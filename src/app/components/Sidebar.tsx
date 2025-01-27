@@ -52,11 +52,7 @@ const Sidebar = () => {
   };
 
   const handleManageCoursesClick = () => {
-    if (courses.length > 0) {
-      router.push(`/private/course/${courses[0].id}/profile/`);
-    } else {
-      router.push(`/private/course`);
-    }
+    router.push(`/private/course`);
     closeSidebar();
   };
 
