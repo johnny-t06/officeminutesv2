@@ -40,8 +40,6 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     fromStudentCurrentHelping = false,
   } = props;
 
-  console.log(fromTAQueue, fromCurrentlyHelping);
-
   const user = getUserSessionOrRedirect();
   const router = useRouter();
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
@@ -70,7 +68,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     }
     setJoinGroup(!joinGroup);
   };
-  
+
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
       await partialUpdateQuestion(question.id, courseId, {
@@ -86,6 +84,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
 
   const questionInProgess = question.state === QuestionState.IN_PROGRESS;
   const questionMissing = question.state === QuestionState.MISSING;
+  const currentHelping = fromCurrentlyHelping || fromStudentCurrentHelping;
 
   return (
     <Box>
@@ -97,14 +96,9 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
         <>
           <Box
             sx={{
-              backgroundColor:
-                fromCurrentlyHelping || fromStudentCurrentHelping
-                  ? "#F2F3FA"
-                  : "",
-              borderRadius:
-                fromCurrentlyHelping || fromStudentCurrentHelping ? "12px" : "",
-              padding:
-                fromCurrentlyHelping || fromStudentCurrentHelping ? "12px" : "",
+              backgroundColor: currentHelping ? "#F2F3FA" : "",
+              borderRadius: currentHelping ? "12px" : "",
+              padding: currentHelping ? "12px" : "",
             }}
           >
             <Box
@@ -114,10 +108,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               gap="16px"
               alignItems="center"
               sx={{
-                marginTop:
-                  fromCurrentlyHelping || fromStudentCurrentHelping
-                    ? ""
-                    : "24px",
+                marginTop: currentHelping ? "" : "24px",
               }}
             >
               <Avatar sx={{ bgcolor: theme.palette.primary.main }}>

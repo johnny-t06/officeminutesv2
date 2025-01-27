@@ -12,9 +12,16 @@ import TaCard from "@components/tas/TaCard";
 import { useCourseData } from "@hooks/useCourseData";
 import Spinner from "@components/Spinner";
 import { QuestionDetails } from "@components/board/QuestionDetails";
+import { IdentifiableQuestion } from "@interfaces/type";
 
-export const EditQuestion = () => {
-  const { course, questions } = useOfficeHour();
+interface editQuestionProps {
+  queuePos: number;
+  currQuestion: IdentifiableQuestion;
+}
+
+export const EditQuestion = (props: editQuestionProps) => {
+  const { queuePos, currQuestion } = props;
+  const { course } = useOfficeHour();
   const { tas, loading } = useCourseData({
     fetchUsers: true,
   });
@@ -22,7 +29,7 @@ export const EditQuestion = () => {
   if (!user) {
     return null;
   }
-  const { queuePos, currQuestion } = getQueuePosition(questions, user);
+
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
 
   if (queuePos === -1) {
