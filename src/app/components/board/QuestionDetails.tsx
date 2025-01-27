@@ -25,6 +25,7 @@ interface QuestionDetailsProps {
   courseId: string;
   fromTAQueue?: boolean;
   fromCurrentlyHelping?: boolean;
+  fromStudentCurrentHelping?: boolean;
 }
 
 export const QuestionDetails = (props: QuestionDetailsProps) => {
@@ -33,6 +34,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     courseId,
     fromTAQueue = false,
     fromCurrentlyHelping = false,
+    fromStudentCurrentHelping = false,
   } = props;
 
   const user = useUserOrRedirect();
@@ -81,6 +83,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
 
   const questionInProgess = question.state === QuestionState.IN_PROGRESS;
   const questionMissing = question.state === QuestionState.MISSING;
+  const currentHelping = fromCurrentlyHelping || fromStudentCurrentHelping;
 
   return (
     <Box>
@@ -92,9 +95,9 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
         <>
           <Box
             sx={{
-              backgroundColor: fromCurrentlyHelping ? "#F2F3FA" : "",
-              borderRadius: fromCurrentlyHelping ? "12px" : "",
-              padding: fromCurrentlyHelping ? "12px" : "",
+              backgroundColor: currentHelping ? "#F2F3FA" : "",
+              borderRadius: currentHelping ? "12px" : "",
+              padding: currentHelping ? "12px" : "",
             }}
           >
             <Box
@@ -104,7 +107,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               gap="16px"
               alignItems="center"
               sx={{
-                marginTop: fromCurrentlyHelping ? "" : "24px",
+                marginTop: currentHelping ? "" : "24px",
               }}
             >
               <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
@@ -263,7 +266,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                 </CustomButton>
               )}
             </Box>
-          ) : (
+          ) : fromStudentCurrentHelping ? null : (
             <Box
               marginTop="8px"
               display={hasPassed(question) ? "none" : "flex"}
