@@ -52,7 +52,7 @@ export const EnrolledCourses = () => {
             ))}
             <Button
               variant="contained"
-              className="py-2.5 px-6 rounded-full normal-case"
+              className="py-2.5 px-6 rounded-full normal-case my-4"
               onClick={() => router.push("/private/course/join")}
             >
               <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
