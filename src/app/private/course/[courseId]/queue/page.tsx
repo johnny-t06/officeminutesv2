@@ -7,10 +7,7 @@ import Queue from "@components/queue";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import {
-  getQueuePosition,
-  timeSince,
-} from "@utils/index";
+import { getQueuePosition, timeSince } from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import Spinner from "@components/Spinner";
 import theme from "theme";
@@ -133,14 +130,14 @@ const Page = () => {
             </Button>
           ) : (
             <>
-              {queueClosed ? null : (
+              {!queueClosed && (
                 <EditQuestion queuePos={queuePos} currQuestion={currQuestion} />
               )}
-              {currQuestion.helpedBy === "" ? <CreateQuestion /> : null}
+              {currQuestion.helpedBy === "" && <CreateQuestion />}
             </>
           )}
 
-          {currQuestion.helpedBy === "" ? <Queue /> : null}
+          {currQuestion.helpedBy === "" && <Queue />}
         </>
       ) : (
         <Box>
