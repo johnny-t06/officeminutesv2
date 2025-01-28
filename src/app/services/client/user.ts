@@ -1,9 +1,13 @@
 import {
+  collection,
   deleteDoc,
   doc,
   DocumentReference,
   getDoc,
+  getDocs,
+  query,
   setDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "@project/firebase";
 import { userConverter } from "@services/firestore";
@@ -40,8 +44,14 @@ export const getUser = async (
 export const getUsers = async (
   userIds: string[]
 ): Promise<IdentifiableUsers> => {
-  const users = await Promise.all(userIds.map((id) => getUser(id)));
-  return users.filter((user) => user !== null) as IdentifiableUsers;
+  const q = query(
+    collection(db, "users").withConverter(userConverter),
+    where("id", "in", userIds)
+  );
+  const users = await getDocs(q);
+  return users.docs
+    .filter((doc) => doc.exists)
+    .map((doc) => ({ ...doc.data(), id: doc.id }));
 };
 
 export const updateUser = async (user: IdentifiableUser) => {
