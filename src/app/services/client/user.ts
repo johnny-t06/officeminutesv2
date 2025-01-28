@@ -2,6 +2,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  documentId,
   DocumentReference,
   getDoc,
   getDocs,
@@ -46,7 +47,7 @@ export const getUsers = async (
 ): Promise<IdentifiableUsers> => {
   const q = query(
     collection(db, "users").withConverter(userConverter),
-    where("id", "in", userIds)
+    where(documentId(), "in", userIds)
   );
   const users = await getDocs(q);
   return users.docs
