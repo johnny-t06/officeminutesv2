@@ -26,6 +26,8 @@ export const useCourseData = (props: CourseDataProps) => {
   }
   const isUserTA = course.tas.includes(user.id);
 
+  
+
   if (!fetchUsers) {
     return {
       loading: false,

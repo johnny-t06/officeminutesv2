@@ -7,7 +7,7 @@ import Queue from "@components/queue";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import { timeSince } from "@utils/index";
+import { getQueuePosition, timeSince } from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import Spinner from "@components/Spinner";
 import theme from "theme";
@@ -35,6 +35,8 @@ const Page = () => {
     return null;
   }
   const isUserTA = course.tas.includes(user.id);
+  const { queuePos, currQuestion } = getQueuePosition(questions, user);
+  const queueClosed = course.onDuty.length === 0 || !course.isOpen;
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -128,11 +130,14 @@ const Page = () => {
             </Button>
           ) : (
             <>
-              <EditQuestion />
-              <CreateQuestion />
+              {!queueClosed && (
+                <EditQuestion queuePos={queuePos} currQuestion={currQuestion} />
+              )}
+              {currQuestion.helpedBy === "" && <CreateQuestion />}
             </>
           )}
-          <Queue />
+
+          {currQuestion.helpedBy === "" && <Queue />}
         </>
       ) : (
         <Box>
