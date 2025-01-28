@@ -35,7 +35,10 @@ const Page = () => {
     return null;
   }
   const isUserTA = course.tas.includes(user.id);
-  const { queuePos, currQuestion } = getQueuePosition(questions, user);
+  const { queuePos, groupPos, currQuestion, groupQuestion } = getQueuePosition(
+    questions,
+    user
+  );
   const queueClosed = course.onDuty.length === 0 || !course.isOpen;
 
   React.useEffect(() => {
@@ -131,13 +134,20 @@ const Page = () => {
           ) : (
             <>
               {!queueClosed && (
-                <EditQuestion queuePos={queuePos} currQuestion={currQuestion} />
+                <EditQuestion
+                  queuePos={queuePos}
+                  groupPos={groupPos}
+                  currQuestion={currQuestion}
+                  groupQuestion={groupQuestion}
+                />
               )}
-              {currQuestion.helpedBy === "" && <CreateQuestion />}
+              {currQuestion.state === QuestionState.PENDING && (
+                <CreateQuestion />
+              )}
             </>
           )}
 
-          {currQuestion.helpedBy === "" && <Queue />}
+          {currQuestion.state === QuestionState.PENDING && <Queue />}
         </>
       ) : (
         <Box>

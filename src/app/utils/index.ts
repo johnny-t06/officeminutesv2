@@ -168,9 +168,19 @@ export const getQueuePosition = (
   const position = sortedActiveQuestions.findIndex(
     (q) => q.group[0] === user.id
   );
+  const groupPos = sortedActiveQuestions.findIndex(
+    (q) => q.group.includes(user.id) && q.group[0] !== user.id
+  );
+
+  // queue position in PENDING queue
+  const pendingPos = sortedActiveQuestions
+    .filter((q) => q.state === QuestionState.PENDING)
+    .findIndex((q) => q.group[0] === user.id);
 
   return {
-    queuePos: position,
+    queuePos: pendingPos,
+    groupPos: groupPos,
     currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
+    groupQuestion: sortedActiveQuestions[groupPos] ?? defaultQuestion(),
   };
 };

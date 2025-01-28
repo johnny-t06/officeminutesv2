@@ -3,7 +3,6 @@ import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutl
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { getQueuePosition } from "@utils/index";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
 import { leaveQuestionGroup } from "@services/client/question";
@@ -14,14 +13,19 @@ import { useCourseData } from "@hooks/useCourseData";
 import Spinner from "@components/Spinner";
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import { IdentifiableQuestion } from "@interfaces/type";
+import { QuestionState } from "@interfaces/db";
+import { StudentHelping } from "./StudentHelping";
+import { StudentMissing } from "./StudentMissing";
 
 interface editQuestionProps {
   queuePos: number;
+  groupPos: number;
   currQuestion: IdentifiableQuestion;
+  groupQuestion: IdentifiableQuestion;
 }
 
 export const EditQuestion = (props: editQuestionProps) => {
-  const { queuePos, currQuestion } = props;
+  const { queuePos, groupPos, currQuestion, groupQuestion } = props;
   const { course } = useOfficeHour();
   const { tas, loading } = useCourseData({
     fetchUsers: true,
@@ -33,9 +37,17 @@ export const EditQuestion = (props: editQuestionProps) => {
 
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
 
-  if (queuePos === -1) {
+  // not in queue, not join any question,
+  // and not have any IN_PROGRESS or MISSING question
+  if (queuePos === -1 && groupPos === -1 && currQuestion.title === "") {
     return null;
   }
+  const position =
+    queuePos === -1
+      ? groupPos
+      : groupPos === -1
+      ? queuePos
+      : Math.min(queuePos, groupPos);
 
   if (loading) {
     return (
@@ -45,77 +57,22 @@ export const EditQuestion = (props: editQuestionProps) => {
     );
   }
 
-  if (currQuestion.helpedBy !== "") {
+  if (currQuestion.state === QuestionState.IN_PROGRESS) {
     const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
-
     return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          color: "#43474E",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            columnGap: "10px",
-            padding: "16px",
-            bgcolor: "#D7E3F8",
-            justifyContent: "center",
-            marginLeft: "-16px",
-            marginTop: "-18px",
-            width: "100vw",
-          }}
-        >
-          <NotificationsActiveOutlinedIcon style={{ fontSize: "20px" }} />
-          <Box fontWeight={500} fontSize="14px">
-            It's your turn
-          </Box>
-        </Box>
-
-        <Box
-          sx={{
-            paddingTop: "20px",
-            paddingRight: "10px",
-            paddingLeft: "10px",
-            fontWeight: 700,
-            color: "#545F70",
-            fontSize: "18.98px",
-          }}
-        >
-          Your TA
-        </Box>
-        <Box sx={{ paddingLeft: "10px" }}>
-          <TaCard ta={ta!} />
-        </Box>
-
-        <Box
-          sx={{
-            paddingTop: "20px",
-            paddingRight: "10px",
-            paddingLeft: "10px",
-            fontWeight: 700,
-            color: "#545F70",
-            fontSize: "18.98px",
-          }}
-        >
-          Your Question
-        </Box>
-          <QuestionDetails
-            question={currQuestion}
-            courseId={course.id}
-            fromStudentCurrentHelping
-          />
-      </Box>
+      <StudentHelping currQuestion={currQuestion} course={course} ta={ta!} />
     );
+  }
+  if (currQuestion.state === QuestionState.MISSING) {
+    return <StudentMissing currQuestion={currQuestion} course={course} />;
   }
 
   const leaveQueue = () => {
     leaveQuestionGroup(currQuestion, course.id, user.id);
     setLeaveQueueModal(false);
+  };
+  const leaveGroup = () => {
+    leaveQuestionGroup(groupQuestion, course.id, user.id);
   };
 
   const leaveQueueButtons = [
@@ -147,14 +104,16 @@ export const EditQuestion = (props: editQuestionProps) => {
 
   return (
     <>
-      <CustomModal
-        title="Leave queue?"
-        subtitle="You'll lose your place in line and
+      {position === queuePos && (
+        <CustomModal
+          title="Leave queue?"
+          subtitle="You'll lose your place in line and
                   won't receive assistance until you join again."
-        buttons={leaveQueueButtons}
-        open={leaveQueueModal}
-        setOpen={setLeaveQueueModal}
-      />
+          buttons={leaveQueueButtons}
+          open={leaveQueueModal}
+          setOpen={setLeaveQueueModal}
+        />
+      )}
 
       <Container
         sx={{
@@ -168,10 +127,10 @@ export const EditQuestion = (props: editQuestionProps) => {
           alignItems: "center",
         }}
       >
-        <Box sx={{ fontWeight: 700, fontSize: queuePos === 0 ? 35 : 55 }}>
-          {queuePos === 0 ? "You're Next!" : queuePos}
+        <Box sx={{ fontWeight: 700, fontSize: position === 0 ? 35 : 55 }}>
+          {position === 0 ? "You're Next!" : position}
         </Box>
-        {queuePos !== 0 && (
+        {position !== 0 && (
           <Box sx={{ fontWeight: 500, fontSize: 10, color: "#545F70" }}>
             Queues ahead of you
           </Box>
@@ -216,20 +175,27 @@ export const EditQuestion = (props: editQuestionProps) => {
               }}
               style={{ boxShadow: "none" }}
               fullWidth
-              onClick={() => setLeaveQueueModal(true)}
+              onClick={() =>
+                position === queuePos ? setLeaveQueueModal(true) : leaveGroup()
+              }
             >
               <KeyboardReturnOutlinedIcon style={{ fontSize: "14px" }} />
-              <Box>Leave queue</Box>
+              {position === queuePos ? (
+                <Box>Leave queue</Box>
+              ) : (
+                <Box>Leave group</Box>
+              )}
             </Button>
           </Box>
-
-          <Box sx={{ flexGrow: 1 }}>
-            <QuestionForm
-              triggerButton={editButton}
-              title="Edit submission"
-              currentQuestion={currQuestion}
-            />
-          </Box>
+          {position === queuePos && (
+            <Box sx={{ flexGrow: 1 }}>
+              <QuestionForm
+                triggerButton={editButton}
+                title="Edit submission"
+                currentQuestion={currQuestion}
+              />
+            </Box>
+          )}
         </Box>
       </Container>
     </>
