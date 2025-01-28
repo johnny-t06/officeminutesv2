@@ -24,7 +24,6 @@ const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
         flexDirection: "column",
         gap: "32px",
         marginTop: "24px",
-        height: "100vh",
       }}
     >
       <DisplayAnnouncements
