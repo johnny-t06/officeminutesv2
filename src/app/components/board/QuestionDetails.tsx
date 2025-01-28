@@ -7,6 +7,8 @@ import {
   formatTimeDifference,
   // getActiveQuestionsByState,
   // getUserSessionOrRedirect,
+  getEmailTemplate,
+  // getUserSessionOrRedirect,
   hasPassed,
   trimUserName,
 } from "@utils/index";
@@ -113,11 +115,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
       pendingQuestions[1].group.forEach(async (userId) => {
         const user = await getUser(userId);
         if (user) {
-          await sendEmail({
-            email: user.email,
-            subject: "You are at the top of the queue!",
-            body: "You will receive another notification when a TA is ready to help.",
-          });
+          await sendEmail(getEmailTemplate("TOP_QUEUE", user.email));
         }
       });
     }
@@ -288,17 +286,13 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                   });
                   users.forEach(async (user, index) => {
                     if (index === 0) {
-                      await sendEmail({
-                        email: user.email,
-                        subject: "The TAs are ready to help!",
-                        body: "The TAs are ready to help you now! Please listen for your name.",
-                      });
+                      await sendEmail(
+                        getEmailTemplate("TA_LEADER_READY", user.email)
+                      );
                     } else {
-                      await sendEmail({
-                        email: user.email,
-                        subject: "The TAs are ready to help!",
-                        body: "The TAs are ready to help a group that you joined! Please listen for your group.",
-                      });
+                      await sendEmail(
+                        getEmailTemplate("TA_MEMBER_READY", user.email)
+                      );
                     }
                   });
                   router.push(`/private/course/${courseId}/queue`);
