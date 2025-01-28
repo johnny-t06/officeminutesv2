@@ -29,7 +29,7 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
   );
   const [deleteVisible, setDeleteVisible] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>("");
-  
+
   React.useEffect(() => {
     if (!isEdit) {
       setNewMessage(announcement.message);
@@ -99,7 +99,7 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
           fullWidth
           label={"Announcement"}
           focused
-          inputProps={{ style: { color: theme.palette.text.secondary } }}
+          inputProps={{ style: { color: theme.palette.text.primary } }}
           defaultValue={announcement.message}
           onChange={(e) => setNewMessage(e.target.value)}
           error={error !== ""}
@@ -140,7 +140,7 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
     >
       <Typography
         variant="body2"
-        color={theme.palette.text.secondary}
+        color={theme.palette.text.primary}
         sx={{ whiteSpace: "pre-line" }}
       >
         {announcement.message}
