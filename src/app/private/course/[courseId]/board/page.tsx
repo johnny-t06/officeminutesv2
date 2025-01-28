@@ -39,8 +39,8 @@ const Page = (props: PageProps) => {
               style={{
                 textTransform: "none",
                 padding: 0,
-                width: "100px",
                 justifyContent: "end",
+                textWrap: "nowrap",
               }}
             >
               <Typography variant="subtitle2">

@@ -6,21 +6,39 @@ export enum State {
   SUCCESS,
 }
 
+interface UseLoadingValueProps<T> {
+  init: T;
+}
+
 type LoadingValue<T> =
   | { state: State.ERROR; message: string }
   | { state: State.LOADING }
   | { state: State.SUCCESS; value: T };
 
-export const useLoadingValue = <T,>() => {
+export const useLoadingValue = <T,>({ init }: UseLoadingValueProps<T>) => {
   const [loadingState, setLoadingState] = React.useState<LoadingValue<T>>({
     state: State.LOADING,
   });
+  const ref = React.useRef(loadingState);
 
-  const setLoadedValue = (value: T) =>
-    setLoadingState({ state: State.SUCCESS, value: value });
+  const setLoadedValue = (value: T | ((data: T) => T)) => {
+    if (typeof value === "function") {
+      const fn = value as Function;
+      setLoadingState((prev) => {
+        const args = prev.state === State.SUCCESS ? prev.value : init;
+        return { state: State.SUCCESS, value: fn(args) };
+      });
+    } else {
+      return setLoadingState({ state: State.SUCCESS, value: value });
+    }
+  };
 
   const setError = (message?: string) =>
     setLoadingState({ state: State.ERROR, message: message ?? "" });
+
+  React.useEffect(() => {
+    ref.current = loadingState;
+  }, [loadingState]);
 
   return {
     state: loadingState,

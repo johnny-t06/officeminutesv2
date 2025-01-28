@@ -6,7 +6,12 @@ import {
   IdentifiableQuestions,
   IdentifiableUser,
 } from "@interfaces/type";
-import { Timestamp } from "firebase/firestore";
+import {
+  DocumentChange,
+  DocumentChangeType,
+  DocumentData,
+  Timestamp,
+} from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -173,4 +178,13 @@ export const getQueuePosition = (
     queuePos: position,
     currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
   };
+};
+
+export const groupDocChangesByType = <T>(
+  docs: DocumentChange<T, DocumentData>[]
+) => {
+  return Object.groupBy(
+    docs.map((doc) => ({ type: doc.type, id: doc.doc.id, ...doc.doc.data() })),
+    ({ type }) => type
+  );
 };
