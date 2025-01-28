@@ -124,14 +124,13 @@ export const EditQuestion = (props: editQuestionProps) => {
           alignItems: "center",
         }}
       >
-        <Box sx={{ fontWeight: 700, fontSize: position === 0 ? 35 : 55 }}>
+        <Box sx={{ fontWeight: 400, fontSize: '12px', color: "#545F70" }}>
+            Your queue position
+          </Box>
+        <Box sx={{ fontWeight: 700, fontSize: '57px' }}>
           {position === 0 ? "You're Next!" : position + 1}
         </Box>
-        {position !== 0 && (
-          <Box sx={{ fontWeight: 500, fontSize: 10, color: "#545F70" }}>
-            Queues ahead of you
-          </Box>
-        )}
+        
         <Box
           sx={{
             fontWeight: 400,
