@@ -19,7 +19,6 @@ export const useLoadingValue = <T,>({ init }: UseLoadingValueProps<T>) => {
   const [loadingState, setLoadingState] = React.useState<LoadingValue<T>>({
     state: State.LOADING,
   });
-  const ref = React.useRef(loadingState);
 
   const setLoadedValue = (value: T | ((data: T) => T)) => {
     if (typeof value === "function") {
@@ -35,10 +34,6 @@ export const useLoadingValue = <T,>({ init }: UseLoadingValueProps<T>) => {
 
   const setError = (message?: string) =>
     setLoadingState({ state: State.ERROR, message: message ?? "" });
-
-  React.useEffect(() => {
-    ref.current = loadingState;
-  }, [loadingState]);
 
   return {
     state: loadingState,
