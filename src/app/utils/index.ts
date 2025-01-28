@@ -195,6 +195,12 @@ export const getEmailTemplate = (type: string, email: string) => {
         subject: "The TAs are ready to help!",
         body: "The TAs are ready to help a group that you joined! Please listen for your group.",
       };
+    case "STUDENT_MISSING":
+      return {
+        email,
+        subject: "You are marked as missing from the queue!",
+        body: "Please let the TA know when you are back.",
+      };
     default:
       return {
         email,

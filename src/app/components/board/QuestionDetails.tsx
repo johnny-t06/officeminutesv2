@@ -88,6 +88,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
       await sendTopUserNotif();
+      await sendEmail(getEmailTemplate("STUDENT_MISSING", users[0].email));
       await partialUpdateQuestion(question.id, courseId, {
         state: QuestionState.MISSING,
       });
