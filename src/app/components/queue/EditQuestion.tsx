@@ -1,17 +1,14 @@
 import { Box, Button, Container } from "@mui/material";
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
-import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
 import { leaveQuestionGroup } from "@services/client/question";
 import QuestionForm from "./form/QuestionForm";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
-import TaCard from "@components/tas/TaCard";
 import { useCourseData } from "@hooks/useCourseData";
 import Spinner from "@components/Spinner";
-import { QuestionDetails } from "@components/board/QuestionDetails";
 import { IdentifiableQuestion } from "@interfaces/type";
 import { QuestionState } from "@interfaces/db";
 import { StudentHelping } from "./StudentHelping";
@@ -128,7 +125,7 @@ export const EditQuestion = (props: editQuestionProps) => {
         }}
       >
         <Box sx={{ fontWeight: 700, fontSize: position === 0 ? 35 : 55 }}>
-          {position === 0 ? "You're Next!" : position}
+          {position === 0 ? "You're Next!" : position + 1}
         </Box>
         {position !== 0 && (
           <Box sx={{ fontWeight: 500, fontSize: 10, color: "#545F70" }}>
