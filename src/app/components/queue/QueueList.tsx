@@ -5,12 +5,11 @@ import QueueItem from "./QueueItem";
 
 interface QueueListProps {
   header: string;
-  displayEnqueued: boolean;
   questions: IdentifiableQuestions;
 }
 
 const QueueList = (props: QueueListProps) => {
-  const { header, displayEnqueued, questions } = props;
+  const { header, questions } = props;
 
   if (questions.length === 0) {
     return null;
@@ -43,7 +42,6 @@ const QueueList = (props: QueueListProps) => {
           justifyContent="center"
           columnGap="4px"
           paddingLeft="8px"
-          visibility={displayEnqueued ? "visible" : "hidden"}
         >
           <PersonOutlineOutlined fontSize="small" />
           <Typography fontWeight={500}>{questions.length}</Typography>

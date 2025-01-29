@@ -31,17 +31,14 @@ const Queue = () => {
         <Stack spacing="36px" display={queueClosed ? "none" : "block"}>
           <QueueList
             header={isUserTA ? "Other TAs are helping" : "Currently Helping"}
-            displayEnqueued={false}
             questions={sortQuestionsChronologically(inProgressQuestions)}
           />
           <QueueList
             header="Missing"
-            displayEnqueued={false}
             questions={sortQuestionsChronologically(missingQuestions)}
           />
           <QueueList
             header={isUserTA ? "Start helping" : "Queue"}
-            displayEnqueued
             questions={sortQuestionsChronologically(pendingQuestions)}
           />
         </Stack>
