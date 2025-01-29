@@ -19,14 +19,7 @@ import {
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
 import { runTransaction } from "firebase/firestore";
 
-/* Why not pass in a Question type */
-type AddQuestion = Pick<
-  Question,
-  "title" | "description" | "questionPublic" | "group" | "tags"
-> &
-  PartialWithFieldValue<Question>;
-
-export const addQuestion = async (question: AddQuestion, courseId: string) => {
+export const addQuestion = async (question: Question, courseId: string) => {
   const questionsColection: CollectionReference = collection(
     db,
     `courses/${courseId}/questions`
