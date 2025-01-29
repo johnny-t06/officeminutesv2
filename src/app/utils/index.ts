@@ -182,9 +182,43 @@ export const getQueuePosition = (
 
 export const groupDocChangesByType = <T>(
   docs: DocumentChange<T, DocumentData>[]
-) => {
-  return Object.groupBy(
+) =>
+  Object.groupBy(
     docs.map((doc) => ({ type: doc.type, id: doc.doc.id, ...doc.doc.data() })),
     ({ type }) => type
   );
+
+export const getEmailTemplate = (type: string, email: string) => {
+  switch (type) {
+    case "TOP_QUEUE":
+      return {
+        email,
+        subject: "You are at the top of the queue!",
+        body: "You will receive another notification when a TA is ready to help.",
+      };
+    case "TA_LEADER_READY":
+      return {
+        email,
+        subject: "The TAs are ready to help!",
+        body: "The TAs are ready to help you now! Please listen for your name.",
+      };
+    case "TA_MEMBER_READY":
+      return {
+        email,
+        subject: "The TAs are ready to help!",
+        body: "The TAs are ready to help a group that you joined! Please listen for your group.",
+      };
+    case "STUDENT_MISSING":
+      return {
+        email,
+        subject: "You are marked as missing from the queue!",
+        body: "Please let the TA know when you are back.",
+      };
+    default:
+      return {
+        email,
+        subject: "",
+        body: "",
+      };
+  }
 };
