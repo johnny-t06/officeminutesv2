@@ -29,11 +29,6 @@ const QueueItem = (props: QueueItemProps) => {
   const isShowDetails =
     isUserTA || question.questionPublic || question.group[0] === user.id;
 
-  const privateTemplate = {
-    title: "Private",
-    user: "Anonymous",
-  };
-
   React.useEffect(() => {
     const fetchUsers = async () => {
       const fetchedUsers = await getUsers(question.group);
@@ -73,7 +68,7 @@ const QueueItem = (props: QueueItemProps) => {
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          {isShowDetails ? question.title : privateTemplate.title}
+          {isShowDetails ? question.title : "Private"}
         </Typography>
         <Typography
           fontSize="14px"
@@ -82,11 +77,7 @@ const QueueItem = (props: QueueItemProps) => {
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          {loading
-            ? "Loading..."
-            : isShowDetails
-            ? users.map(trimUserName).join(", ")
-            : privateTemplate.user}
+          {loading ? "Loading..." : users.map(trimUserName).join(", ")}
         </Typography>
       </Grid>
       <Grid item xs={2} textAlign="center">
