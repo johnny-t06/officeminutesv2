@@ -28,7 +28,7 @@ export const useLoadingValue = <T,>({ init }: UseLoadingValueProps<T>) => {
         return { state: State.SUCCESS, value: fn(args) };
       });
     } else {
-      return setLoadingState({ state: State.SUCCESS, value: value });
+      setLoadingState({ state: State.SUCCESS, value: value });
     }
   };
 
