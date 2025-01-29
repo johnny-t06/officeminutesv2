@@ -20,6 +20,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import { partialUpdateCourse } from "@services/client/course";
 import { EditQuestion } from "@components/queue/EditQuestion";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { CustomModal } from "@components/CustomModal";
 
 const Page = () => {
   const user = useUserOrRedirect();
@@ -30,6 +31,8 @@ const Page = () => {
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState(true);
   const [time, setTime] = React.useState(timeSince(helpingQuestion?.helpedAt));
+  const [closeQueueVisible, setCloseQueueVisible] =
+    React.useState<boolean>(false);
 
   if (!user) {
     return null;
@@ -72,6 +75,22 @@ const Page = () => {
     return () => clearInterval(interval);
   }, [helpingQuestion?.helpedAt]);
 
+  const closeButtons = [
+    {
+      text: "Cancel",
+      onClick: () => setCloseQueueVisible(false),
+    },
+    {
+      text: "Yes",
+      onClick: async () => {
+        setCloseQueueVisible(false);
+        await partialUpdateCourse(course.id, {
+          isOpen: false,
+        });
+      },
+    },
+  ];
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen ">
@@ -112,9 +131,13 @@ const Page = () => {
                 zIndex: 99,
               }}
               onClick={async () => {
-                await partialUpdateCourse(course.id, {
-                  isOpen: !course.isOpen,
-                });
+                if (course.isOpen) {
+                  setCloseQueueVisible(true);
+                } else {
+                  await partialUpdateCourse(course.id, {
+                    isOpen: true,
+                  });
+                }
               }}
             >
               {course.isOpen ? <PauseIcon /> : <PlayArrowIcon />}
@@ -193,6 +216,13 @@ const Page = () => {
           />
         </Box>
       )}
+      <CustomModal
+        title="Are you sure you want to close the queue?"
+        subtitle="Students won't be able to join the queue after you close the queue."
+        buttons={closeButtons}
+        open={closeQueueVisible}
+        setOpen={setCloseQueueVisible}
+      />
     </Box>
   );
 };
