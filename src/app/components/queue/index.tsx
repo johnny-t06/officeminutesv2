@@ -3,14 +3,14 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { QuestionState } from "@interfaces/db";
 import {
   getActiveQuestionsByState,
-  getUserSessionOrRedirect,
   sortQuestionsChronologically,
 } from "@utils/index";
 import QueueList from "./QueueList";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 const Queue = () => {
   const { course, questions } = useOfficeHour();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
 
   if (!user) {
     return null;

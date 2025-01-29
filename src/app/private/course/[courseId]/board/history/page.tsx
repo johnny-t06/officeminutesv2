@@ -1,12 +1,11 @@
 "use client";
 import Board from "@components/board";
 import Header from "@components/Header";
-import Spinner from "@components/Spinner";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { useCourseData } from "@hooks/useCourseData";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { ArrowBack } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
-import { getExpiredQuestions, getUserSessionOrRedirect } from "@utils/index";
+import { getExpiredQuestions } from "@utils/index";
 import Link from "next/link";
 import React from "react";
 
@@ -19,7 +18,7 @@ interface PageProps {
 const Page = (props: PageProps) => {
   const { courseId } = props.params;
   const { course, questions } = useOfficeHour();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   if (!user) {
     return null;
   }

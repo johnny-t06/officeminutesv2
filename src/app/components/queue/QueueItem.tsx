@@ -1,12 +1,13 @@
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Grid, Typography } from "@mui/material";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
-import { getUserSessionOrRedirect, trimUserName } from "@utils/index";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { trimUserName } from "@utils/index";
 import React from "react";
 import { getUsers } from "@services/client/user";
 import { useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { LockOutlined } from "@mui/icons-material";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 interface QueueItemProps {
   order: number;
@@ -20,7 +21,7 @@ const QueueItem = (props: QueueItemProps) => {
 
   const router = useRouter();
   const { course } = useOfficeHour();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
 
   if (!user) {
     return null;
@@ -84,7 +85,7 @@ const QueueItem = (props: QueueItemProps) => {
         {isShowDetails ? (
           <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
         ) : (
-          <LockOutlined sx={{ color: "#49454F", fontSize: "18px" }} />
+          <LockOutlinedIcon sx={{ color: "#49454F", fontSize: "18px" }} />
         )}
       </Grid>
     </Grid>

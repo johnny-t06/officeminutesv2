@@ -5,10 +5,10 @@ import StudentDisplayCourse from "@components/StudentDisplayCourse";
 import TADisplayCourse from "@components/TADisplayCourse";
 import MenuButton from "@components/buttons/MenuButton";
 import React from "react";
-import { getUserSessionOrRedirect } from "@utils/index";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { IdentifiableUsers } from "@interfaces/type";
 import { getUsers } from "@services/client/user";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 interface PageProps {
   params: {
@@ -21,7 +21,7 @@ const Page = (props: PageProps) => {
     params: { courseId },
   } = props;
 
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   const { course } = useOfficeHour();
   const [tas, setTAs] = React.useState<IdentifiableUsers>([]);
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);
@@ -46,11 +46,7 @@ const Page = (props: PageProps) => {
   const isUserTA = course.tas.includes(user.id);
   return (
     <div>
-      <Header
-        leftIcon={<MenuButton isEdge />}
-        title={courseId.toUpperCase()}
-        alignCenter
-      />
+      <Header leftIcon={<MenuButton isEdge />} title={courseId.toUpperCase()} />
       {isUserTA ? (
         <TADisplayCourse tas={tas} students={students} />
       ) : (

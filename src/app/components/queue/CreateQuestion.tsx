@@ -8,9 +8,16 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
 import { useRouter } from "next/navigation";
+import { getQueuePosition } from "@utils/index";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 const CreateQuestion = () => {
-  const { course } = useOfficeHour();
+  const { course, questions } = useOfficeHour();
+  const user = useUserOrRedirect();
+  if (!user) {
+    return null;
+  }
+  const { queuePos } = getQueuePosition(questions, user);
   const [isModalVisible, setisModalVisible] = React.useState(false);
   const router = useRouter();
   const ModalButtons = [
@@ -50,6 +57,7 @@ const CreateQuestion = () => {
       text="Join queue"
       icon={<ArrowForwardOutlinedIcon />}
       onClick={() => {}}
+      disabled={queuePos !== -1}
     />
   );
   return (

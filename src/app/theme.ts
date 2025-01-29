@@ -28,6 +28,18 @@ const theme: Theme = createTheme({
   typography: {
     fontFamily: inter.style.fontFamily,
   },
+  components: {
+    MuiFormLabel: {
+      styleOverrides: {
+        asterisk: {
+          color: "#db3131",
+          "&$error": {
+            color: "#db3131",
+          },
+        },
+      },
+    },
+  },
 });
 
 export default theme;

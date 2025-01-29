@@ -141,18 +141,6 @@ export const getExpiredQuestions = (
     (question) => hasPassed(question) && question.questionPublic === isPublic
   );
 
-export const getUserSessionOrRedirect = () => {
-  const { user } = useUserSession();
-  const router = useRouter();
-  React.useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [user, router]);
-
-  return user ?? null;
-};
-
 export const timeSince = (timestamp: Timestamp | undefined) => {
   if (timestamp === undefined || timestamp === null) {
     return "00:00";
@@ -185,4 +173,39 @@ export const getQueuePosition = (
     queuePos: position,
     currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
   };
+};
+
+export const getEmailTemplate = (type: string, email: string) => {
+  switch (type) {
+    case "TOP_QUEUE":
+      return {
+        email,
+        subject: "You are at the top of the queue!",
+        body: "You will receive another notification when a TA is ready to help.",
+      };
+    case "TA_LEADER_READY":
+      return {
+        email,
+        subject: "The TAs are ready to help!",
+        body: "The TAs are ready to help you now! Please listen for your name.",
+      };
+    case "TA_MEMBER_READY":
+      return {
+        email,
+        subject: "The TAs are ready to help!",
+        body: "The TAs are ready to help a group that you joined! Please listen for your group.",
+      };
+    case "STUDENT_MISSING":
+      return {
+        email,
+        subject: "You are marked as missing from the queue!",
+        body: "Please let the TA know when you are back.",
+      };
+    default:
+      return {
+        email,
+        subject: "",
+        body: "",
+      };
+  }
 };

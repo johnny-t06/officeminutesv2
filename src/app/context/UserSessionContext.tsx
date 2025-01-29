@@ -16,6 +16,7 @@ import Spinner from "@components/Spinner";
 import { Box } from "@mui/material";
 import { setSessionCookie } from "@api/auth/route.client";
 
+const PROD_ENV = process.env.NEXT_PUBLIC_APP_ENV === "production";
 interface Session {
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -45,6 +46,7 @@ export const UserSessionContextProvider = ({
     isLoading: true,
     error: null,
   });
+
   const router = useRouter();
 
   React.useEffect(() => {
@@ -69,12 +71,16 @@ export const UserSessionContextProvider = ({
     try {
       await setPersistence(auth, browserLocalPersistence);
       const provider = new GoogleAuthProvider();
-
+      if (PROD_ENV) {
+        provider.setCustomParameters({
+          hd: "tufts.edu",
+        });
+      }
       const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken();
+      const resUser = result.user;
+      const idToken = await resUser.getIdToken();
       await setSessionCookie(idToken);
 
-      const resUser = result.user;
       const maybeUser = await getUser(resUser.uid);
       if (maybeUser === null) {
         setUser(
@@ -106,8 +112,13 @@ export const UserSessionContextProvider = ({
       setSession((prev) => ({ ...prev, isLoading: true }));
       await signOut(auth);
       setUser(null);
-      setSession({ isAuthenticated: false, isLoading: false, error: null });
-      router.push("/");
+      setSession({
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      });
+      router.push("/login");
+      router.refresh();
     } catch (e: any) {
       setSession({
         isAuthenticated: false,
@@ -117,6 +128,7 @@ export const UserSessionContextProvider = ({
       console.error(e);
     }
   };
+
   return session.isLoading ? (
     <Box className="flex h-screen w-screen flex-col items-center justify-center">
       <Spinner />

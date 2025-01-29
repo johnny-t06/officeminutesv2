@@ -3,12 +3,13 @@ import MenuButton from "@components/buttons/MenuButton";
 import Header from "@components/Header";
 import { useUserSession } from "@context/UserSessionContext";
 import { Avatar, Button } from "@mui/material";
-import { getUserSessionOrRedirect, trimUserName } from "@utils/index";
+import { trimUserName } from "@utils/index";
 import theme from "theme";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import { useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 
 interface PageProps {
   params: {
@@ -24,7 +25,7 @@ const Page = (props: PageProps) => {
   const router = useRouter();
   const { course } = useOfficeHour();
   const { onSignOut } = useUserSession();
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   if (!user) {
     return null;
   }
@@ -32,11 +33,7 @@ const Page = (props: PageProps) => {
 
   return (
     <div>
-      <Header
-        leftIcon={<MenuButton isEdge />}
-        title={courseId.toUpperCase()}
-        alignCenter
-      />
+      <Header leftIcon={<MenuButton isEdge />} title={courseId.toUpperCase()} />
       <div className="flex items-center gap-4">
         <Avatar
           sx={{ bgcolor: theme.palette.primary.main, height: 56, width: 56 }}

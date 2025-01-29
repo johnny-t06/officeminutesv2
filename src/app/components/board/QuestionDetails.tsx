@@ -4,15 +4,16 @@ import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
 import {
   formatTimeDifference,
-  getUserSessionOrRedirect,
+  getEmailTemplate,
   hasPassed,
   trimUserName,
 } from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { getUsers } from "@services/client/user";
+import { getUser, getUsers } from "@services/client/user";
 import {
+  getBatchedQuestions,
   joinQuestionGroup,
   leaveQuestionGroup,
   partialUpdateQuestion,
@@ -21,13 +22,17 @@ import Spinner from "@components/Spinner";
 import { CustomButton } from "@components/buttons/CustomButton";
 import { QuestionState } from "@interfaces/db";
 import { useRouter } from "next/navigation";
-import { serverTimestamp } from "firebase/firestore";
+import useApiThrottle from "@hooks/useApiThrottle";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { serverTimestamp, Timestamp } from "firebase/firestore";
+import { sendEmail } from "@api/send-email/route.client";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
   courseId: string;
   fromTAQueue?: boolean;
   fromCurrentlyHelping?: boolean;
+  fromStudentCurrentHelping?: boolean;
 }
 
 export const QuestionDetails = (props: QuestionDetailsProps) => {
@@ -36,9 +41,10 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     courseId,
     fromTAQueue = false,
     fromCurrentlyHelping = false,
+    fromStudentCurrentHelping = false,
   } = props;
 
-  const user = getUserSessionOrRedirect();
+  const user = useUserOrRedirect();
   const router = useRouter();
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)
@@ -66,9 +72,13 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     }
     setJoinGroup(!joinGroup);
   };
-  
+
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
+      await sendTopUserNotif();
+      await sendEmail(
+        getEmailTemplate("STUDENT_MISSING", users[0]?.email ?? "")
+      );
       await partialUpdateQuestion(question.id, courseId, {
         state: QuestionState.MISSING,
       });
@@ -80,8 +90,60 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     }
   };
 
+  const onStartHelpingGroup = async () => {
+    await sendTopUserNotif();
+    await partialUpdateQuestion(question.id, courseId, {
+      state: QuestionState.IN_PROGRESS,
+      helpedBy: user.id,
+      helpedAt: serverTimestamp(),
+    });
+    users.forEach(async (user, index) => {
+      if (index === 0) {
+        await sendEmail(getEmailTemplate("TA_LEADER_READY", user.email));
+      } else {
+        await sendEmail(getEmailTemplate("TA_MEMBER_READY", user.email));
+      }
+    });
+    router.push(`/private/course/${courseId}/queue`);
+  };
+
+  const { fn: throttledOnJoinGroup } = useApiThrottle({
+    fn: onJoinGroup,
+  });
+
+  const { fn: throttledOnMissingRemove } = useApiThrottle({
+    fn: onMissingRemove,
+  });
+
+  const { fn: throttledOnStartHelpingGroup } = useApiThrottle({
+    fn: onStartHelpingGroup,
+  });
+
+  const sendTopUserNotif = async () => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const nowTimestamp = Timestamp.fromDate(now);
+
+    const pendingQuestions = await getBatchedQuestions(
+      courseId,
+      2,
+      QuestionState.PENDING,
+      nowTimestamp
+    );
+
+    if (pendingQuestions.length > 1 && pendingQuestions[0].id === question.id) {
+      pendingQuestions[1].group.forEach(async (userId) => {
+        const user = await getUser(userId);
+        if (user) {
+          await sendEmail(getEmailTemplate("TOP_QUEUE", user.email));
+        }
+      });
+    }
+  };
+
   const questionInProgess = question.state === QuestionState.IN_PROGRESS;
   const questionMissing = question.state === QuestionState.MISSING;
+  const currentHelping = fromCurrentlyHelping || fromStudentCurrentHelping;
 
   return (
     <Box>
@@ -93,9 +155,9 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
         <>
           <Box
             sx={{
-              backgroundColor: fromCurrentlyHelping ? "#F2F3FA" : "",
-              borderRadius: fromCurrentlyHelping ? "12px" : "",
-              padding: fromCurrentlyHelping ? "12px" : "",
+              backgroundColor: currentHelping ? "#F2F3FA" : "",
+              borderRadius: currentHelping ? "12px" : "",
+              padding: currentHelping ? "12px" : "",
             }}
           >
             <Box
@@ -105,7 +167,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               gap="16px"
               alignItems="center"
               sx={{
-                marginTop: fromCurrentlyHelping ? "" : "24px",
+                marginTop: currentHelping ? "" : "24px",
               }}
             >
               <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
@@ -235,14 +297,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                   textTransform: "none",
                   width: "100%",
                 }}
-                onClick={async () => {
-                  await partialUpdateQuestion(question.id, courseId, {
-                    state: QuestionState.IN_PROGRESS,
-                    helpedBy: user.id,
-                    helpedAt: serverTimestamp(),
-                  });
-                  router.push(`/private/course/${courseId}/queue`);
-                }}
+                onClick={throttledOnStartHelpingGroup}
               >
                 {questionInProgess ? "Already in progress" : "Start helping"}
               </CustomButton>
@@ -258,13 +313,13 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                     width: "100%",
                     color: "#000",
                   }}
-                  onClick={onMissingRemove}
+                  onClick={throttledOnMissingRemove}
                 >
                   {questionMissing ? "Resolve or remove" : "Mark as missing"}
                 </CustomButton>
               )}
             </Box>
-          ) : (
+          ) : fromStudentCurrentHelping ? null : (
             <Box
               marginTop="8px"
               display={hasPassed(question) ? "none" : "flex"}
@@ -285,7 +340,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                   width: "100%",
                   color: joinGroup ? "#000" : "#fff",
                 }}
-                onClick={onJoinGroup}
+                onClick={throttledOnJoinGroup}
               >
                 {joinGroup ? "Leave group" : "Join group"}
               </CustomButton>

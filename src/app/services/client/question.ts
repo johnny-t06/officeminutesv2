@@ -1,5 +1,5 @@
 import { db } from "../../../../firebase";
-import { Question } from "@interfaces/db";
+import { Question, QuestionState } from "@interfaces/db";
 import { questionConverter } from "../firestore";
 import {
   doc,
@@ -15,8 +15,14 @@ import {
   serverTimestamp,
   arrayUnion,
   arrayRemove,
+  query,
+  where,
+  orderBy,
+  limit,
+  Timestamp,
 } from "firebase/firestore";
 import { IdentifiableQuestion, IdentifiableQuestions } from "@interfaces/type";
+import { runTransaction } from "firebase/firestore";
 
 /* Why not pass in a Question type */
 type AddQuestion = Pick<
@@ -103,9 +109,24 @@ export const leaveQuestionGroup = async (
     `courses/${courseId}/questions/${question.id}`
   ).withConverter(questionConverter);
 
-  await updateDoc(questionDoc, {
-    group: arrayRemove(userId),
+  await runTransaction(db, async (transaction) => {
+    const questionSnapshot = await transaction.get(questionDoc);
+
+    if (!questionSnapshot.exists()) {
+      return;
+    }
+
+    const currentGroup = questionSnapshot.data().group;
+
+    if (currentGroup.length <= 1) {
+      transaction.delete(questionDoc);
+    } else {
+      transaction.update(questionDoc, {
+        group: arrayRemove(userId),
+      });
+    }
   });
+
   return { ...question, group: question.group.filter((id) => id !== userId) };
 };
 
@@ -140,4 +161,30 @@ export const deleteQuestion = async (courseId: string, questionId: string) => {
   ).withConverter(questionConverter);
 
   await deleteDoc(questionDoc);
+};
+
+export const getBatchedQuestions = async (
+  courseId: string,
+  batchSize: number,
+  stateFilter: QuestionState,
+  fromTimestampFilter: Timestamp
+) => {
+  const questionsQuery = query(
+    collection(db, `courses/${courseId}/questions`).withConverter(
+      questionConverter
+    ),
+    where("state", "==", stateFilter),
+    where("timestamp", ">=", fromTimestampFilter),
+    orderBy("timestamp", "asc"),
+    limit(batchSize)
+  );
+
+  const snapshot = await getDocs(questionsQuery);
+
+  const questionsDocs: IdentifiableQuestions = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return questionsDocs;
 };
