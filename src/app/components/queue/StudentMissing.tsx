@@ -6,12 +6,12 @@ import {
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { Box } from "@mui/material";
 
-interface studentMissingProps {
+interface StudentMissingProps {
   currQuestion: IdentifiableQuestion;
   course: IdentifiableCourse;
 }
 
-export const StudentMissing = (props: studentMissingProps) => {
+export const StudentMissing = (props: StudentMissingProps) => {
   const { currQuestion, course } = props;
 
   return (

@@ -8,13 +8,13 @@ import {
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import { Box } from "@mui/material";
 
-interface studentHelpingProps {
+interface StudentHelpingProps {
   currQuestion: IdentifiableQuestion;
   course: IdentifiableCourse;
   ta: IdentifiableUser;
 }
 
-export const StudentHelping = (props: studentHelpingProps) => {
+export const StudentHelping = (props: StudentHelpingProps) => {
   const { currQuestion, course, ta } = props;
 
   return (

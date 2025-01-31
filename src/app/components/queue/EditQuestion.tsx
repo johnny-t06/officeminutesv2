@@ -34,36 +34,6 @@ export const EditQuestion = (props: editQuestionProps) => {
 
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
 
-  // not in queue, not join any question,
-  // and not have any IN_PROGRESS or MISSING question
-  if (queuePos === -1 && groupPos === -1 && currQuestion.title === "") {
-    return null;
-  }
-  const position =
-    queuePos === -1
-      ? groupPos
-      : groupPos === -1
-      ? queuePos
-      : Math.min(queuePos, groupPos);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (currQuestion.state === QuestionState.IN_PROGRESS) {
-    const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
-    return (
-      <StudentHelping currQuestion={currQuestion} course={course} ta={ta!} />
-    );
-  }
-  if (currQuestion.state === QuestionState.MISSING) {
-    return <StudentMissing currQuestion={currQuestion} course={course} />;
-  }
-
   const leaveQueue = () => {
     leaveQuestionGroup(currQuestion, course.id, user.id);
     setLeaveQueueModal(false);
@@ -98,6 +68,36 @@ export const EditQuestion = (props: editQuestionProps) => {
       Edit submission
     </Button>
   );
+
+  // not in queue, not join any question,
+  // and not have any IN_PROGRESS or MISSING question
+  if (queuePos === -1 && groupPos === -1 && currQuestion.title === "") {
+    return null;
+  }
+  const position =
+    queuePos === -1
+      ? groupPos
+      : groupPos === -1
+      ? queuePos
+      : Math.min(queuePos, groupPos);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen ">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (currQuestion.state === QuestionState.IN_PROGRESS) {
+    const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
+    return (
+      <StudentHelping currQuestion={currQuestion} course={course} ta={ta!} />
+    );
+  }
+  if (currQuestion.state === QuestionState.MISSING) {
+    return <StudentMissing currQuestion={currQuestion} course={course} />;
+  }
 
   return (
     <>
