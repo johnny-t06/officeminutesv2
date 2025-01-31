@@ -21,6 +21,7 @@ import { partialUpdateCourse } from "@services/client/course";
 import { EditQuestion } from "@components/queue/EditQuestion";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { CustomModal } from "@components/CustomModal";
+import useApiThrottle from "@hooks/useApiThrottle";
 
 const Page = () => {
   const user = useUserOrRedirect();
@@ -40,6 +41,16 @@ const Page = () => {
   const isUserTA = course.tas.includes(user.id);
   const { queuePos, currQuestion } = getQueuePosition(questions, user);
   const queueClosed = course.onDuty.length === 0 || !course.isOpen;
+
+  const changeQueueState = async (change: boolean) => {
+    await partialUpdateCourse(course.id, {
+      isOpen: change,
+    });
+  };
+
+  const { fetching, fn: throttledChangeQueue } = useApiThrottle({
+    fn: changeQueueState,
+  });
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -79,15 +90,15 @@ const Page = () => {
     {
       text: "Cancel",
       onClick: () => setCloseQueueVisible(false),
+      disabled: fetching,
     },
     {
       text: "Yes",
       onClick: async () => {
         setCloseQueueVisible(false);
-        await partialUpdateCourse(course.id, {
-          isOpen: false,
-        });
+        await throttledChangeQueue(false);
       },
+      disabled: fetching,
     },
   ];
 
@@ -134,11 +145,10 @@ const Page = () => {
                 if (course.isOpen) {
                   setCloseQueueVisible(true);
                 } else {
-                  await partialUpdateCourse(course.id, {
-                    isOpen: true,
-                  });
+                  await throttledChangeQueue(true);
                 }
               }}
+              disabled={fetching}
             >
               {course.isOpen ? <PauseIcon /> : <PlayArrowIcon />}
               <Box
