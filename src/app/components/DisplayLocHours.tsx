@@ -4,6 +4,7 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { partialUpdateCourse } from "@services/client/course";
 import React from "react";
 import theme from "theme";
+import { RoundedTile } from "./RoundedTile";
 
 interface DisplayLocHoursProps {
   location: string;
@@ -74,15 +75,7 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
           </Button>
         )}
       </Box>
-      <Box
-        sx={{
-          padding: "16px 16px",
-          gap: "10px",
-          flexDirection: "column",
-          display: "flex",
-          marginTop: "16px",
-        }}
-      >
+      <RoundedTile>
         {isEdit ? (
           <TextField
             focused
@@ -95,11 +88,15 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
             helperText={error}
           />
         ) : (
-          <Typography variant="body2" color={theme.palette.text.primary}>
+          <Typography
+            variant="body2"
+            color={theme.palette.text.secondary}
+            sx={{ whiteSpace: "pre-line" }}
+          >
             {renderWithLinks(currLocation)}
           </Typography>
         )}
-      </Box>
+      </RoundedTile>
     </Box>
   );
 };
