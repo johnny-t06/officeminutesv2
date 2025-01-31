@@ -1,11 +1,11 @@
 "use client";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import { partialUpdateCourse } from "@services/client/course";
 import React from "react";
 import theme from "theme";
 import { RoundedTile } from "./RoundedTile";
-
+import UndoIcon from "@mui/icons-material/Undo";
 interface DisplayLocHoursProps {
   location: string;
   editable?: boolean;
@@ -46,15 +46,25 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
   }, [location]);
 
   const onEditDone = async () => {
-    if (isEdit && currLocation.trim() === "") {
-      setError("Location & Hours cannot be empty");
-      return;
+    const trimmedCurrLocation = currLocation.trim();
+
+    if (isEdit) {
+      if (trimmedCurrLocation === "") {
+        setError("Location & Hours cannot be empty");
+        return;
+      } else if (trimmedCurrLocation !== location) {
+        await partialUpdateCourse(course.id, { location: trimmedCurrLocation });
+      }
+      setError("");
     }
 
-    if (isEdit && currLocation.trim() !== location) {
-      await partialUpdateCourse(course.id, { location: currLocation.trim() });
-    }
     setIsEdit(!isEdit);
+  };
+
+  const onUndo = () => {
+    setCurrLocation(currLocation);
+    setError("");
+    setIsEdit(false);
   };
 
   return (
@@ -77,16 +87,30 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
       </Box>
       <RoundedTile>
         {isEdit ? (
-          <TextField
-            focused
-            multiline
-            label="Location & Hours"
-            fullWidth
-            defaultValue={currLocation}
-            onChange={(e) => setCurrLocation(e.target.value)}
-            error={error !== ""}
-            helperText={error}
-          />
+          <Box sx={{ position: "relative", width: "100%" }}>
+            <TextField
+              focused
+              multiline
+              label="Location & Hours"
+              fullWidth
+              defaultValue={currLocation}
+              onChange={(e) => setCurrLocation(e.target.value)}
+              error={error !== ""}
+              helperText={error}
+            />
+            <IconButton
+              sx={{
+                position: "absolute",
+                bottom: error ? 30 : 10,
+                right: 10,
+                gap: "4px",
+              }}
+              onClick={onUndo}
+            >
+              <UndoIcon fontSize="small" />
+              <Typography variant="caption">Undo</Typography>
+            </IconButton>
+          </Box>
         ) : (
           <Typography
             variant="body2"

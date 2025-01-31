@@ -9,7 +9,7 @@ export const CourseCard = (props: CourseCardProps) => {
   const router = useRouter();
   return (
     <Box
-      className="flex items-center justify-between px-4 w-full"
+      className="flex items-center justify-between px-4 w-full cursor-pointer"
       onClick={() => router.push(`/private/course/${course.id}`)}
     >
       <Box
