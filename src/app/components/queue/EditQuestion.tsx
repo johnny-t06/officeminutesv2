@@ -14,14 +14,14 @@ import { QuestionState } from "@interfaces/db";
 import { StudentHelping } from "./StudentHelping";
 import { StudentMissing } from "./StudentMissing";
 
-interface editQuestionProps {
+interface EditQuestionProps {
   queuePos: number;
   groupPos: number;
   currQuestion: IdentifiableQuestion;
   groupQuestion: IdentifiableQuestion;
 }
 
-export const EditQuestion = (props: editQuestionProps) => {
+export const EditQuestion = (props: EditQuestionProps) => {
   const { queuePos, groupPos, currQuestion, groupQuestion } = props;
   const { course } = useOfficeHour();
   const { tas, loading } = useCourseData({
@@ -80,12 +80,13 @@ export const EditQuestion = (props: editQuestionProps) => {
       : groupPos === -1
       ? queuePos
       : Math.min(queuePos, groupPos);
+  const isAuthor = position === queuePos;
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen ">
+      <Box className="flex items-center justify-center h-screen ">
         <Spinner />
-      </div>
+      </Box>
     );
   }
 
@@ -101,7 +102,7 @@ export const EditQuestion = (props: editQuestionProps) => {
 
   return (
     <>
-      {position === queuePos && (
+      {isAuthor && (
         <CustomModal
           title="Leave queue?"
           subtitle="You'll lose your place in line and
@@ -124,13 +125,13 @@ export const EditQuestion = (props: editQuestionProps) => {
           alignItems: "center",
         }}
       >
-        <Box sx={{ fontWeight: 400, fontSize: '12px', color: "#545F70" }}>
-            Your queue position
-          </Box>
-        <Box sx={{ fontWeight: 700, fontSize: '57px' }}>
+        <Box sx={{ fontWeight: 400, fontSize: "12px", color: "#545F70" }}>
+          Your queue position
+        </Box>
+        <Box sx={{ fontWeight: 700, fontSize: "57px", textAlign: "center" }}>
           {position === 0 ? "You're Next!" : position + 1}
         </Box>
-        
+
         <Box
           sx={{
             fontWeight: 400,
@@ -172,18 +173,14 @@ export const EditQuestion = (props: editQuestionProps) => {
               style={{ boxShadow: "none" }}
               fullWidth
               onClick={() =>
-                position === queuePos ? setLeaveQueueModal(true) : leaveGroup()
+                isAuthor ? setLeaveQueueModal(true) : leaveGroup()
               }
             >
               <KeyboardReturnOutlinedIcon style={{ fontSize: "14px" }} />
-              {position === queuePos ? (
-                <Box>Leave queue</Box>
-              ) : (
-                <Box>Leave group</Box>
-              )}
+              {isAuthor ? <Box>Leave queue</Box> : <Box>Leave group</Box>}
             </Button>
           </Box>
-          {position === queuePos && (
+          {isAuthor && (
             <Box sx={{ flexGrow: 1 }}>
               <QuestionForm
                 triggerButton={editButton}
