@@ -64,6 +64,7 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
   const onUndo = () => {
     setCurrLocation(location);
     setError("");
+    setIsEdit(false);
   };
 
   return (
