@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@project/firebase";
 import { questionConverter } from "@services/firestore";
+import { groupDocChangesByType } from "@utils/index";
 
 interface UseQuestionsLoaderProps {
   courseId: string;
@@ -21,8 +22,9 @@ interface UseQuestionsLoaderProps {
  */
 export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
   const { courseId } = props;
-  const { state, setValue, setError } =
-    useLoadingValue<IdentifiableQuestions>();
+  const { state, setValue, setError } = useLoadingValue<IdentifiableQuestions>({
+    init: [],
+  });
   const unsubscriber = React.useRef<Unsubscribe | null>(null);
 
   React.useEffect(() => {
@@ -40,23 +42,29 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
       return;
     }
 
-    // listener for list of questions
     const unsubscribe = onSnapshot(
       collection(db, `courses/${courseId}/questions`).withConverter(
         questionConverter
       ),
       (snapshot) => {
-        let questionsList: IdentifiableQuestions = [];
-        snapshot.docs.map((doc) => {
-          const data = doc.data();
-          questionsList.push({
-            id: doc.id,
-            ...data,
-            timestamp: data.timestamp ?? Timestamp.now(),
-          });
+        const docByType = groupDocChangesByType(snapshot.docChanges());
+        const removed = docByType["removed"] ?? [];
+        const modified = docByType["modified"] ?? [];
+        const added = docByType["added"] ?? [];
+        setValue((prev) => {
+          const updated = prev
+            .filter((doc) => !removed.some((d) => d.id === doc.id))
+            .map((doc) => {
+              return modified.find((d) => d.id === doc.id) ?? doc;
+            });
+          return [
+            ...updated,
+            ...added.map((doc) => ({
+              ...doc,
+              timestamp: doc.timestamp ?? Timestamp.now(),
+            })),
+          ];
         });
-
-        setValue(questionsList);
       }
     );
 

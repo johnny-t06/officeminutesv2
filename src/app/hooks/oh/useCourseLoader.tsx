@@ -15,7 +15,9 @@ interface UseCourseLoaderProps {
  */
 export const useCourseLoader = (props: UseCourseLoaderProps) => {
   const { courseId } = props;
-  const { state, setValue, setError } = useLoadingValue<IdentifiableCourse>();
+  const { state, setValue, setError } = useLoadingValue<IdentifiableCourse>({
+    init: {} as IdentifiableCourse,
+  });
   const unsubscriber = React.useRef<Unsubscribe | null>(null);
 
   React.useEffect(() => {
