@@ -62,9 +62,8 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
   };
 
   const onUndo = () => {
-    setCurrLocation(currLocation);
+    setCurrLocation(location);
     setError("");
-    setIsEdit(false);
   };
 
   return (
@@ -93,7 +92,7 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
               multiline
               label="Location & Hours"
               fullWidth
-              defaultValue={currLocation}
+              value={currLocation}
               onChange={(e) => setCurrLocation(e.target.value)}
               error={error !== ""}
               helperText={error}

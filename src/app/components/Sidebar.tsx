@@ -94,7 +94,6 @@ const Sidebar = () => {
           <Typography variant="h6" color={theme.palette.text.primary}>
             My Classes
           </Typography>
-          {!isOpen && <MenuButton isOpen={false} />}
         </Box>
         <Box
           sx={{
