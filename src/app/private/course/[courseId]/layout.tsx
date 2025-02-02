@@ -28,7 +28,7 @@ const Layout = (props: ILayout) => {
       href: `/private/course/${courseId}`,
     },
     {
-      label: "Board",
+      label: "Public",
       icon: <StickyNote2OutlinedIcon />,
       href: `/private/course/${courseId}/board`,
     },

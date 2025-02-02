@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { DisplayAnnouncements } from "./DisplayAnnouncements";
 import React from "react";
+import { DisplayLocHours } from "./DisplayLocHours";
 
 interface TADisplayCourseProps {
   tas: IdentifiableUsers;
@@ -18,7 +19,6 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { course } = useOfficeHour();
-  
   return (
     <Box
       sx={{
@@ -29,31 +29,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
       }}
     >
       <DisplayAnnouncements announcements={course.announcements} editable />
-      <Box>
-        <Typography
-          variant="h6"
-          color={theme.palette.text.primary}
-          sx={{ fontWeight: "bold" }}
-        >
-          Location & Hours
-        </Typography>
-        <Box
-          sx={{
-            padding: "16px 16px",
-            gap: "10px",
-            flexDirection: "column",
-            display: "flex",
-            marginTop: "16px",
-          }}
-        >
-          <Typography variant="body2" color={theme.palette.text.primary}>
-            JCC 4th floor huddle room
-          </Typography>
-          <Typography variant="body2" color={theme.palette.text.primary}>
-            6 - 9 PM
-          </Typography>
-        </Box>
-      </Box>
+      <DisplayLocHours location={course.location} editable />
       <Box
         sx={{
           display: "flex",
