@@ -1,5 +1,4 @@
 import { defaultQuestion } from "@api/question";
-import { useUserSession } from "@context/UserSessionContext";
 import { Announcement, QuestionState } from "@interfaces/db";
 import {
   IdentifiableQuestion,
@@ -7,8 +6,6 @@ import {
   IdentifiableUser,
 } from "@interfaces/type";
 import { Timestamp } from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import React from "react";
 
 export const trimUserName = (user: IdentifiableUser | undefined | null) => {
   if (user === undefined || user === null) {
