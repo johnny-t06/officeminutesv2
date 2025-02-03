@@ -42,6 +42,7 @@ const Page = (props: PageProps) => {
         courseId={courseId}
         question={question}
         fromTAQueue={isUserTA}
+        isUserTA={isUserTA}
       />
     </div>
   );

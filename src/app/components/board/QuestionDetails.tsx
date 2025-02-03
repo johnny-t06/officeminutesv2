@@ -33,7 +33,7 @@ interface QuestionDetailsProps {
   fromTAQueue?: boolean;
   fromCurrentlyHelping?: boolean;
   fromStudentCurrentHelping?: boolean;
-  isUserTA: boolean;
+  isUserTA?: boolean;
 }
 
 export const QuestionDetails = (props: QuestionDetailsProps) => {

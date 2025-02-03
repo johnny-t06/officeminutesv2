@@ -222,6 +222,7 @@ const Page = () => {
           <QuestionDetails
             question={helpingQuestion}
             courseId={course.id}
+            isUserTA={isUserTA}
             fromCurrentlyHelping
           />
         </Box>
