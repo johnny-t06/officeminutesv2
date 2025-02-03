@@ -28,7 +28,7 @@ const Page = (props: PageProps) => {
   const isUserTA = course.tas.includes(user.id);
 
   if (!question) {
-    router.push(`/private/course/${courseId}/board`);
+    router.push(`/private/course/${courseId}/board/history`);
     return;
   }
 
@@ -36,7 +36,7 @@ const Page = (props: PageProps) => {
     <div>
       <Header
         leftIcon={
-          <Link href={`/private/course/${courseId}/board`}>
+          <Link href={`/private/course/${courseId}/board/history`}>
             <ArrowBack sx={{ marginLeft: "-10px", color: "#000" }} />
           </Link>
         }

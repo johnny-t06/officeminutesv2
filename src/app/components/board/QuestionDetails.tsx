@@ -10,7 +10,7 @@ import {
 } from "@utils/index";
 import React from "react";
 import theme from "theme";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import { getUser, getUsers } from "@services/client/user";
 import {
   getBatchedQuestions,
@@ -33,6 +33,7 @@ interface QuestionDetailsProps {
   fromTAQueue?: boolean;
   fromCurrentlyHelping?: boolean;
   fromStudentCurrentHelping?: boolean;
+  isUserTA: boolean;
 }
 
 export const QuestionDetails = (props: QuestionDetailsProps) => {
@@ -42,6 +43,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
     fromTAQueue = false,
     fromCurrentlyHelping = false,
     fromStudentCurrentHelping = false,
+    isUserTA = false,
   } = props;
 
   const user = useUserOrRedirect();
@@ -166,6 +168,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               flexDirection="row"
               gap="16px"
               alignItems="center"
+              paddingX="8px"
               sx={{
                 marginTop: currentHelping ? "" : "24px",
               }}
@@ -241,21 +244,21 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               </Box>
             </Box>
             <Box
-              marginTop="8px"
+              marginTop="12px"
               display={"flex"}
               flexDirection={"row"}
               alignItems="center"
             >
-              <PeopleAltIcon style={{ marginRight: 4 }} />
-              <Typography
-                sx={{ fontSize: 14, color: theme.palette.text.secondary }}
-              >
+              <PeopleAltOutlinedIcon
+                style={{ marginRight: 8, color: "#545F70" }}
+              />
+              <Typography sx={{ fontSize: 14, color: "#545F70" }}>
                 {users.map(trimUserName).join(", ")}&nbsp;
                 {users.length === 1 ? "is" : "are"} in this group.
               </Typography>
             </Box>
           </Box>
-          {fromCurrentlyHelping ? (
+          {fromCurrentlyHelping && isUserTA ? (
             <Box
               marginTop="8px"
               display={hasPassed(question) ? "none" : "flex"}
@@ -280,7 +283,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                 Mark as done
               </CustomButton>
             </Box>
-          ) : fromTAQueue ? (
+          ) : fromTAQueue && isUserTA ? (
             <Box
               marginTop="8px"
               sx={{ display: "flex", flexDirection: "column", gap: "16px" }}
@@ -319,10 +322,10 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                 </CustomButton>
               )}
             </Box>
-          ) : fromStudentCurrentHelping ? null : (
+          ) : fromStudentCurrentHelping && isUserTA ? null : (
             <Box
               marginTop="8px"
-              display={hasPassed(question) ? "none" : "flex"}
+              display={hasPassed(question) || isUserTA ? "none" : "flex"}
             >
               <CustomButton
                 variant="contained"
