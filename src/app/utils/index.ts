@@ -208,5 +208,9 @@ export const getEmailTemplate = (type: string, email: string) => {
 };
 
 export const getCourseTopicTags = (tags: Tags, tagKey: string): string[] => {
-  return (tags[tagKey].options || []).map((option) => option.choice);
+  if (!tags[tagKey] || !tags[tagKey].options) {
+    return [];
+  }
+
+  return tags[tagKey].options.map((option) => option.choice);
 };
