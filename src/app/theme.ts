@@ -18,8 +18,8 @@ const theme: Theme = createTheme({
       main: "#ECEDF4", // Gray color
     },
     text: {
-      primary: "#000000", // Black text
-      secondary: "#79747E", // Gray text
+      primary: "#1D192B", // Black text
+      secondary: "#43474E", // Gray text
     },
     error: {
       main: "#FF0000", // Red color

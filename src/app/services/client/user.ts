@@ -45,6 +45,10 @@ export const getUser = async (
 export const getUsers = async (
   userIds: string[]
 ): Promise<IdentifiableUsers> => {
+  if (userIds.length === 0) {
+    return [];
+  }
+
   const q = query(
     collection(db, "users").withConverter(userConverter),
     where(documentId(), "in", userIds)
