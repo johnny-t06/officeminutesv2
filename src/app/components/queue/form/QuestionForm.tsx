@@ -5,10 +5,13 @@ import {
   Drawer,
   FormControl,
   FormControlLabel,
+  FormLabel,
   IconButton,
   TextField,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+// import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import React from "react";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
 import { TagOption } from "@interfaces/db";
@@ -20,6 +23,7 @@ import { updateQuestion } from "@services/client/question";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import theme from "theme";
 
 interface QuestionFormProps {
   // button to open the form
@@ -34,6 +38,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   const [openForm, setOpenForm] = React.useState(false);
   const { course } = useOfficeHour();
   const user = useUserOrRedirect();
+  const TAG_ORDER = ["General", "Issue", "How do you feel about the topic"];
 
   if (!user) {
     return null;
@@ -45,7 +50,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   const defaultTags = () => {
     const curr_tags = currentQuestion.tags.map((t) => t.choice);
     let init: Record<string, TagOption[]> = {};
-    Object.keys(course.tags).forEach((t) => {
+    TAG_ORDER.forEach((t) => {
       init[t] = course.tags[t].options.filter((o) =>
         curr_tags.includes(o.choice)
       );
@@ -218,54 +223,62 @@ const QuestionForm = (props: QuestionFormProps) => {
               }
             />
 
-            {/* TODO(lnguyen2693) - Add index for tags, sort and display them 
-            in an order */}
-            {Object.keys(course.tags)
-              .sort((a, b) => a.localeCompare(b))
-              .map((k) =>
-                course.tags[k].multipleChoice ? (
-                  <MultipleChoiceTags
-                    key={k}
-                    tagsKey={k}
-                    tags={course.tags[k]}
-                    allQuestionTags={questionTags}
-                    updateQuestionTags={updateQuestionTags}
-                  />
-                ) : (
-                  <SingleChoiceTags
-                    key={k}
-                    tagsKey={k}
-                    tags={course.tags[k]}
-                    allQuestionTags={questionTags}
-                    updateQuestionTags={updateQuestionTags}
-                  />
-                )
-              )}
+            {TAG_ORDER.map((k) =>
+              course.tags[k].multipleChoice ? (
+                <MultipleChoiceTags
+                  key={k}
+                  tagsKey={k}
+                  tags={course.tags[k]}
+                  allQuestionTags={questionTags}
+                  updateQuestionTags={updateQuestionTags}
+                />
+              ) : (
+                <SingleChoiceTags
+                  key={k}
+                  tagsKey={k}
+                  tags={course.tags[k]}
+                  allQuestionTags={questionTags}
+                  updateQuestionTags={updateQuestionTags}
+                />
+              )
+            )}
 
             {/* TODO(johnnyt-06) - Optional Image Upload Section */}
-            <FormControl sx={{ marginTop: 0.5 }}>
-              {/* <FormLabel>Optional</FormLabel>
-              <Button
-                style={{
-                  backgroundColor: "#D3E4FF",
+            <FormControl>
+              <FormLabel
+                sx={{
+                  color: theme.palette.text.primary,
+                  fontSize: 14,
+                  fontWeight: 600,
                 }}
+              >
+                Optional
+              </FormLabel>
+              {/* <Button
                 variant="contained"
                 sx={{
-                  color: "text.primary",
+                  backgroundColor: "#D3E4FF",
+                  boxShadow: "none",
+                  color: theme.palette.text.primary,
                   textTransform: "none",
                   borderRadius: 50,
                   width: 170,
                   marginTop: 2,
                   marginBottom: 2,
+                  paddingY: "10px",
+                  gap: 1,
                 }}
               >
-                <FileUploadOutlinedIcon></FileUploadOutlinedIcon>
-                <Box sx={{ margin: 0.5, marginLeft: 1.5 }}>Upload image</Box>
+                <FileUploadOutlinedIcon />
+                <Typography noWrap>Upload image</Typography>
               </Button> */}
               <FormControlLabel
                 sx={{ marginLeft: 2, marginTop: 0.5 }}
                 control={
                   <Checkbox
+                    sx={{
+                      color: theme.palette.text.primary,
+                    }}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                       setNewQuestion({
                         ...newQuestion,
@@ -277,11 +290,14 @@ const QuestionForm = (props: QuestionFormProps) => {
                 }
                 label={
                   <Box sx={{ paddingLeft: 2.5, paddingTop: 1 }}>
-                    <Box fontSize={16}>Post to board</Box>
-                    <Box fontSize={14}>
+                    <Typography>Post to board</Typography>
+                    <Typography
+                      fontSize={14}
+                      color={theme.palette.text.secondary}
+                    >
                       Posting to the board will allow a maximum of 4 other
                       people to join your TA session.
-                    </Box>
+                    </Typography>
                   </Box>
                 }
               ></FormControlLabel>

@@ -8,8 +8,10 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
+  Typography,
 } from "@mui/material";
 import React from "react";
+import theme from "theme";
 
 interface TagsProps {
   tagsKey: string;
@@ -49,7 +51,16 @@ export const MultipleChoiceTags = (props: TagsProps) => {
   return (
     <Box>
       <FormControl required={tags.required}>
-        <FormLabel id={tagsKey}>{tagsKey}</FormLabel>
+        <FormLabel
+          id={tagsKey}
+          sx={{
+            color: theme.palette.text.primary,
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          {tagsKey}
+        </FormLabel>
         <Box sx={{ marginTop: 1 }}>
           {tags.options.map((o) => (
             <Checkbox
@@ -62,10 +73,10 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                 <Button
                   sx={{
                     border: 1,
-                    paddingTop: 0.5,
-                    paddingBottom: 0.5,
-                    paddingLeft: 2,
-                    paddingRight: 2,
+                    borderColor: theme.palette.text.secondary,
+                    color: theme.palette.text.secondary,
+                    paddingY: 0.5,
+                    paddingX: 2,
                     borderRadius: 2,
                     textTransform: "none",
                   }}
@@ -78,12 +89,10 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                   variant="contained"
                   sx={{
                     border: 1,
-                    paddingTop: 0.5,
-                    paddingBottom: 0.5,
-                    paddingLeft: 2,
-                    paddingRight: 2,
+                    borderColor: theme.palette.primary.main,
+                    paddingY: 0.5,
+                    paddingX: 2,
                     borderRadius: 2,
-                    bgcolor: "primary",
                     textTransform: "none",
                   }}
                 >
@@ -113,7 +122,16 @@ export const SingleChoiceTags = (props: TagsProps) => {
   return (
     <Box>
       <FormControl required={tags.required}>
-        <FormLabel id={tagsKey}>{tagsKey}</FormLabel>
+        <FormLabel
+          id={tagsKey}
+          sx={{
+            color: theme.palette.text.primary,
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          {tagsKey}
+        </FormLabel>
         <RadioGroup
           onChange={handleChange}
           value={
@@ -127,27 +145,37 @@ export const SingleChoiceTags = (props: TagsProps) => {
               display: "flex",
               flexDirection: "column",
               paddingLeft: 3,
-              paddingTop: 1,
-              paddingBottom: 2,
+              marginTop: "10px",
             }}
           >
-            {/* TODO(lnguyen2693) - display notes */}
             {tags.options.map((o) => (
               <FormControlLabel
                 key={o.choice}
                 value={o.choice}
-                control={<Radio />}
-                // label={o.choice}
-                label={
-                  <Box
-                    key={o.choice}
-                    sx={{ marginBottom: 2.5, marginTop: 2.5, marginLeft: 1 }}
-                  >
-                    <Box fontSize={16}>{o.choice}</Box>
-                    {o.note ? <Box fontSize={14}>{o.note}</Box> : <></>}
-                  </Box>
+                control={
+                  <Radio
+                    sx={{
+                      color: theme.palette.text.primary,
+                    }}
+                  />
                 }
-              ></FormControlLabel>
+                label={
+                  <>
+                    <Typography>{o.choice}</Typography>
+                    {o.note && (
+                      <Typography
+                        fontSize={14}
+                        color={theme.palette.text.secondary}
+                      >
+                        {o.note}
+                      </Typography>
+                    )}
+                  </>
+                }
+                sx={{
+                  marginY: 2,
+                }}
+              />
             ))}
           </Box>
         </RadioGroup>
