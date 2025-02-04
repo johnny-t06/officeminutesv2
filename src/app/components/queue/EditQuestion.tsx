@@ -1,3 +1,4 @@
+"use client";
 import { Box, Button, Container } from "@mui/material";
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
@@ -9,9 +10,10 @@ import { leaveQuestionGroup } from "@services/client/question";
 import QuestionForm from "./form/QuestionForm";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import TaCard from "@components/tas/TaCard";
-import { useCourseData } from "@hooks/useCourseData";
 import { QuestionDetails } from "@components/board/QuestionDetails";
-import { IdentifiableQuestion } from "@interfaces/type";
+import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
+import { getUsers } from "@services/client/user";
+import { useLoading } from "@context/LoadingContext";
 
 interface editQuestionProps {
   queuePos: number;
@@ -21,17 +23,22 @@ interface editQuestionProps {
 export const EditQuestion = (props: editQuestionProps) => {
   const { queuePos, currQuestion } = props;
   const { course } = useOfficeHour();
-  const { tas } = useCourseData({
-    fetchUsers: true,
-  });
-  const user = useUserOrRedirect();
-  if (!user) {
-    return null;
-  }
-
+  const [tas, setTas] = React.useState<IdentifiableUsers>([]);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
+  const { setLoading } = useLoading();
 
-  if (queuePos === -1) {
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const tasData = await getUsers(course.tas);
+      setTas(tasData);
+      setLoading(false);
+    };
+    fetchData();
+  }, [course]);
+
+  const user = useUserOrRedirect();
+  if (!user || queuePos === -1) {
     return null;
   }
 
@@ -103,8 +110,8 @@ export const EditQuestion = (props: editQuestionProps) => {
     );
   }
 
-  const leaveQueue = () => {
-    leaveQuestionGroup(currQuestion, course.id, user.id);
+  const leaveQueue = async () => {
+    await leaveQuestionGroup(currQuestion, course.id, user.id);
     setLeaveQueueModal(false);
   };
 
