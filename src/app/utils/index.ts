@@ -174,10 +174,10 @@ export const getQueuePosition = (
   );
 
   // queue position in PENDING queue
-  const pendingPos = sortedActiveQuestions
-    .filter((q) => q.state === QuestionState.PENDING)
-    .findIndex((q) => q.group[0] === user.id);
 
+  const pendingPos = sortedPendingQuestions.findIndex(
+    (q) => q.group[0] === user.id
+  );
   return {
     queuePos: pendingPos,
     groupPos: groupPos,
