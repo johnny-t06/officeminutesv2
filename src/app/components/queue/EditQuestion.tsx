@@ -3,7 +3,6 @@ import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutl
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { getQueuePosition } from "@utils/index";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
 import { leaveQuestionGroup } from "@services/client/question";
@@ -11,7 +10,6 @@ import QuestionForm from "./form/QuestionForm";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import TaCard from "@components/tas/TaCard";
 import { useCourseData } from "@hooks/useCourseData";
-import Spinner from "@components/Spinner";
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import { IdentifiableQuestion } from "@interfaces/type";
 
@@ -23,7 +21,7 @@ interface editQuestionProps {
 export const EditQuestion = (props: editQuestionProps) => {
   const { queuePos, currQuestion } = props;
   const { course } = useOfficeHour();
-  const { tas, loading } = useCourseData({
+  const { tas } = useCourseData({
     fetchUsers: true,
   });
   const user = useUserOrRedirect();
@@ -35,14 +33,6 @@ export const EditQuestion = (props: editQuestionProps) => {
 
   if (queuePos === -1) {
     return null;
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </div>
-    );
   }
 
   if (currQuestion.helpedBy !== "") {
@@ -104,11 +94,11 @@ export const EditQuestion = (props: editQuestionProps) => {
         >
           Your Question
         </Box>
-          <QuestionDetails
-            question={currQuestion}
-            courseId={course.id}
-            fromStudentCurrentHelping
-          />
+        <QuestionDetails
+          question={currQuestion}
+          courseId={course.id}
+          fromStudentCurrentHelping
+        />
       </Box>
     );
   }

@@ -9,7 +9,6 @@ import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 import { getQueuePosition, timeSince } from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
-import Spinner from "@components/Spinner";
 import theme from "theme";
 import DisplayTas from "@components/tas";
 import { QuestionDetails } from "@components/board/QuestionDetails";
@@ -20,15 +19,17 @@ import PauseIcon from "@mui/icons-material/Pause";
 import { partialUpdateCourse } from "@services/client/course";
 import { EditQuestion } from "@components/queue/EditQuestion";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { useLoading } from "@context/LoadingContext";
 
 const Page = () => {
   const user = useUserOrRedirect();
   const { course, questions } = useOfficeHour();
+  const { setLoading } = useLoading();
+
   const [helpingQuestion, setHelpingQuestion] = React.useState<
     IdentifiableQuestion | undefined
   >(undefined);
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);
-  const [loading, setLoading] = React.useState(true);
   const [time, setTime] = React.useState(timeSince(helpingQuestion?.helpedAt));
 
   if (!user) {
@@ -40,6 +41,7 @@ const Page = () => {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const helpingQuestion = questions.find(
           (question) =>
@@ -71,14 +73,6 @@ const Page = () => {
 
     return () => clearInterval(interval);
   }, [helpingQuestion?.helpedAt]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </div>
-    );
-  }
 
   return (
     <Box
