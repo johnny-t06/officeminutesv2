@@ -31,7 +31,7 @@ const Page = (props: PageProps) => {
       <Header
         leftIcon={
           <Link href={`/private/course/${courseId}/board`}>
-            <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
+            <ArrowBack sx={{ marginLeft: "-4px", color: "#000" }} />
           </Link>
         }
         title={isUserTA ? "Response History" : "History"}

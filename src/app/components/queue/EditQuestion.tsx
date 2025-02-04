@@ -30,6 +30,7 @@ export const EditQuestion = (props: editQuestionProps) => {
   if (!user) {
     return null;
   }
+  const isUserTA = course.tas.includes(user.id);
 
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
 
@@ -104,11 +105,12 @@ export const EditQuestion = (props: editQuestionProps) => {
         >
           Your Question
         </Box>
-          <QuestionDetails
-            question={currQuestion}
-            courseId={course.id}
-            fromStudentCurrentHelping
-          />
+        <QuestionDetails
+          question={currQuestion}
+          courseId={course.id}
+          isUserTA={isUserTA}
+          fromStudentCurrentHelping
+        />
       </Box>
     );
   }

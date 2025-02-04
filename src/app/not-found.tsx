@@ -1,9 +1,6 @@
-"use client";
 import ErrorNavigation from "@components/ErrorNavigation";
 import React from "react";
 
-const Error = () => {
+export default function NotFound() {
   return <ErrorNavigation />;
-};
-
-export default Error;
+}
