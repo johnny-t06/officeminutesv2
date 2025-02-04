@@ -114,7 +114,7 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
         ) : (
           <Typography
             variant="body2"
-            color={theme.palette.text.secondary}
+            color={theme.palette.text.primary}
             sx={{ whiteSpace: "pre-line" }}
           >
             {renderWithLinks(currLocation)}
