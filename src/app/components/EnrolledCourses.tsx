@@ -15,8 +15,8 @@ export const EnrolledCourses = () => {
   const router = useRouter();
   const user = useUserOrRedirect();
   const [courses, setCourses] = React.useState<IdentifiableCourses>([]);
-  // const [fetching, setFetching] = React.useState(true);
   const { setLoading } = useLoading();
+
   React.useEffect(() => {
     const fetchCourses = async () => {
       if (user && user.courses.length > 0) {
