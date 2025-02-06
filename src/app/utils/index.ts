@@ -185,11 +185,12 @@ export const getQueuePosition = (
   };
 };
 
+// todo(nickbar01234): Why does always doc.doc.data() have type "Added"
 export const groupDocChangesByType = <T>(
   docs: DocumentChange<T, DocumentData>[]
 ) =>
   Object.groupBy(
-    docs.map((doc) => ({ type: doc.type, id: doc.doc.id, ...doc.doc.data() })),
+    docs.map((doc) => ({ id: doc.doc.id, ...doc.doc.data(), type: doc.type })),
     ({ type }) => type
   );
 
