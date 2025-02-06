@@ -8,6 +8,7 @@ import { getUsers } from "@services/client/user";
 import { useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { useLoading } from "@context/LoadingContext";
 
 interface QueueItemProps {
   order: number;
@@ -17,7 +18,7 @@ interface QueueItemProps {
 const QueueItem = (props: QueueItemProps) => {
   const { order, question } = props;
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
-  const [loading, setLoading] = React.useState(true);
+  const { setLoading } = useLoading();
 
   const router = useRouter();
   const { course } = useOfficeHour();
@@ -27,11 +28,13 @@ const QueueItem = (props: QueueItemProps) => {
     return null;
   }
   const isUserTA = course.tas.includes(user.id);
+
   const isShowDetails =
     isUserTA || question.questionPublic || question.group[0] === user.id;
 
   React.useEffect(() => {
     const fetchUsers = async () => {
+      setLoading(true);
       const fetchedUsers = await getUsers(question.group);
       setUsers(fetchedUsers);
       setLoading(false);
@@ -78,7 +81,7 @@ const QueueItem = (props: QueueItemProps) => {
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          {loading ? "Loading..." : users.map(trimUserName).join(", ")}
+          {users.map(trimUserName).join(", ")}
         </Typography>
       </Grid>
       <Grid item xs={2} textAlign="center">

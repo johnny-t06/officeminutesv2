@@ -1,5 +1,5 @@
 import { CustomButton } from "@components/buttons/CustomButton";
-import Spinner from "@components/Spinner";
+import { useLoading } from "@context/LoadingContext";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
@@ -18,9 +18,9 @@ const Question = (props: QuestionProps) => {
   const { question, isUserTA } = props;
 
   const user = useUserOrRedirect();
+  const { setLoading } = useLoading();
 
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
-  const [loading, setLoading] = React.useState<boolean>(true);
   const [joinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)
   );
@@ -28,6 +28,7 @@ const Question = (props: QuestionProps) => {
 
   React.useEffect(() => {
     const fetchUsers = async () => {
+      setLoading(true);
       const fetchedUsers = await getUsers(question.group);
       setUsers(fetchedUsers);
       setLoading(false);
@@ -37,11 +38,7 @@ const Question = (props: QuestionProps) => {
 
   const beingHelped = question.state === QuestionState.IN_PROGRESS;
 
-  return loading ? (
-    <div className="h-screen absolute top-[50vh] left-[calc(50vw-24px)]">
-      <Spinner />
-    </div>
-  ) : (
+  return (
     <Link href={`${window.location.pathname}/${question.id}`} underline="none">
       <Box
         sx={{

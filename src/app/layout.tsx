@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ThemeProviderWrapper from "@context/ThemeProviderWrapper";
 import { UserSessionContextProvider } from "@context/UserSessionContext";
-import { SidebarProvider } from "@context/SidebarContext";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import { LoadingProvider } from "@context/LoadingContext";
+import GlobalLoading from "@components/GlobalLoading";
 
 export const metadata: Metadata = {
   title: "OfficeMinutes",
@@ -19,9 +20,14 @@ export default function RootLayout({
       <body id="root">
         <div id="__next">
           <AppRouterCacheProvider>
-            <UserSessionContextProvider>
-              <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
-            </UserSessionContextProvider>
+            <LoadingProvider>
+              <UserSessionContextProvider>
+                <ThemeProviderWrapper>
+                  <GlobalLoading />
+                  {children}
+                </ThemeProviderWrapper>
+              </UserSessionContextProvider>
+            </LoadingProvider>
           </AppRouterCacheProvider>
         </div>
       </body>

@@ -1,15 +1,17 @@
 import { State, useLoadingValue } from "@hooks/utils/useLoadingValue";
 import React from "react";
 import { IdentifiableQuestions } from "@interfaces/type";
-import { getQuestions } from "services/client/question";
 import {
   collection,
   onSnapshot,
+  query,
   Timestamp,
   Unsubscribe,
+  where,
 } from "firebase/firestore";
 import { db } from "@project/firebase";
 import { questionConverter } from "@services/firestore";
+import { groupDocChangesByType } from "@utils/index";
 
 interface UseQuestionsLoaderProps {
   courseId: string;
@@ -21,44 +23,46 @@ interface UseQuestionsLoaderProps {
  */
 export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
   const { courseId } = props;
-  const { state, setValue, setError } =
-    useLoadingValue<IdentifiableQuestions>();
+  const { state, setValue, setError } = useLoadingValue<IdentifiableQuestions>({
+    init: [],
+  });
   const unsubscriber = React.useRef<Unsubscribe | null>(null);
 
   React.useEffect(() => {
-    getQuestions(props.courseId).then((value) => {
-      setValue(value);
-    });
-  }, [props.courseId]);
-
-  React.useEffect(() => {
-    if (state.state !== State.SUCCESS) {
-      if (unsubscriber.current !== null) {
-        unsubscriber.current();
-        unsubscriber.current = null;
-      }
-      return;
+    if (unsubscriber.current !== null) {
+      unsubscriber.current();
+      unsubscriber.current = null;
     }
 
-    // listener for list of questions
-    const unsubscribe = onSnapshot(
+    const oneDayAgo = Timestamp.fromMillis(Date.now() - 24 * 60 * 60 * 1000);
+
+    const q = query(
       collection(db, `courses/${courseId}/questions`).withConverter(
         questionConverter
       ),
-      (snapshot) => {
-        let questionsList: IdentifiableQuestions = [];
-        snapshot.docs.map((doc) => {
-          const data = doc.data();
-          questionsList.push({
-            id: doc.id,
-            ...data,
-            timestamp: data.timestamp ?? Timestamp.now(),
-          });
-        });
-
-        setValue(questionsList);
-      }
+      where("state", "!=", 3),
+      where("timestamp", ">", oneDayAgo)
     );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docByType = groupDocChangesByType(snapshot.docChanges());
+      const removed = docByType["removed"] ?? [];
+      const modified = docByType["modified"] ?? [];
+      const added = docByType["added"] ?? [];
+      setValue((prev) => {
+        const updated = prev
+          .filter((doc) => !removed.some((d) => d.id === doc.id))
+          .map((doc) => {
+            return modified.find((d) => d.id === doc.id) ?? doc;
+          });
+        const addedDocs = added
+          .filter((doc) => !prev.some((prevDoc) => prevDoc.id === doc.id))
+          .map((doc) => ({
+            ...doc,
+            timestamp: doc.timestamp ?? Timestamp.now(),
+          }));
+        return [...updated, ...addedDocs];
+      });
+    });
 
     unsubscriber.current = unsubscribe;
 
@@ -68,7 +72,7 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
         unsubscriber.current = null;
       }
     };
-  }, [state.state, courseId]);
+  }, [courseId]);
 
   // TODO(lnguyen2693) - handle setError
   return { questions: state };

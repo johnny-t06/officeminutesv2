@@ -49,14 +49,25 @@ export const getUsers = async (
     return [];
   }
 
-  const q = query(
-    collection(db, "users").withConverter(userConverter),
-    where(documentId(), "in", userIds)
-  );
-  const users = await getDocs(q);
-  return users.docs
-    .filter((doc) => doc.exists)
-    .map((doc) => ({ ...doc.data(), id: doc.id }));
+  const chunks = [];
+  const chunkSize = 30;
+
+  for (let i = 0; i < userIds.length; i += chunkSize) {
+    chunks.push(userIds.slice(i, i + chunkSize));
+  }
+
+  const userPromises = chunks.map(async (chunk) => {
+    const q = query(
+      collection(db, "users").withConverter(userConverter),
+      where(documentId(), "in", chunk)
+    );
+    const users = await getDocs(q);
+    return users.docs
+      .filter((doc) => doc.exists())
+      .map((doc) => ({ ...doc.data(), id: doc.id }));
+  });
+  const userChunks = await Promise.all(userPromises);
+  return userChunks.flat();
 };
 
 export const updateUser = async (user: IdentifiableUser) => {

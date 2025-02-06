@@ -9,7 +9,6 @@ import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 import { getQueuePosition, timeSince } from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
-import Spinner from "@components/Spinner";
 import theme from "theme";
 import DisplayTas from "@components/tas";
 import { QuestionDetails } from "@components/board/QuestionDetails";
@@ -20,17 +19,19 @@ import PauseIcon from "@mui/icons-material/Pause";
 import { partialUpdateCourse } from "@services/client/course";
 import { EditQuestion } from "@components/queue/EditQuestion";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { useLoading } from "@context/LoadingContext";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
 
 const Page = () => {
   const user = useUserOrRedirect();
   const { course, questions } = useOfficeHour();
+  const { setLoading } = useLoading();
+
   const [helpingQuestion, setHelpingQuestion] = React.useState<
     IdentifiableQuestion | undefined
   >(undefined);
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);
-  const [loading, setLoading] = React.useState(true);
   const [time, setTime] = React.useState(timeSince(helpingQuestion?.helpedAt));
   const [closeQueueVisible, setCloseQueueVisible] =
     React.useState<boolean>(false);
@@ -39,7 +40,10 @@ const Page = () => {
     return null;
   }
   const isUserTA = course.tas.includes(user.id);
-  const { queuePos, currQuestion } = getQueuePosition(questions, user);
+  const { queuePos, groupPos, currQuestion, groupQuestion } = getQueuePosition(
+    questions,
+    user
+  );
   const queueClosed = course.onDuty.length === 0 || !course.isOpen;
 
   const changeQueueState = async (change: boolean) => {
@@ -54,6 +58,7 @@ const Page = () => {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const helpingQuestion = questions.find(
           (question) =>
@@ -101,14 +106,6 @@ const Page = () => {
       disabled: fetching,
     },
   ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </div>
-    );
-  }
 
   return (
     <Box
@@ -164,13 +161,20 @@ const Page = () => {
           ) : (
             <>
               {!queueClosed && (
-                <EditQuestion queuePos={queuePos} currQuestion={currQuestion} />
+                <EditQuestion
+                  queuePos={queuePos}
+                  groupPos={groupPos}
+                  currQuestion={currQuestion}
+                  groupQuestion={groupQuestion}
+                />
               )}
-              {currQuestion.helpedBy === "" && <CreateQuestion />}
+              {currQuestion.state === QuestionState.PENDING && (
+                <CreateQuestion />
+              )}
             </>
           )}
 
-          {currQuestion.helpedBy === "" && <Queue />}
+          {currQuestion.state === QuestionState.PENDING && <Queue />}
         </>
       ) : (
         <Box>

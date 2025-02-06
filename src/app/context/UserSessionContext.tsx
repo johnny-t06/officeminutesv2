@@ -12,9 +12,8 @@ import React from "react";
 import { auth } from "@project/firebase";
 import { addUser, getUser } from "@services/client/user";
 import { useRouter } from "next/navigation";
-import Spinner from "@components/Spinner";
-import { Box } from "@mui/material";
 import { setSessionCookie } from "@api/auth/route.client";
+import { useLoading } from "./LoadingContext";
 
 const PROD_ENV = process.env.NEXT_PUBLIC_APP_ENV === "production";
 interface Session {
@@ -48,6 +47,11 @@ export const UserSessionContextProvider = ({
   });
 
   const router = useRouter();
+  const { setLoading } = useLoading();
+
+  React.useEffect(() => {
+    setLoading(session.isLoading);
+  }, [session.isLoading]);
 
   React.useEffect(() => {
     // TODO: on password change, add additional check
@@ -129,11 +133,7 @@ export const UserSessionContextProvider = ({
     }
   };
 
-  return session.isLoading ? (
-    <Box className="flex h-screen w-screen flex-col items-center justify-center">
-      <Spinner />
-    </Box>
-  ) : (
+  return (
     <UserSessionContext.Provider
       value={{ user, session, onSignIn, onSignOut, setUser }}
     >

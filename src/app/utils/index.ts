@@ -5,7 +5,7 @@ import {
   IdentifiableQuestions,
   IdentifiableUser,
 } from "@interfaces/type";
-import { Timestamp } from "firebase/firestore";
+import { DocumentChange, DocumentData, Timestamp } from "firebase/firestore";
 
 export const trimUserName = (user: IdentifiableUser | undefined | null) => {
   if (user === undefined || user === null) {
@@ -162,15 +162,37 @@ export const getQueuePosition = (
 ) => {
   const activeQuestions = getActiveQuestions(questions);
   const sortedActiveQuestions = sortQuestionsChronologically(activeQuestions);
+  const sortedPendingQuestions = sortedActiveQuestions.filter(
+    (q) => q.state === QuestionState.PENDING
+  );
   const position = sortedActiveQuestions.findIndex(
     (q) => q.group[0] === user.id
   );
+  const groupPos = sortedPendingQuestions.findIndex((q) =>
+    q.group.includes(user.id)
+  );
 
+  // queue position in PENDING queue
+
+  const pendingPos = sortedPendingQuestions.findIndex(
+    (q) => q.group[0] === user.id
+  );
   return {
-    queuePos: position,
+    queuePos: pendingPos,
+    groupPos: groupPos,
     currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
+    groupQuestion: sortedPendingQuestions[groupPos] ?? defaultQuestion(),
   };
 };
+
+// todo(nickbar01234): Why does always doc.doc.data() have type "Added"
+export const groupDocChangesByType = <T>(
+  docs: DocumentChange<T, DocumentData>[]
+) =>
+  Object.groupBy(
+    docs.map((doc) => ({ ...doc.doc.data(), id: doc.doc.id, type: doc.type })),
+    ({ type }) => type
+  );
 
 export const getEmailTemplate = (type: string, email: string) => {
   switch (type) {
