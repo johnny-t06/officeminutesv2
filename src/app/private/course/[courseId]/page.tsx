@@ -29,7 +29,7 @@ const Page = (props: PageProps) => {
     const fetchData = async () => {
       try {
         const tasData = await getUsers(course.tas);
-        const studentData = await getUsers(course.students);
+        const studentData = await getUsers(course.students.slice(0, 10));
         setTAs(tasData);
         setStudents(studentData);
       } catch (error) {

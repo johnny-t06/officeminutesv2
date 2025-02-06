@@ -105,7 +105,9 @@ const Page = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Typography color="#43474E" fontSize={14}>
-              [answer here]
+              Please look for an on-duty TA in the designated office hours
+              space. You can check TA location and hours on the course's Piazza
+              page.
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -121,7 +123,8 @@ const Page = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Typography color="#43474E" fontSize={14}>
-              [answer here]
+              A TA will mark you as missing. Please return to the designated
+              office hours and notify your TA if you still need help.
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -137,7 +140,8 @@ const Page = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Typography color="#43474E" fontSize={14}>
-              [answer here]
+              Unfortunately, you will not be able to receive help during that
+              time. Please join the queue when a TA is available to help.
             </Typography>
           </AccordionDetails>
         </Accordion>

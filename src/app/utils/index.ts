@@ -1,19 +1,11 @@
 import { defaultQuestion } from "@api/question";
-import { useUserSession } from "@context/UserSessionContext";
 import { Announcement, QuestionState } from "@interfaces/db";
 import {
   IdentifiableQuestion,
   IdentifiableQuestions,
   IdentifiableUser,
 } from "@interfaces/type";
-import {
-  DocumentChange,
-  DocumentChangeType,
-  DocumentData,
-  Timestamp,
-} from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { DocumentChange, DocumentData, Timestamp } from "firebase/firestore";
 
 export const trimUserName = (user: IdentifiableUser | undefined | null) => {
   if (user === undefined || user === null) {
@@ -170,13 +162,26 @@ export const getQueuePosition = (
 ) => {
   const activeQuestions = getActiveQuestions(questions);
   const sortedActiveQuestions = sortQuestionsChronologically(activeQuestions);
+  const sortedPendingQuestions = sortedActiveQuestions.filter(
+    (q) => q.state === QuestionState.PENDING
+  );
   const position = sortedActiveQuestions.findIndex(
     (q) => q.group[0] === user.id
   );
+  const groupPos = sortedPendingQuestions.findIndex((q) =>
+    q.group.includes(user.id)
+  );
 
+  // queue position in PENDING queue
+
+  const pendingPos = sortedPendingQuestions.findIndex(
+    (q) => q.group[0] === user.id
+  );
   return {
-    queuePos: position,
+    queuePos: pendingPos,
+    groupPos: groupPos,
     currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
+    groupQuestion: sortedPendingQuestions[groupPos] ?? defaultQuestion(),
   };
 };
 

@@ -20,6 +20,8 @@ import PauseIcon from "@mui/icons-material/Pause";
 import { partialUpdateCourse } from "@services/client/course";
 import { EditQuestion } from "@components/queue/EditQuestion";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { CustomModal } from "@components/CustomModal";
+import useApiThrottle from "@hooks/useApiThrottle";
 
 const Page = () => {
   const user = useUserOrRedirect();
@@ -30,13 +32,28 @@ const Page = () => {
   const [students, setStudents] = React.useState<IdentifiableUsers>([]);
   const [loading, setLoading] = React.useState(true);
   const [time, setTime] = React.useState(timeSince(helpingQuestion?.helpedAt));
+  const [closeQueueVisible, setCloseQueueVisible] =
+    React.useState<boolean>(false);
 
   if (!user) {
     return null;
   }
   const isUserTA = course.tas.includes(user.id);
-  const { queuePos, currQuestion } = getQueuePosition(questions, user);
+  const { queuePos, groupPos, currQuestion, groupQuestion } = getQueuePosition(
+    questions,
+    user
+  );
   const queueClosed = course.onDuty.length === 0 || !course.isOpen;
+
+  const changeQueueState = async (change: boolean) => {
+    await partialUpdateCourse(course.id, {
+      isOpen: change,
+    });
+  };
+
+  const { fetching, fn: throttledChangeQueue } = useApiThrottle({
+    fn: changeQueueState,
+  });
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -71,6 +88,22 @@ const Page = () => {
 
     return () => clearInterval(interval);
   }, [helpingQuestion?.helpedAt]);
+
+  const closeButtons = [
+    {
+      text: "Cancel",
+      onClick: () => setCloseQueueVisible(false),
+      disabled: fetching,
+    },
+    {
+      text: "Yes",
+      onClick: async () => {
+        setCloseQueueVisible(false);
+        await throttledChangeQueue(false);
+      },
+      disabled: fetching,
+    },
+  ];
 
   if (loading) {
     return (
@@ -112,10 +145,13 @@ const Page = () => {
                 zIndex: 99,
               }}
               onClick={async () => {
-                await partialUpdateCourse(course.id, {
-                  isOpen: !course.isOpen,
-                });
+                if (course.isOpen) {
+                  setCloseQueueVisible(true);
+                } else {
+                  await throttledChangeQueue(true);
+                }
               }}
+              disabled={fetching}
             >
               {course.isOpen ? <PauseIcon /> : <PlayArrowIcon />}
               <Box
@@ -131,13 +167,20 @@ const Page = () => {
           ) : (
             <>
               {!queueClosed && (
-                <EditQuestion queuePos={queuePos} currQuestion={currQuestion} />
+                <EditQuestion
+                  queuePos={queuePos}
+                  groupPos={groupPos}
+                  currQuestion={currQuestion}
+                  groupQuestion={groupQuestion}
+                />
               )}
-              {currQuestion.helpedBy === "" && <CreateQuestion />}
+              {currQuestion.state === QuestionState.PENDING && (
+                <CreateQuestion />
+              )}
             </>
           )}
 
-          {currQuestion.helpedBy === "" && <Queue />}
+          {currQuestion.state === QuestionState.PENDING && <Queue />}
         </>
       ) : (
         <Box>
@@ -193,6 +236,13 @@ const Page = () => {
           />
         </Box>
       )}
+      <CustomModal
+        title="Are you sure you want to close the queue?"
+        subtitle="Students won't be able to join the queue after you close the queue."
+        buttons={closeButtons}
+        open={closeQueueVisible}
+        setOpen={setCloseQueueVisible}
+      />
     </Box>
   );
 };

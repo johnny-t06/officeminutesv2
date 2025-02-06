@@ -1,6 +1,7 @@
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Grid, Typography } from "@mui/material";
 import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { trimUserName } from "@utils/index";
 import React from "react";
 import { getUsers } from "@services/client/user";
@@ -26,6 +27,8 @@ const QueueItem = (props: QueueItemProps) => {
     return null;
   }
   const isUserTA = course.tas.includes(user.id);
+  const isShowDetails =
+    isUserTA || question.questionPublic || question.group[0] === user.id;
 
   React.useEffect(() => {
     const fetchUsers = async () => {
@@ -41,10 +44,16 @@ const QueueItem = (props: QueueItemProps) => {
       container
       columnSpacing="2px"
       alignItems="center"
+      paddingX="8px"
       onClick={() => {
-        if (isUserTA) {
+        if (isShowDetails) {
           router.push(`queue/${question.id}`);
         }
+      }}
+      sx={{
+        ":hover": {
+          cursor: "pointer",
+        },
       }}
     >
       <Grid item xs={1}>
@@ -52,7 +61,7 @@ const QueueItem = (props: QueueItemProps) => {
           {order}
         </Typography>
       </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={9}>
         <Typography
           fontSize="16px"
           color="#191C20"
@@ -60,7 +69,7 @@ const QueueItem = (props: QueueItemProps) => {
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          {question.title}
+          {isShowDetails ? question.title : "Private"}
         </Typography>
         <Typography
           fontSize="14px"
@@ -72,8 +81,12 @@ const QueueItem = (props: QueueItemProps) => {
           {loading ? "Loading..." : users.map(trimUserName).join(", ")}
         </Typography>
       </Grid>
-      <Grid item xs={1}>
-        <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
+      <Grid item xs={2} textAlign="center">
+        {isShowDetails ? (
+          <ArrowRightOutlinedIcon sx={{ color: "#49454F" }} />
+        ) : (
+          <LockOutlinedIcon sx={{ color: "#49454F", fontSize: "18px" }} />
+        )}
       </Grid>
     </Grid>
   );
