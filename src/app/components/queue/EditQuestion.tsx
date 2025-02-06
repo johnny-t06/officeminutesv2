@@ -7,9 +7,11 @@ import { CustomModal } from "@components/CustomModal";
 import { leaveQuestionGroup } from "@services/client/question";
 import QuestionForm from "./form/QuestionForm";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
-import { useCourseData } from "@hooks/useCourseData";
-import Spinner from "@components/Spinner";
-import { IdentifiableQuestion } from "@interfaces/type";
+import TaCard from "@components/tas/TaCard";
+import { QuestionDetails } from "@components/board/QuestionDetails";
+import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
+import { getUsers } from "@services/client/user";
+import { useLoading } from "@context/LoadingContext";
 import { QuestionState } from "@interfaces/db";
 import { StudentHelping } from "./StudentHelping";
 import { StudentMissing } from "./StudentMissing";
@@ -24,15 +26,92 @@ interface EditQuestionProps {
 export const EditQuestion = (props: EditQuestionProps) => {
   const { queuePos, groupPos, currQuestion, groupQuestion } = props;
   const { course } = useOfficeHour();
-  const { tas, loading } = useCourseData({
-    fetchUsers: true,
-  });
+  const [tas, setTas] = React.useState<IdentifiableUsers>([]);
+  const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
+  const { setLoading } = useLoading();
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const tasData = await getUsers(course.tas);
+      setTas(tasData);
+      setLoading(false);
+    };
+    fetchData();
+  }, [course]);
+
   const user = useUserOrRedirect();
-  if (!user) {
+  if (!user || queuePos === -1) {
     return null;
   }
 
-  const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
+  if (currQuestion.helpedBy !== "") {
+    const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
+
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          color: "#43474E",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            columnGap: "10px",
+            padding: "16px",
+            bgcolor: "#D7E3F8",
+            justifyContent: "center",
+            marginLeft: "-16px",
+            marginTop: "-18px",
+            width: "100vw",
+          }}
+        >
+          <NotificationAddOutlinedIcon style={{ fontSize: "20px" }} />
+          <Box fontWeight={500} fontSize="14px">
+            It's your turn
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            paddingTop: "20px",
+            paddingRight: "10px",
+            paddingLeft: "10px",
+            fontWeight: 700,
+            color: "#545F70",
+            fontSize: "18.98px",
+          }}
+        >
+          Your TA
+        </Box>
+        <Box sx={{ paddingLeft: "10px" }}>
+          <TaCard ta={ta!} />
+        </Box>
+
+        <Box
+          sx={{
+            paddingTop: "20px",
+            paddingRight: "10px",
+            paddingLeft: "10px",
+            fontWeight: 700,
+            color: "#545F70",
+            fontSize: "18.98px",
+          }}
+        >
+          Your Question
+        </Box>
+        <QuestionDetails
+          question={currQuestion}
+          courseId={course.id}
+          fromStudentCurrentHelping
+        />
+      </Box>
+    );
+  }
 
   const leaveQueue = async () => {
     await leaveQuestionGroup(currQuestion, course.id, user.id);
@@ -83,14 +162,6 @@ export const EditQuestion = (props: EditQuestionProps) => {
       : Math.min(queuePos, groupPos);
 
   const isAuthor = position === queuePos;
-
-  if (loading) {
-    return (
-      <Box className="flex items-center justify-center h-screen ">
-        <Spinner />
-      </Box>
-    );
-  }
 
   if (currQuestion.state === QuestionState.IN_PROGRESS) {
     const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
