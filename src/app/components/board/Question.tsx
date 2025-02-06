@@ -3,7 +3,7 @@ import { useLoading } from "@context/LoadingContext";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, Link, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
 import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
 import { useRouter } from "next/navigation";
@@ -40,120 +40,121 @@ const Question = (props: QuestionProps) => {
   const beingHelped = question.state === QuestionState.IN_PROGRESS;
 
   return (
-    <Box
-      sx={{
-        backgroundColor: "#F2F3FA",
-        outlineColor: beingHelped ? theme.palette.primary.main : null,
-        outlineStyle: beingHelped ? "solid" : null,
-        outlineWidth: "2px",
-      }}
-      padding="16px"
-      borderRadius="8px"
-    >
+    <Link href={`${window.location.pathname}/${question.id}`} underline="none">
       <Box
-        height="48px"
-        display="flex"
-        flexDirection="row"
-        gap="16px"
-        alignItems="center"
+        sx={{
+          backgroundColor: "#F2F3FA",
+          outlineColor: beingHelped ? theme.palette.primary.main : null,
+          outlineStyle: beingHelped ? "solid" : null,
+          outlineWidth: "2px",
+        }}
+        padding="16px"
+        borderRadius="8px"
       >
-        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-          {trimUserName(users[0])[0]}
-        </Avatar>
-        <Box>
+        <Box
+          height="48px"
+          display="flex"
+          flexDirection="row"
+          gap="16px"
+          alignItems="center"
+        >
+          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+            {trimUserName(users[0])[0]}
+          </Avatar>
+          <Box>
+            <Typography
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                color: "#191C20",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+            >
+              {trimUserName(users[0])}
+            </Typography>
+            <Typography
+              style={{
+                fontSize: 14,
+                color: "#43474E",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+            >
+              {formatTimeDifference(question)}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box marginTop="28px" fontWeight={400}>
           <Typography
             style={{
-              fontSize: 18,
-              fontWeight: "bold",
+              fontSize: 16,
               color: "#191C20",
               textOverflow: "ellipsis",
               overflow: "hidden",
+              fontWeight: 500,
             }}
           >
-            {trimUserName(users[0])}
+            {question.title}
           </Typography>
           <Typography
             style={{
-              fontSize: 14,
+              fontSize: "14px",
+              marginTop: "8px",
               color: "#43474E",
               textOverflow: "ellipsis",
               overflow: "hidden",
             }}
           >
-            {formatTimeDifference(question)}
+            {question.description}
           </Typography>
         </Box>
-      </Box>
-
-      <Box marginTop="28px" fontWeight={400}>
-        <Typography
-          style={{
-            fontSize: 16,
-            color: "#191C20",
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            fontWeight: 500,
-          }}
+        <Box marginTop="32px">
+          <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
+            {question.tags.map((tag) => (
+              <Box
+                key={tag.choice}
+                border={1}
+                borderColor="#73777F"
+                borderRadius="10px"
+                paddingY="4px"
+                paddingX="14px"
+                color="#43474E"
+              >
+                <Typography sx={{ fontWeight: 500, fontSize: 14 }}>
+                  {tag.choice}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+        <Box
+          marginTop="16px"
+          display={hasPassed(question) || isUserTA ? "none" : "flex"}
+          justifyContent="flex-end"
         >
-          {question.title}
-        </Typography>
-        <Typography
-          style={{
-            fontSize: "14px",
-            marginTop: "8px",
-            color: "#43474E",
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-          }}
-        >
-          {question.description}
-        </Typography>
-      </Box>
-      <Box marginTop="32px">
-        <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
-          {question.tags.map((tag) => (
-            <Box
-              key={tag.choice}
-              border={1}
-              borderColor="#73777F"
-              borderRadius="10px"
-              paddingY="4px"
-              paddingX="14px"
-              color="#43474E"
-            >
-              <Typography sx={{ fontWeight: 500, fontSize: 14 }}>
-                {tag.choice}
-              </Typography>
-            </Box>
-          ))}
+          <CustomButton
+            variant="contained"
+            customColor={
+              joinGroup
+                ? theme.palette.primary.light
+                : theme.palette.primary.main
+            }
+            sx={{
+              paddingY: "10px",
+              paddingX: "24px",
+              borderRadius: "32px",
+              color: joinGroup ? "#000" : "#fff",
+              textTransform: "none",
+              marginTop: "16px",
+            }}
+          >
+            {joinGroup ? "Leave group" : "Join group"}
+          </CustomButton>
         </Box>
       </Box>
-      <Box
-        marginTop="16px"
-        display={hasPassed(question) || isUserTA ? "none" : "flex"}
-        justifyContent="flex-end"
-      >
-        <CustomButton
-          variant="contained"
-          customColor={
-            joinGroup ? theme.palette.primary.light : theme.palette.primary.main
-          }
-          sx={{
-            paddingY: "10px",
-            paddingX: "24px",
-            borderRadius: "32px",
-            color: joinGroup ? "#000" : "#fff",
-            textTransform: "none",
-            marginTop: "16px",
-          }}
-          onClick={() =>
-            router.push(`${window.location.pathname}/${question.id}`)
-          }
-        >
-          {joinGroup ? "Leave group" : "Join group"}
-        </CustomButton>
-      </Box>
-    </Box>
+    </Link>
   );
 };
 

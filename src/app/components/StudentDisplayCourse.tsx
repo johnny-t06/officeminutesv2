@@ -6,6 +6,7 @@ import { IdentifiableUsers } from "@interfaces/type";
 import { usePathname, useRouter } from "next/navigation";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { DisplayAnnouncements } from "./DisplayAnnouncements";
+import { DisplayLocHours } from "./DisplayLocHours";
 
 interface StudentDisplayCourseProps {
   tas: IdentifiableUsers;
@@ -30,31 +31,7 @@ const StudentDisplayCourse = (props: StudentDisplayCourseProps) => {
         announcements={course.announcements}
         editable={false}
       />
-      <Box>
-        <Typography
-          variant="h6"
-          color={theme.palette.text.primary}
-          sx={{ fontWeight: "bold" }}
-        >
-          Location & Hours
-        </Typography>
-        <Box
-          sx={{
-            padding: "16px 16px",
-            gap: "10px",
-            flexDirection: "column",
-            display: "flex",
-            marginTop: "16px",
-          }}
-        >
-          <Typography variant="body2" color={theme.palette.text.primary}>
-            JCC 4th floor huddle room
-          </Typography>
-          <Typography variant="body2" color={theme.palette.text.primary}>
-            6 - 9 PM
-          </Typography>
-        </Box>
-      </Box>
+      <DisplayLocHours location={course.location} editable={false} />
       <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <Box
           sx={{

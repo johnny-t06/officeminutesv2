@@ -12,6 +12,7 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Announcement } from "@interfaces/db";
 import { CustomModal } from "./CustomModal";
 import UndoIcon from "@mui/icons-material/Undo";
+import { RoundedTile } from "./RoundedTile";
 interface AnnouncementTileProps {
   announcement: Announcement;
   isEdit: boolean;
@@ -131,13 +132,7 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
       </Button>
     </Box>
   ) : (
-    <Box
-      sx={{
-        padding: "16px 16px",
-        bgcolor: "#F8F9FF",
-        borderRadius: "16px",
-      }}
-    >
+    <RoundedTile>
       <Typography
         variant="body2"
         color={theme.palette.text.primary}
@@ -145,7 +140,6 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
       >
         {announcement.message}
       </Typography>
-
       {isEdit && (
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <CustomModal
@@ -177,6 +171,6 @@ export const AnnouncementTile = (props: AnnouncementTileProps) => {
           </Box>
         </Box>
       )}
-    </Box>
+    </RoundedTile>
   );
 };

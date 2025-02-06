@@ -31,7 +31,7 @@ const Page = (props: PageProps) => {
   return (
     <Box>
       <Header
-        title="Public Board"
+        title="Public Questions"
         leftIcon={<MenuButton isEdge />}
         rightIcon={
           <Link href={`/private/course/${courseId}/board/history`}>
@@ -39,12 +39,12 @@ const Page = (props: PageProps) => {
               style={{
                 textTransform: "none",
                 padding: 0,
-                width: "100px",
                 justifyContent: "end",
+                textWrap: "nowrap",
               }}
             >
               <Typography variant="subtitle2">
-                View {isUserTA ? "Response" : null} History
+                View {isUserTA ? "Response" : ""} History
               </Typography>
             </Button>
           </Link>

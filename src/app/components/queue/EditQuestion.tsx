@@ -1,8 +1,6 @@
-"use client";
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
-import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
@@ -14,14 +12,19 @@ import { QuestionDetails } from "@components/board/QuestionDetails";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { getUsers } from "@services/client/user";
 import { useLoading } from "@context/LoadingContext";
+import { QuestionState } from "@interfaces/db";
+import { StudentHelping } from "./StudentHelping";
+import { StudentMissing } from "./StudentMissing";
 
-interface editQuestionProps {
+interface EditQuestionProps {
   queuePos: number;
+  groupPos: number;
   currQuestion: IdentifiableQuestion;
+  groupQuestion: IdentifiableQuestion;
 }
 
-export const EditQuestion = (props: editQuestionProps) => {
-  const { queuePos, currQuestion } = props;
+export const EditQuestion = (props: EditQuestionProps) => {
+  const { queuePos, groupPos, currQuestion, groupQuestion } = props;
   const { course } = useOfficeHour();
   const [tas, setTas] = React.useState<IdentifiableUsers>([]);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
@@ -67,7 +70,7 @@ export const EditQuestion = (props: editQuestionProps) => {
             width: "100vw",
           }}
         >
-          <NotificationsActiveOutlinedIcon style={{ fontSize: "20px" }} />
+          <NotificationAddOutlinedIcon style={{ fontSize: "20px" }} />
           <Box fontWeight={500} fontSize="14px">
             It's your turn
           </Box>
@@ -114,6 +117,9 @@ export const EditQuestion = (props: editQuestionProps) => {
     await leaveQuestionGroup(currQuestion, course.id, user.id);
     setLeaveQueueModal(false);
   };
+  const leaveGroup = async () => {
+    await leaveQuestionGroup(groupQuestion, course.id, user.id);
+  };
 
   const leaveQueueButtons = [
     {
@@ -142,16 +148,43 @@ export const EditQuestion = (props: editQuestionProps) => {
     </Button>
   );
 
+  // not in queue, not join any question,
+  // and not have any IN_PROGRESS or MISSING question
+  if (queuePos === -1 && groupPos === -1 && currQuestion.title === "") {
+    return null;
+  }
+
+  const position =
+    queuePos === -1
+      ? groupPos
+      : groupPos === -1
+      ? queuePos
+      : Math.min(queuePos, groupPos);
+
+  const isAuthor = position === queuePos;
+
+  if (currQuestion.state === QuestionState.IN_PROGRESS) {
+    const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
+    return (
+      <StudentHelping currQuestion={currQuestion} course={course} ta={ta!} />
+    );
+  }
+  if (currQuestion.state === QuestionState.MISSING) {
+    return <StudentMissing currQuestion={currQuestion} course={course} />;
+  }
+
   return (
     <>
-      <CustomModal
-        title="Leave queue?"
-        subtitle="You'll lose your place in line and
+      {isAuthor && (
+        <CustomModal
+          title="Leave queue?"
+          subtitle="You'll lose your place in line and
                   won't receive assistance until you join again."
-        buttons={leaveQueueButtons}
-        open={leaveQueueModal}
-        setOpen={setLeaveQueueModal}
-      />
+          buttons={leaveQueueButtons}
+          open={leaveQueueModal}
+          setOpen={setLeaveQueueModal}
+        />
+      )}
 
       <Container
         sx={{
@@ -165,26 +198,32 @@ export const EditQuestion = (props: editQuestionProps) => {
           alignItems: "center",
         }}
       >
-        <Box sx={{ fontWeight: 700, fontSize: queuePos === 0 ? 35 : 55 }}>
-          {queuePos === 0 ? "You're Next!" : queuePos}
-        </Box>
-        {queuePos !== 0 && (
-          <Box sx={{ fontWeight: 500, fontSize: 10, color: "#545F70" }}>
-            Queues ahead of you
-          </Box>
-        )}
+        <Typography
+          sx={{ fontWeight: 400, fontSize: "16px", color: "#545F70" }}
+        >
+          Your queue position
+        </Typography>
+        <Typography
+          sx={{ fontWeight: 700, fontSize: "45px", textAlign: "center" }}
+        >
+          {position === 0 ? "You're next!" : position + 1}
+        </Typography>
+
         <Box
           sx={{
             fontWeight: 400,
             fontSize: 12,
             display: "flex",
             flexDirection: "row",
-            columnGap: 0.5,
+            gap: 1,
             color: "#545F70",
+            alignItems: "center",
           }}
         >
           <NotificationAddOutlinedIcon style={{ fontSize: "16px" }} />
-          <Box> We'll notify you when it's your turn</Box>
+          <Typography sx={{ fontSize: "16px" }}>
+            We'll notify you when it's your turn
+          </Typography>
         </Box>
         <Box
           sx={{
@@ -213,20 +252,23 @@ export const EditQuestion = (props: editQuestionProps) => {
               }}
               style={{ boxShadow: "none" }}
               fullWidth
-              onClick={() => setLeaveQueueModal(true)}
+              onClick={() =>
+                isAuthor ? setLeaveQueueModal(true) : leaveGroup()
+              }
             >
               <KeyboardReturnOutlinedIcon style={{ fontSize: "14px" }} />
-              <Box>Leave queue</Box>
+              {isAuthor ? "Leave queue " : "Leave group"}
             </Button>
           </Box>
-
-          <Box sx={{ flexGrow: 1 }}>
-            <QuestionForm
-              triggerButton={editButton}
-              title="Edit submission"
-              currentQuestion={currQuestion}
-            />
-          </Box>
+          {isAuthor && (
+            <Box sx={{ flexGrow: 1 }}>
+              <QuestionForm
+                triggerButton={editButton}
+                title="Edit submission"
+                currentQuestion={currQuestion}
+              />
+            </Box>
+          )}
         </Box>
       </Container>
     </>
