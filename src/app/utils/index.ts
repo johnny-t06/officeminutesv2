@@ -190,7 +190,7 @@ export const groupDocChangesByType = <T>(
   docs: DocumentChange<T, DocumentData>[]
 ) =>
   Object.groupBy(
-    docs.map((doc) => ({ id: doc.doc.id, ...doc.doc.data(), type: doc.type })),
+    docs.map((doc) => ({ ...doc.doc.data(), id: doc.doc.id, type: doc.type })),
     ({ type }) => type
   );
 

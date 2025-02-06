@@ -43,13 +43,11 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
       where("state", "!=", 3),
       where("timestamp", ">", oneDayAgo)
     );
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const docByType = groupDocChangesByType(snapshot.docChanges());
       const removed = docByType["removed"] ?? [];
       const modified = docByType["modified"] ?? [];
       const added = docByType["added"] ?? [];
-      console.log("changes", docByType);
       setValue((prev) => {
         const updated = prev
           .filter((doc) => !removed.some((d) => d.id === doc.id))
@@ -62,8 +60,6 @@ export const useQuestionsLoader = (props: UseQuestionsLoaderProps) => {
             ...doc,
             timestamp: doc.timestamp ?? Timestamp.now(),
           }));
-        console.log("updated", updated);
-        console.log("added", addedDocs);
         return [...updated, ...addedDocs];
       });
     });
