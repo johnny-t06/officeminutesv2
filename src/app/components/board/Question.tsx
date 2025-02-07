@@ -6,7 +6,6 @@ import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Link, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
 import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
-import { useRouter } from "next/navigation";
 import React from "react";
 import theme from "theme";
 
@@ -18,7 +17,6 @@ interface QuestionProps {
 const Question = (props: QuestionProps) => {
   const { question, isUserTA } = props;
 
-  const router = useRouter();
   const user = useUserOrRedirect();
   const { setLoading } = useLoading();
 
@@ -26,6 +24,7 @@ const Question = (props: QuestionProps) => {
   const [joinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)
   );
+  const tagsToRender = isUserTA ? question.tags : question.tags.slice(0, -1);
 
   React.useEffect(() => {
     const fetchUsers = async () => {
@@ -112,7 +111,7 @@ const Question = (props: QuestionProps) => {
         </Box>
         <Box marginTop="32px">
           <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
-            {question.tags.map((tag) => (
+            {tagsToRender.map((tag) => (
               <Box
                 key={tag.choice}
                 border={1}

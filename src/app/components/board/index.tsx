@@ -4,7 +4,7 @@ import Question from "./Question";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
-import { sortQuestionsChronologically } from "@utils/index";
+import { getCourseTopicTags, sortQuestionsChronologically } from "@utils/index";
 
 interface BoardProps {
   questions: IdentifiableQuestions;
@@ -12,6 +12,7 @@ interface BoardProps {
 }
 
 const SELECT_ALL = "All";
+const TAG_KEY = "Issue";
 
 const _Board = (props: BoardProps) => {
   const { questions } = props;
@@ -53,7 +54,7 @@ const _Board = (props: BoardProps) => {
 const Board = (props: BoardProps) => {
   const { questions, isUserTA } = props;
   const { course } = useOfficeHour();
-  const topics = [SELECT_ALL, ...Object.keys(course.tags).sort()];
+  const topics = [SELECT_ALL, ...getCourseTopicTags(course.tags, TAG_KEY)];
 
   const [selectedTopics, setSelectedTopics] = React.useState([SELECT_ALL]);
 
@@ -84,7 +85,7 @@ const Board = (props: BoardProps) => {
     });
   };
   return (
-    <div>
+    <Box>
       <ToggleButtonGroup
         value={selectedTopics}
         onChange={addOrRemoveTopic}
@@ -154,7 +155,7 @@ const Board = (props: BoardProps) => {
         questions={getQuestionsByTopic(selectedTopics)}
         isUserTA={isUserTA}
       />
-    </div>
+    </Box>
   );
 };
 
