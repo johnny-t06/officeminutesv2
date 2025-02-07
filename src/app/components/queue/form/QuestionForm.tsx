@@ -11,7 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-// import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import React from "react";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
 import { TagOption } from "@interfaces/db";
