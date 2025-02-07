@@ -25,7 +25,6 @@ import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { serverTimestamp, Timestamp } from "firebase/firestore";
 import { sendEmail } from "@api/send-email/route.client";
-import { useLoading } from "@context/LoadingContext";
 
 interface QuestionDetailsProps {
   question: IdentifiableQuestion;
@@ -46,7 +45,6 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
 
   const user = useUserOrRedirect();
   const router = useRouter();
-  const { setLoading } = useLoading();
 
   const [joinGroup, setJoinGroup] = React.useState<boolean>(
     question.group.includes(user!.id)
@@ -55,13 +53,12 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
 
   React.useEffect(() => {
     const fetchUsers = async () => {
-      setLoading(true);
       const fetchedUsers = await getUsers(question.group);
       setUsers(fetchedUsers);
-      setLoading(false);
     };
     fetchUsers();
   }, [question]);
+
   if (!user) {
     return null;
   }

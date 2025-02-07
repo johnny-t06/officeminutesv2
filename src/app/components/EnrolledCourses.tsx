@@ -9,34 +9,28 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import React from "react";
 import { getUserCourses } from "@services/client/course";
 import { CourseCard } from "./CourseCard";
-import Spinner from "./Spinner";
+import { useLoading } from "@context/LoadingContext";
 
 export const EnrolledCourses = () => {
   const router = useRouter();
   const user = useUserOrRedirect();
   const [courses, setCourses] = React.useState<IdentifiableCourses>([]);
-  const [fetching, setFetching] = React.useState(true);
+  const { setLoading } = useLoading();
 
   React.useEffect(() => {
     const fetchCourses = async () => {
       if (user && user.courses.length > 0) {
-        setFetching(true);
+        setLoading(true);
         const fetchedCourses = await getUserCourses(user);
         setCourses(fetchedCourses);
+        setLoading(false);
       }
-      setFetching(false);
     };
     fetchCourses();
   }, [user]);
-
-  if (!user || fetching) {
-    return (
-      <Box className="flex flex-col h-screen items-center justify-center">
-        <Spinner width={64} height={64} />;
-      </Box>
-    );
+  if (!user) {
+    return null;
   }
-
   return (
     <Box className="flex flex-col h-screen">
       <Header

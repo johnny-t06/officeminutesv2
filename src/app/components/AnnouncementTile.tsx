@@ -1,3 +1,5 @@
+"use client";
+
 import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import theme from "theme";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";

@@ -36,14 +36,6 @@ const Page = () => {
   const [closeQueueVisible, setCloseQueueVisible] =
     React.useState<boolean>(false);
 
-  if (!user) {
-    return null;
-  }
-  const isUserTA = course.tas.includes(user.id);
-  const { queuePos, groupPos, currQuestion, groupQuestion } = getQueuePosition(
-    questions,
-    user
-  );
   const queueClosed = course.onDuty.length === 0 || !course.isOpen;
 
   const changeQueueState = async (change: boolean) => {
@@ -62,7 +54,7 @@ const Page = () => {
       try {
         const helpingQuestion = questions.find(
           (question) =>
-            question.helpedBy === user.id &&
+            question.helpedBy === user!.id &&
             question.state === QuestionState.IN_PROGRESS
         );
         setHelpingQuestion(helpingQuestion);
@@ -83,13 +75,15 @@ const Page = () => {
     fetchData();
   }, [questions]);
 
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(timeSince(helpingQuestion?.helpedAt));
-    }, 1000);
+  if (!user) {
+    return null;
+  }
 
-    return () => clearInterval(interval);
-  }, [helpingQuestion?.helpedAt]);
+  const isUserTA = course.tas.includes(user.id);
+  const { queuePos, groupPos, currQuestion, groupQuestion } = getQueuePosition(
+    questions,
+    user
+  );
 
   const closeButtons = [
     {

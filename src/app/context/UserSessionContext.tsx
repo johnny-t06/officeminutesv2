@@ -122,7 +122,6 @@ export const UserSessionContextProvider = ({
         error: null,
       });
       router.push("/login");
-      router.refresh();
     } catch (e: any) {
       setSession({
         isAuthenticated: false,
