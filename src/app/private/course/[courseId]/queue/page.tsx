@@ -73,7 +73,15 @@ const Page = () => {
     };
 
     fetchData();
-  }, [questions]);
+  }, [questions, user]);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(timeSince(helpingQuestion?.helpedAt));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [helpingQuestion]);
 
   if (!user) {
     return null;
