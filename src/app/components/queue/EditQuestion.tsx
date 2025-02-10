@@ -1,3 +1,4 @@
+"use client";
 import { Box, Button, Container, Typography } from "@mui/material";
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
@@ -41,13 +42,13 @@ export const EditQuestion = (props: EditQuestionProps) => {
   }, [course]);
 
   const user = useUserOrRedirect();
-  if (!user || queuePos === -1) {
+
+  if (!user || tas.length === 0) {
     return null;
   }
 
   if (currQuestion.helpedBy !== "") {
     const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
-
     return (
       <Box
         sx={{
