@@ -1,8 +1,8 @@
 "use client";
 import { QuestionDetails } from "@components/board/QuestionDetails";
+import GlobalLoading from "@components/GlobalLoading";
 import Header from "@components/Header";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
-import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import { ArrowBack } from "@mui/icons-material";
 import Link from "next/link";
 
@@ -17,23 +17,21 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
-  const { course, questions } = useOfficeHour();
-  const user = useUserOrRedirect();
-  if (!user) {
-    return null;
-  }
-  const isUserTA = course.tas.includes(user.id);
-  const question = questions.find((q) => q.id === questionId);
+  const backUrl = `/private/course/${courseId}/queue`;
+  const { isUserTA, question, isLoading } = useQuestionAccessCheck(
+    questionId,
+    backUrl
+  );
 
-  if (!question) {
-    throw new Error();
+  if (isLoading) {
+    <GlobalLoading />;
   }
 
   return (
     <div>
       <Header
         leftIcon={
-          <Link href={`/private/course/${courseId}/queue`}>
+          <Link href={backUrl}>
             <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
           </Link>
         }
