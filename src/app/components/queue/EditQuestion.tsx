@@ -16,6 +16,7 @@ import { useLoading } from "@context/LoadingContext";
 import { QuestionState } from "@interfaces/db";
 import { StudentHelping } from "./StudentHelping";
 import { StudentMissing } from "./StudentMissing";
+import { NewQuestionDetails } from "@components/NewQuestionDetails";
 
 interface EditQuestionProps {
   queuePos: number;
@@ -46,6 +47,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
   if (!user || tas.length === 0) {
     return null;
   }
+  console.log(queuePos, groupPos, currQuestion, groupQuestion);
 
   if (currQuestion.helpedBy !== "") {
     const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
@@ -105,11 +107,12 @@ export const EditQuestion = (props: EditQuestionProps) => {
         >
           Your Question
         </Box>
-        <QuestionDetails
+        {/* <QuestionDetails
           question={currQuestion}
           courseId={course.id}
           fromStudentCurrentHelping
-        />
+        /> */}
+        <NewQuestionDetails question={currQuestion} />
       </Box>
     );
   }

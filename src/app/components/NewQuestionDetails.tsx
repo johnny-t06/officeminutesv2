@@ -1,0 +1,147 @@
+"use client";
+
+import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
+import { Avatar, Box, Typography } from "@mui/material";
+import { formatTimeDifference, trimUserName } from "@utils/index";
+import React from "react";
+import theme from "theme";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { getUsers } from "@services/client/user";
+
+interface QuestionDetailsProps {
+  question: IdentifiableQuestion;
+  showGroup?: boolean;
+  buttons?: React.ReactNode;
+  backgroundColor?: string;
+}
+
+export const NewQuestionDetails = (props: QuestionDetailsProps) => {
+  const { question, showGroup = false, buttons, backgroundColor = "" } = props;
+  const user = useUserOrRedirect();
+  const [users, setUsers] = React.useState<IdentifiableUsers>([]);
+
+  React.useEffect(() => {
+    const fetchUsers = async () => {
+      const fetchedUsers = await getUsers(question.group);
+      setUsers(fetchedUsers);
+    };
+    fetchUsers();
+  }, [question]);
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <Box>
+      <Box
+        sx={{
+          backgroundColor: backgroundColor,
+          borderRadius: "12px",
+          padding: "12px",
+        }}
+      >
+        <Box
+          height="48px"
+          display="flex"
+          flexDirection="row"
+          gap="16px"
+          alignItems="center"
+          sx={
+            {
+              // marginTop: currentHelping ? "" : "24px",
+            }
+          }
+        >
+          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+            {trimUserName(users[0])[0]}
+          </Avatar>
+          <Box>
+            <Typography
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                color: "#191C20",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+            >
+              {trimUserName(users[0])}
+            </Typography>
+            <Typography
+              style={{
+                fontSize: 14,
+                color: "#43474E",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+            >
+              {formatTimeDifference(question)}
+            </Typography>
+          </Box>
+        </Box>
+        <Box marginTop="28px" fontWeight={400}>
+          <Typography
+            style={{
+              fontSize: 16,
+              color: "#191C20",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              fontWeight: 500,
+            }}
+          >
+            {question.title}
+          </Typography>
+          <Typography
+            style={{
+              fontSize: "14px",
+              marginTop: "8px",
+              color: "#43474E",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+            }}
+          >
+            {question.description}
+          </Typography>
+        </Box>
+        <Box marginTop="32px">
+          <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
+            {question.tags.map((tag) => (
+              <Box
+                key={tag.choice}
+                border={1}
+                borderColor="#73777F"
+                borderRadius="10px"
+                paddingY="4px"
+                paddingX="14px"
+                color="#43474E"
+              >
+                <Typography sx={{ fontWeight: 500, fontSize: 14 }}>
+                  {tag.choice}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+        {showGroup && (
+          <Box
+            marginTop="8px"
+            display={"flex"}
+            flexDirection={"row"}
+            alignItems="center"
+          >
+            <PeopleAltIcon style={{ marginRight: 4 }} />
+            <Typography
+              sx={{ fontSize: 14, color: theme.palette.text.secondary }}
+            >
+              {users.map(trimUserName).join(", ")}&nbsp;
+              {users.length === 1 ? "is" : "are"} in this group.
+            </Typography>
+          </Box>
+        )}
+      </Box>
+      {buttons}
+    </Box>
+  );
+};

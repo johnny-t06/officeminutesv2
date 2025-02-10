@@ -22,6 +22,7 @@ import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { useLoading } from "@context/LoadingContext";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
+import { NewQuestionDetails } from "@components/NewQuestionDetails";
 
 const Page = () => {
   const user = useUserOrRedirect();
@@ -225,10 +226,10 @@ const Page = () => {
           >
             Question
           </Typography>
-          <QuestionDetails
+          <NewQuestionDetails
             question={helpingQuestion}
-            courseId={course.id}
-            fromCurrentlyHelping
+            showGroup
+            backgroundColor="#F2F3FA"
           />
         </Box>
       )}

@@ -5,6 +5,18 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { ArrowBack } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { NewQuestionDetails } from "@components/NewQuestionDetails";
+import React from "react";
+import {
+  joinQuestionGroup,
+  leaveQuestionGroup,
+} from "@services/client/question";
+import theme from "theme";
+import { CustomButton } from "@components/buttons/CustomButton";
+import { Box } from "@mui/material";
+import useApiThrottle from "@hooks/useApiThrottle";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { hasPassed } from "@utils/index";
 
 interface PageProps {
   params: {
@@ -17,6 +29,7 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
+  const user = useUserOrRedirect();
   const { questions } = useOfficeHour();
   const question = questions.find((q) => q.id === questionId);
   const router = useRouter();
@@ -25,6 +38,25 @@ const Page = (props: PageProps) => {
     router.push(`/private/course/${courseId}/board`);
     return;
   }
+
+  const [joinGroup, setJoinGroup] = React.useState(
+    question.group.includes(user!.id)
+  );
+
+  if (!user) {
+    return null;
+  }
+
+  const onJoinGroup = async () => {
+    if (joinGroup) {
+      await leaveQuestionGroup(question, courseId, user.id);
+    } else {
+      await joinQuestionGroup(question, courseId, user.id);
+    }
+    setJoinGroup(!joinGroup);
+  };
+
+  const { fn: throttledOnJoinGroup } = useApiThrottle({ fn: onJoinGroup });
 
   return (
     <div>
@@ -35,10 +67,38 @@ const Page = (props: PageProps) => {
           </Link>
         }
       />
-      <QuestionDetails
+      {/* <QuestionDetails
         courseId={courseId}
         question={question}
         fromTAQueue={false}
+      /> */}
+      <NewQuestionDetails
+        question={question}
+        showGroup
+        buttons={
+          <Box marginTop="8px" display={hasPassed(question) ? "none" : "flex"}>
+            <CustomButton
+              variant="contained"
+              customColor={
+                joinGroup
+                  ? theme.palette.primary.light
+                  : theme.palette.primary.main
+              }
+              sx={{
+                marginTop: "16px",
+                paddingY: "10px",
+                paddingX: "24px",
+                borderRadius: "32px",
+                textTransform: "none",
+                width: "100%",
+                color: joinGroup ? "#000" : "#fff",
+              }}
+              onClick={throttledOnJoinGroup}
+            >
+              {joinGroup ? "Leave group" : "Join group"}
+            </CustomButton>
+          </Box>
+        }
       />
     </div>
   );
