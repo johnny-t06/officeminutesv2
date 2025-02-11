@@ -4,6 +4,8 @@ import Header from "@components/Header";
 import { ArrowBack } from "@mui/icons-material";
 import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import Link from "next/link";
+import { hasPassed } from "@utils/index";
+import { useRouter } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -17,9 +19,15 @@ const Page = (props: PageProps) => {
     params: { courseId, questionId },
   } = props;
   const backUrl = `/private/course/${courseId}/board`;
+  const router = useRouter();
   const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
 
   if (!question || isLoading) {
+    return null;
+  }
+
+  if (hasPassed(question)) {
+    router.push(backUrl);
     return null;
   }
 
