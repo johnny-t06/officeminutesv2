@@ -34,7 +34,8 @@ export const useQuestionAccessCheck = (
         }
         if (
           !foundQuestion ||
-          (!foundQuestion.questionPublic &&
+          (!course.tas.includes(user.id) &&
+            !foundQuestion.questionPublic &&
             !foundQuestion.group.includes(user.id))
         ) {
           throw new Error();
@@ -49,7 +50,7 @@ export const useQuestionAccessCheck = (
     };
 
     fetchAndCheckQuestion();
-  }, [user, course, questionId]);
+  }, [user, course, questionId, questions]);
 
   return { isUserTA, question, isLoading };
 };

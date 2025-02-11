@@ -2,9 +2,9 @@
 import Header from "@components/Header";
 import { JoinLeaveGroupButton } from "@components/JoinLeaveGroupButton";
 import { QuestionDetails } from "@components/QuestionDetails";
+import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
-import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import { ArrowBack } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import {
@@ -13,8 +13,6 @@ import {
 } from "@services/client/question";
 import Link from "next/link";
 import React from "react";
-import { hasPassed } from "@utils/index";
-import { useRouter } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -27,21 +25,14 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
-  const router = useRouter();
   const user = useUserOrRedirect();
-
   const backUrl = `/private/course/${courseId}/queue`;
-  const { isUserTA, question, isLoading } = useQuestionAccessCheck(
+  const { question, isLoading, isUserTA } = useQuestionAccessCheck(
     questionId,
     backUrl
   );
-  const [inGroup, setInGroup] = React.useState<boolean>(
-    question?.group.includes(user!.id) ?? false
-  );
 
-  React.useEffect(() => {
-    setInGroup(question?.group.includes(user!.id) ?? false);
-  }, [question, user]);
+  const inGroup = question?.group.includes(user!.id) ?? false;
 
   const onJoinGroup = async () => {
     if (inGroup) {
@@ -49,19 +40,23 @@ const Page = (props: PageProps) => {
     } else {
       await joinQuestionGroup(question!, courseId, user!.id);
     }
-    setInGroup(!inGroup);
   };
 
   const { fn: throttledOnJoinGroup } = useApiThrottle({ fn: onJoinGroup });
 
-  if (!question || isLoading || !user) {
+  if (!user || !question || isLoading) {
     return null;
   }
 
-  if (hasPassed(question)) {
-    router.push(backUrl);
-    return null;
-  }
+  const buttons = [
+    <Box>
+      <JoinLeaveGroupButton
+        question={question}
+        inGroup={inGroup}
+        onJoinGroup={throttledOnJoinGroup}
+      />
+    </Box>,
+  ];
 
   return (
     <Box>

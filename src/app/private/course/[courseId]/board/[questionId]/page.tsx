@@ -12,8 +12,6 @@ import {
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { JoinLeaveGroupButton } from "@components/JoinLeaveGroupButton";
-import { hasPassed } from "@utils/index";
-import { useRouter } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -28,16 +26,9 @@ const Page = (props: PageProps) => {
   } = props;
   const user = useUserOrRedirect();
   const backUrl = `/private/course/${courseId}/board`;
-  const router = useRouter();
   const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
 
-  const [inGroup, setInGroup] = React.useState<boolean>(
-    question?.group.includes(user!.id) ?? false
-  );
-
-  React.useEffect(() => {
-    setInGroup(question?.group.includes(user!.id) ?? false);
-  }, [question, user]);
+  const inGroup = question?.group?.includes(user!.id) ?? false;
 
   const onJoinGroup = async () => {
     if (inGroup) {
@@ -45,18 +36,14 @@ const Page = (props: PageProps) => {
     } else {
       await joinQuestionGroup(question!, courseId, user!.id);
     }
-    setInGroup(!inGroup);
   };
 
   const { fn: throttledOnJoinGroup } = useApiThrottle({ fn: onJoinGroup });
+
   if (!question || isLoading || !user) {
     return null;
   }
 
-  if (hasPassed(question)) {
-    router.push(backUrl);
-    return null;
-  }
   return (
     <div>
       <Header
