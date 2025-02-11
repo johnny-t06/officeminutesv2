@@ -13,11 +13,10 @@ interface QuestionDetailsProps {
   question: IdentifiableQuestion;
   showGroup?: boolean;
   buttons?: React.ReactNode;
-  backgroundColor?: string;
 }
 
-export const NewQuestionDetails = (props: QuestionDetailsProps) => {
-  const { question, showGroup = false, buttons, backgroundColor = "" } = props;
+export const QuestionDetails = (props: QuestionDetailsProps) => {
+  const { question, showGroup = false, buttons } = props;
   const user = useUserOrRedirect();
   const [users, setUsers] = React.useState<IdentifiableUsers>([]);
 
@@ -35,24 +34,13 @@ export const NewQuestionDetails = (props: QuestionDetailsProps) => {
 
   return (
     <Box>
-      <Box
-        sx={{
-          backgroundColor: backgroundColor,
-          borderRadius: "12px",
-          // padding: "12px",
-        }}
-      >
+      <Box>
         <Box
           height="48px"
           display="flex"
           flexDirection="row"
           gap="16px"
           alignItems="center"
-          sx={
-            {
-              // marginTop: currentHelping ? "" : "24px",
-            }
-          }
         >
           <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
             {trimUserName(users[0])[0]}

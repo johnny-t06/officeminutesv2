@@ -1,10 +1,6 @@
-import { NewQuestionDetails } from "@components/NewQuestionDetails";
+import { QuestionDetails } from "@components/QuestionDetails";
 import TaCard from "@components/tas/TaCard";
-import {
-  IdentifiableCourse,
-  IdentifiableQuestion,
-  IdentifiableUser,
-} from "@interfaces/type";
+import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import { Box } from "@mui/material";
 
@@ -79,7 +75,7 @@ export const StudentHelping = (props: StudentHelpingProps) => {
           borderRadius: "24px",
         }}
       >
-        <NewQuestionDetails question={currQuestion} showGroup />
+        <QuestionDetails question={currQuestion} showGroup />
       </Box>
     </Box>
   );

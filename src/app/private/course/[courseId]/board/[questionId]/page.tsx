@@ -3,7 +3,7 @@ import Header from "@components/Header";
 import { ArrowBack } from "@mui/icons-material";
 import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import Link from "next/link";
-import { NewQuestionDetails } from "@components/NewQuestionDetails";
+import { QuestionDetails } from "@components/QuestionDetails";
 import React from "react";
 import {
   joinQuestionGroup,
@@ -31,7 +31,25 @@ const Page = (props: PageProps) => {
   const router = useRouter();
   const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
 
-  if (!question || isLoading) {
+  const [inGroup, setInGroup] = React.useState<boolean>(
+    question?.group.includes(user!.id) ?? false
+  );
+
+  React.useEffect(() => {
+    setInGroup(question?.group.includes(user!.id) ?? false);
+  }, [question, user]);
+
+  const onJoinGroup = async () => {
+    if (inGroup) {
+      await leaveQuestionGroup(question!, courseId, user!.id);
+    } else {
+      await joinQuestionGroup(question!, courseId, user!.id);
+    }
+    setInGroup(!inGroup);
+  };
+
+  const { fn: throttledOnJoinGroup } = useApiThrottle({ fn: onJoinGroup });
+  if (!question || isLoading || !user) {
     return null;
   }
 
@@ -39,26 +57,6 @@ const Page = (props: PageProps) => {
     router.push(backUrl);
     return null;
   }
-
-  const [joinGroup, setJoinGroup] = React.useState(
-    question.group.includes(user!.id)
-  );
-
-  if (!user) {
-    return null;
-  }
-
-  const onJoinGroup = async () => {
-    if (joinGroup) {
-      await leaveQuestionGroup(question, courseId, user.id);
-    } else {
-      await joinQuestionGroup(question, courseId, user.id);
-    }
-    setJoinGroup(!joinGroup);
-  };
-
-  const { fn: throttledOnJoinGroup } = useApiThrottle({ fn: onJoinGroup });
-
   return (
     <div>
       <Header
@@ -68,18 +66,13 @@ const Page = (props: PageProps) => {
           </Link>
         }
       />
-      {/* <QuestionDetails
-        courseId={courseId}
-        question={question}
-        fromTAQueue={false}
-      /> */}
-      <NewQuestionDetails
+      <QuestionDetails
         question={question}
         showGroup
         buttons={
           <JoinLeaveGroupButton
             question={question}
-            inGroup={joinGroup}
+            inGroup={inGroup}
             onJoinGroup={throttledOnJoinGroup}
           />
         }

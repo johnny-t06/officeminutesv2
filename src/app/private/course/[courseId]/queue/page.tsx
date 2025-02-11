@@ -11,7 +11,6 @@ import { getQueuePosition, timeSince } from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import theme from "theme";
 import DisplayTas from "@components/tas";
-import { QuestionDetails } from "@components/board/QuestionDetails";
 import { getUsers } from "@services/client/user";
 import { QuestionState } from "@interfaces/db";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -22,7 +21,7 @@ import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { useLoading } from "@context/LoadingContext";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
-import { NewQuestionDetails } from "@components/NewQuestionDetails";
+import { QuestionDetails } from "@components/QuestionDetails";
 
 const Page = () => {
   const user = useUserOrRedirect();
@@ -233,11 +232,7 @@ const Page = () => {
               borderRadius: "24px",
             }}
           >
-            <NewQuestionDetails
-              question={helpingQuestion}
-              showGroup
-              backgroundColor="#F2F3FA"
-            />
+            <QuestionDetails question={helpingQuestion} showGroup />
           </Box>
         </Box>
       )}

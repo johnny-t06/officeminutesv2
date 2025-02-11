@@ -1,9 +1,9 @@
 "use client";
-import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
 import { ArrowBack } from "@mui/icons-material";
 import Link from "next/link";
 import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
+import { QuestionDetails } from "@components/QuestionDetails";
 
 interface PageProps {
   params: {
@@ -17,7 +17,11 @@ const Page = (props: PageProps) => {
     params: { courseId, questionId },
   } = props;
   const backUrl = `/private/course/${courseId}/board/history`;
-  const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
+  const { question, isLoading } = useQuestionAccessCheck(
+    questionId,
+    backUrl,
+    true
+  );
 
   if (!question || isLoading) {
     return null;
@@ -32,11 +36,7 @@ const Page = (props: PageProps) => {
           </Link>
         }
       />
-      <QuestionDetails
-        courseId={courseId}
-        question={question}
-        fromTAQueue={false}
-      />
+      <QuestionDetails question={question} showGroup={true} />
     </div>
   );
 };

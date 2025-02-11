@@ -1,4 +1,4 @@
-import { NewQuestionDetails } from "@components/NewQuestionDetails";
+import { QuestionDetails } from "@components/QuestionDetails";
 import { IdentifiableQuestion } from "@interfaces/type";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { Box } from "@mui/material";
@@ -59,11 +59,7 @@ export const StudentMissing = (props: StudentMissingProps) => {
           borderRadius: "24px",
         }}
       >
-        <NewQuestionDetails
-          question={currQuestion}
-          showGroup
-          backgroundColor="#F2F3FA"
-        />
+        <QuestionDetails question={currQuestion} showGroup />
       </Box>
     </Box>
   );

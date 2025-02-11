@@ -1,8 +1,7 @@
 "use client";
 import Header from "@components/Header";
 import { JoinLeaveGroupButton } from "@components/JoinLeaveGroupButton";
-import { NewQuestionDetails } from "@components/NewQuestionDetails";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { QuestionDetails } from "@components/QuestionDetails";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
@@ -14,6 +13,8 @@ import {
 } from "@services/client/question";
 import Link from "next/link";
 import React from "react";
+import { hasPassed } from "@utils/index";
+import { useRouter } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -26,7 +27,7 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
-  const { course, questions } = useOfficeHour();
+  const router = useRouter();
   const user = useUserOrRedirect();
 
   const backUrl = `/private/course/${courseId}/queue`;
@@ -56,7 +57,12 @@ const Page = (props: PageProps) => {
   if (!question || isLoading || !user) {
     return null;
   }
-  console.log("joinGroup", inGroup);
+
+  if (hasPassed(question)) {
+    router.push(backUrl);
+    return null;
+  }
+
   return (
     <Box>
       <Header
@@ -66,16 +72,11 @@ const Page = (props: PageProps) => {
           </Link>
         }
       />
-      {/* <QuestionDetails
-        courseId={courseId}
-        question={question}
-        fromTAQueue={isUserTA}
-      /> */}
       <Box sx={{ padding: "8px" }}>
         {isUserTA ? (
-          <NewQuestionDetails question={question} showGroup />
+          <QuestionDetails question={question} showGroup />
         ) : (
-          <NewQuestionDetails
+          <QuestionDetails
             question={question}
             showGroup
             buttons={
