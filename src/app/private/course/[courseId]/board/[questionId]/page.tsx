@@ -26,7 +26,10 @@ const Page = (props: PageProps) => {
   } = props;
   const user = useUserOrRedirect();
   const backUrl = `/private/course/${courseId}/board`;
-  const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
+  const { question, isUserTA, isLoading } = useQuestionAccessCheck(
+    questionId,
+    backUrl
+  );
 
   const inGroup = question?.group?.includes(user!.id) ?? false;
 
@@ -57,11 +60,13 @@ const Page = (props: PageProps) => {
         question={question}
         showGroup
         buttons={
-          <JoinLeaveGroupButton
-            question={question}
-            inGroup={inGroup}
-            onJoinGroup={throttledOnJoinGroup}
-          />
+          !isUserTA && (
+            <JoinLeaveGroupButton
+              question={question}
+              inGroup={inGroup}
+              onJoinGroup={throttledOnJoinGroup}
+            />
+          )
         }
       />
     </div>

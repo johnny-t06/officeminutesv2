@@ -2,6 +2,7 @@
 import Header from "@components/Header";
 import { JoinLeaveGroupButton } from "@components/JoinLeaveGroupButton";
 import { QuestionDetails } from "@components/QuestionDetails";
+import { TAQuestionButtons } from "@components/TAQuestionButtons";
 import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
@@ -48,16 +49,6 @@ const Page = (props: PageProps) => {
     return null;
   }
 
-  const buttons = [
-    <Box>
-      <JoinLeaveGroupButton
-        question={question}
-        inGroup={inGroup}
-        onJoinGroup={throttledOnJoinGroup}
-      />
-    </Box>,
-  ];
-
   return (
     <Box>
       <Header
@@ -67,9 +58,16 @@ const Page = (props: PageProps) => {
           </Link>
         }
       />
+
       <Box sx={{ padding: "8px" }}>
         {isUserTA ? (
-          <QuestionDetails question={question} showGroup />
+          <QuestionDetails
+            question={question}
+            showGroup
+            buttons={
+              <TAQuestionButtons courseId={courseId} question={question} />
+            }
+          />
         ) : (
           <QuestionDetails
             question={question}
