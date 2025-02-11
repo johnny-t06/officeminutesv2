@@ -1,6 +1,5 @@
 "use client";
 import { QuestionDetails } from "@components/board/QuestionDetails";
-import GlobalLoading from "@components/GlobalLoading";
 import Header from "@components/Header";
 import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import { ArrowBack } from "@mui/icons-material";
@@ -23,8 +22,8 @@ const Page = (props: PageProps) => {
     backUrl
   );
 
-  if (isLoading) {
-    <GlobalLoading />;
+  if (isLoading || !question) {
+    return null;
   }
 
   return (

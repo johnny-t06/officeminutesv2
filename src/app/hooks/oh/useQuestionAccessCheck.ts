@@ -22,7 +22,7 @@ export const useQuestionAccessCheck = (
 
   useEffect(() => {
     if (!user || !course) {
-      throw new Error();
+      return;
     }
 
     if (
@@ -36,10 +36,6 @@ export const useQuestionAccessCheck = (
     setIsUserTA(course.tas.includes(user.id));
     setIsLoading(false);
   }, [user, course, question]);
-
-  if (!question) {
-    throw new Error();
-  }
 
   return { isUserTA, question, isLoading };
 };

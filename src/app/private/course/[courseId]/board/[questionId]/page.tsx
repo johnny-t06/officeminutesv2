@@ -4,7 +4,6 @@ import Header from "@components/Header";
 import { ArrowBack } from "@mui/icons-material";
 import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import Link from "next/link";
-import GlobalLoading from "@components/GlobalLoading";
 
 interface PageProps {
   params: {
@@ -20,8 +19,8 @@ const Page = (props: PageProps) => {
   const backUrl = `/private/course/${courseId}/board`;
   const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
 
-  if (isLoading) {
-    return <GlobalLoading />;
+  if (!question || isLoading) {
+    return null;
   }
 
   return (
