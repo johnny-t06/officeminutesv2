@@ -5,6 +5,7 @@ import { NewQuestionDetails } from "@components/NewQuestionDetails";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import { ArrowBack } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import {
@@ -28,37 +29,39 @@ const Page = (props: PageProps) => {
   const { course, questions } = useOfficeHour();
   const user = useUserOrRedirect();
 
-  if (!user) {
-    return null;
-  }
-  const isUserTA = course.tas.includes(user.id);
-  const question = questions.find((q) => q.id === questionId);
-  const isAuthor = question?.group[0] === user.id;
-
-  const [inGroup, setInGroup] = React.useState(
-    question?.group.includes(user.id) ?? false
+  const backUrl = `/private/course/${courseId}/queue`;
+  const { isUserTA, question, isLoading } = useQuestionAccessCheck(
+    questionId,
+    backUrl
+  );
+  const [inGroup, setInGroup] = React.useState<boolean>(
+    question?.group.includes(user!.id) ?? false
   );
 
-  if (!question) {
-    throw new Error();
-  }
+  React.useEffect(() => {
+    setInGroup(question?.group.includes(user!.id) ?? false);
+  }, [question, user]);
 
   const onJoinGroup = async () => {
     if (inGroup) {
-      await leaveQuestionGroup(question, courseId, user.id);
+      await leaveQuestionGroup(question!, courseId, user!.id);
     } else {
-      await joinQuestionGroup(question, courseId, user.id);
+      await joinQuestionGroup(question!, courseId, user!.id);
     }
     setInGroup(!inGroup);
   };
 
   const { fn: throttledOnJoinGroup } = useApiThrottle({ fn: onJoinGroup });
 
+  if (!question || isLoading || !user) {
+    return null;
+  }
+  console.log("joinGroup", inGroup);
   return (
     <Box>
       <Header
         leftIcon={
-          <Link href={`/private/course/${courseId}/queue`}>
+          <Link href={backUrl}>
             <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
           </Link>
         }

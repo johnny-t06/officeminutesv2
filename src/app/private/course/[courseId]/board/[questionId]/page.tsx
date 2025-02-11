@@ -1,9 +1,7 @@
 "use client";
-import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { ArrowBack } from "@mui/icons-material";
-import { useRouter } from "next/navigation";
+import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import Link from "next/link";
 import { NewQuestionDetails } from "@components/NewQuestionDetails";
 import React from "react";
@@ -11,13 +9,11 @@ import {
   joinQuestionGroup,
   leaveQuestionGroup,
 } from "@services/client/question";
-import theme from "theme";
-import { CustomButton } from "@components/buttons/CustomButton";
-import { Box } from "@mui/material";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
-import { hasPassed } from "@utils/index";
 import { JoinLeaveGroupButton } from "@components/JoinLeaveGroupButton";
+import { hasPassed } from "@utils/index";
+import { useRouter } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -31,13 +27,17 @@ const Page = (props: PageProps) => {
     params: { courseId, questionId },
   } = props;
   const user = useUserOrRedirect();
-  const { questions } = useOfficeHour();
-  const question = questions.find((q) => q.id === questionId);
+  const backUrl = `/private/course/${courseId}/board`;
   const router = useRouter();
+  const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
 
-  if (!question) {
-    router.push(`/private/course/${courseId}/board`);
-    return;
+  if (!question || isLoading) {
+    return null;
+  }
+
+  if (hasPassed(question)) {
+    router.push(backUrl);
+    return null;
   }
 
   const [joinGroup, setJoinGroup] = React.useState(
@@ -63,7 +63,7 @@ const Page = (props: PageProps) => {
     <div>
       <Header
         leftIcon={
-          <Link href={`/private/course/${courseId}/board`}>
+          <Link href={backUrl}>
             <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
           </Link>
         }

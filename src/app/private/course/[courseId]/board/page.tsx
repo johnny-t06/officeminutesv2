@@ -43,9 +43,7 @@ const Page = (props: PageProps) => {
                 textWrap: "nowrap",
               }}
             >
-              <Typography variant="subtitle2">
-                View {isUserTA ? "Response" : ""} History
-              </Typography>
+              <Typography variant="subtitle2">View History</Typography>
             </Button>
           </Link>
         }
