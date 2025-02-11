@@ -3,7 +3,9 @@
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { getQuestion } from "@services/client/question";
+import { IdentifiableQuestion } from "@interfaces/type";
 
 export const useQuestionAccessCheck = (
   questionId: string,
@@ -11,31 +13,38 @@ export const useQuestionAccessCheck = (
 ) => {
   const router = useRouter();
   const user = useUserOrRedirect();
-  const { course, questions } = useOfficeHour();
+  const { course } = useOfficeHour();
   const [isUserTA, setIsUserTA] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const question = useMemo(
-    () => questions.find((q) => q.id === questionId),
-    [questions, questionId]
-  );
+  const [question, setQuestion] = useState<IdentifiableQuestion>();
 
   useEffect(() => {
     if (!user || !course) {
       return;
     }
 
-    if (
-      !question ||
-      (!question.questionPublic && !question.group.includes(user.id))
-    ) {
-      router.replace(callbackUrl);
-      return;
-    }
+    const fetchAndCheckQuestion = async () => {
+      try {
+        const foundQuestion = await getQuestion(course.id, questionId);
 
-    setIsUserTA(course.tas.includes(user.id));
-    setIsLoading(false);
-  }, [user, course, question]);
+        if (
+          !foundQuestion ||
+          (!foundQuestion.questionPublic &&
+            !foundQuestion.group.includes(user.id))
+        ) {
+          throw new Error();
+        }
+
+        setQuestion(foundQuestion);
+        setIsUserTA(course.tas.includes(user.id));
+        setIsLoading(false);
+      } catch (error) {
+        router.replace(callbackUrl);
+      }
+    };
+
+    fetchAndCheckQuestion();
+  }, [user, course, questionId]);
 
   return { isUserTA, question, isLoading };
 };
