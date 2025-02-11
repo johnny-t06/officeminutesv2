@@ -47,75 +47,80 @@ export const EditQuestion = (props: EditQuestionProps) => {
   if (!user || tas.length === 0) {
     return null;
   }
+
   console.log(queuePos, groupPos, currQuestion, groupQuestion);
 
-  if (currQuestion.helpedBy !== "") {
-    const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          color: "#43474E",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            columnGap: "10px",
-            padding: "16px",
-            bgcolor: "#D7E3F8",
-            justifyContent: "center",
-            marginLeft: "-16px",
-            marginTop: "-18px",
-            width: "100vw",
-          }}
-        >
-          <NotificationAddOutlinedIcon style={{ fontSize: "20px" }} />
-          <Box fontWeight={500} fontSize="14px">
-            It's your turn
-          </Box>
-        </Box>
+  // if (currQuestion.helpedBy !== "") {
+  //   const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
+  //   return (
+  //     <Box
+  //       sx={{
+  //         display: "flex",
+  //         flexDirection: "column",
+  //         gap: "10px",
+  //         color: "#43474E",
+  //       }}
+  //     >
+  //       <Box
+  //         sx={{
+  //           display: "flex",
+  //           flexDirection: "row",
+  //           columnGap: "10px",
+  //           padding: "16px",
+  //           bgcolor: "#D7E3F8",
+  //           justifyContent: "center",
+  //           marginLeft: "-16px",
+  //           marginTop: "-18px",
+  //           width: "100vw",
+  //         }}
+  //       >
+  //         <NotificationAddOutlinedIcon style={{ fontSize: "20px" }} />
+  //         <Box fontWeight={500} fontSize="14px">
+  //           It's your turn
+  //         </Box>
+  //       </Box>
 
-        <Box
-          sx={{
-            paddingTop: "20px",
-            paddingRight: "10px",
-            paddingLeft: "10px",
-            fontWeight: 700,
-            color: "#545F70",
-            fontSize: "18.98px",
-          }}
-        >
-          Your TA
-        </Box>
-        <Box sx={{ paddingLeft: "10px" }}>
-          <TaCard ta={ta!} />
-        </Box>
+  //       <Box
+  //         sx={{
+  //           paddingTop: "20px",
+  //           paddingRight: "10px",
+  //           paddingLeft: "10px",
+  //           fontWeight: 700,
+  //           color: "#545F70",
+  //           fontSize: "18.98px",
+  //         }}
+  //       >
+  //         Your TA
+  //       </Box>
+  //       <Box sx={{ paddingLeft: "10px" }}>
+  //         <TaCard ta={ta!} />
+  //       </Box>
 
-        <Box
-          sx={{
-            paddingTop: "20px",
-            paddingRight: "10px",
-            paddingLeft: "10px",
-            fontWeight: 700,
-            color: "#545F70",
-            fontSize: "18.98px",
-          }}
-        >
-          Your Question
-        </Box>
-        {/* <QuestionDetails
-          question={currQuestion}
-          courseId={course.id}
-          fromStudentCurrentHelping
-        /> */}
-        <NewQuestionDetails question={currQuestion} />
-      </Box>
-    );
-  }
+  //       <Box
+  //         sx={{
+  //           paddingTop: "20px",
+  //           paddingRight: "10px",
+  //           paddingLeft: "10px",
+  //           fontWeight: 700,
+  //           color: "#545F70",
+  //           fontSize: "18.98px",
+  //         }}
+  //       >
+  //         Your Question
+  //       </Box>
+  //       {/* <QuestionDetails
+  //         question={currQuestion}
+  //         courseId={course.id}
+  //         fromStudentCurrentHelping
+  //       /> */}
+  //       <NewQuestionDetails
+  //         question={currQuestion}
+  //         showGroup
+  //         backgroundColor="#F2F3FA"
+  //       />
+  //     </Box>
+  //   );
+  // }
 
   const leaveQueue = async () => {
     await leaveQuestionGroup(currQuestion, course.id, user.id);
@@ -169,12 +174,15 @@ export const EditQuestion = (props: EditQuestionProps) => {
 
   if (currQuestion.state === QuestionState.IN_PROGRESS) {
     const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
-    return (
-      <StudentHelping currQuestion={currQuestion} course={course} ta={ta!} />
-    );
+
+    if (!ta) {
+      return null;
+    }
+
+    return <StudentHelping currQuestion={currQuestion} ta={ta} />;
   }
   if (currQuestion.state === QuestionState.MISSING) {
-    return <StudentMissing currQuestion={currQuestion} course={course} />;
+    return <StudentMissing currQuestion={currQuestion} />;
   }
 
   return (

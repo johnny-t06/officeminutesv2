@@ -212,7 +212,7 @@ const Page = () => {
           </Typography>
           <Box
             sx={{
-              padding: "16px, 16px",
+              padding: "8px",
               maxHeight: "30vh",
               overflow: "auto",
             }}
@@ -226,11 +226,19 @@ const Page = () => {
           >
             Question
           </Typography>
-          <NewQuestionDetails
-            question={helpingQuestion}
-            showGroup
-            backgroundColor="#F2F3FA"
-          />
+          <Box
+            sx={{
+              backgroundColor: "#F2F3FA",
+              padding: "24px",
+              borderRadius: "24px",
+            }}
+          >
+            <NewQuestionDetails
+              question={helpingQuestion}
+              showGroup
+              backgroundColor="#F2F3FA"
+            />
+          </Box>
         </Box>
       )}
       <CustomModal

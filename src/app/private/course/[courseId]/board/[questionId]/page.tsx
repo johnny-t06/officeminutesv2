@@ -17,6 +17,7 @@ import { Box } from "@mui/material";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { hasPassed } from "@utils/index";
+import { JoinLeaveGroupButton } from "@components/JoinLeaveGroupButton";
 
 interface PageProps {
   params: {
@@ -76,28 +77,11 @@ const Page = (props: PageProps) => {
         question={question}
         showGroup
         buttons={
-          <Box marginTop="8px" display={hasPassed(question) ? "none" : "flex"}>
-            <CustomButton
-              variant="contained"
-              customColor={
-                joinGroup
-                  ? theme.palette.primary.light
-                  : theme.palette.primary.main
-              }
-              sx={{
-                marginTop: "16px",
-                paddingY: "10px",
-                paddingX: "24px",
-                borderRadius: "32px",
-                textTransform: "none",
-                width: "100%",
-                color: joinGroup ? "#000" : "#fff",
-              }}
-              onClick={throttledOnJoinGroup}
-            >
-              {joinGroup ? "Leave group" : "Join group"}
-            </CustomButton>
-          </Box>
+          <JoinLeaveGroupButton
+            question={question}
+            inGroup={joinGroup}
+            onJoinGroup={throttledOnJoinGroup}
+          />
         }
       />
     </div>

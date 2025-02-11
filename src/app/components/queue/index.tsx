@@ -22,7 +22,11 @@ const Queue = () => {
     [QuestionState.MISSING]: missingQuestions,
   } = getActiveQuestionsByState(questions);
 
-  const studentsEnqueued = pendingQuestions.length + inProgressQuestions.length;
+  const studentsEnqueued =
+    pendingQuestions.length +
+    inProgressQuestions.length +
+    missingQuestions.length;
+
   const queueClosed = course.onDuty.length === 0 || !course.isOpen;
 
   return (

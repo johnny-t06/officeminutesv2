@@ -39,7 +39,7 @@ export const NewQuestionDetails = (props: QuestionDetailsProps) => {
         sx={{
           backgroundColor: backgroundColor,
           borderRadius: "12px",
-          padding: "12px",
+          // padding: "12px",
         }}
       >
         <Box
@@ -126,7 +126,7 @@ export const NewQuestionDetails = (props: QuestionDetailsProps) => {
         </Box>
         {showGroup && (
           <Box
-            marginTop="8px"
+            marginTop="12px"
             display={"flex"}
             flexDirection={"row"}
             alignItems="center"
