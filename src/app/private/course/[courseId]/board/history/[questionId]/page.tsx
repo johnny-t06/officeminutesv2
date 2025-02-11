@@ -1,9 +1,9 @@
 "use client";
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
-import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import { ArrowBack } from "@mui/icons-material";
 import Link from "next/link";
+import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 
 interface PageProps {
   params: {
@@ -16,13 +16,10 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
-  const backUrl = `/private/course/${courseId}/queue`;
-  const { isUserTA, question, isLoading } = useQuestionAccessCheck(
-    questionId,
-    backUrl
-  );
+  const backUrl = `/private/course/${courseId}/board/history`;
+  const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
 
-  if (isLoading || !question) {
+  if (!question || isLoading) {
     return null;
   }
 
@@ -31,14 +28,14 @@ const Page = (props: PageProps) => {
       <Header
         leftIcon={
           <Link href={backUrl}>
-            <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
+            <ArrowBack sx={{ marginLeft: "-10px", color: "#000" }} />
           </Link>
         }
       />
       <QuestionDetails
         courseId={courseId}
         question={question}
-        fromTAQueue={isUserTA}
+        fromTAQueue={false}
       />
     </div>
   );

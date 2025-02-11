@@ -1,10 +1,11 @@
 "use client";
 import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
-import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { ArrowBack } from "@mui/icons-material";
-import { useRouter } from "next/navigation";
+import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import Link from "next/link";
+import { hasPassed } from "@utils/index";
+import { useRouter } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -17,20 +18,24 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
-  const { questions } = useOfficeHour();
-  const question = questions.find((q) => q.id === questionId);
+  const backUrl = `/private/course/${courseId}/board`;
   const router = useRouter();
+  const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
 
-  if (!question) {
-    router.push(`/private/course/${courseId}/board`);
-    return;
+  if (!question || isLoading) {
+    return null;
+  }
+
+  if (hasPassed(question)) {
+    router.push(backUrl);
+    return null;
   }
 
   return (
     <div>
       <Header
         leftIcon={
-          <Link href={`/private/course/${courseId}/board`}>
+          <Link href={backUrl}>
             <ArrowBack sx={{ marginRight: "10px", color: "#000" }} />
           </Link>
         }
