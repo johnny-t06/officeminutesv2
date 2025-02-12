@@ -7,11 +7,10 @@ import Queue from "@components/queue";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
-import { getQueuePosition, timeSince } from "@utils/index";
+import { getQueuePosition, hasPassed, timeSince } from "@utils/index";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import theme from "theme";
 import DisplayTas from "@components/tas";
-import { QuestionDetails } from "@components/board/QuestionDetails";
 import { getUsers } from "@services/client/user";
 import { QuestionState } from "@interfaces/db";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -22,6 +21,10 @@ import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { useLoading } from "@context/LoadingContext";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
+import { QuestionDetails } from "@components/QuestionDetails";
+import { CustomButton } from "@components/buttons/CustomButton";
+import { partialUpdateQuestion } from "@services/client/question";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const user = useUserOrRedirect();
@@ -211,7 +214,7 @@ const Page = () => {
           </Typography>
           <Box
             sx={{
-              padding: "16px, 16px",
+              padding: "8px",
               maxHeight: "30vh",
               overflow: "auto",
             }}
@@ -225,11 +228,39 @@ const Page = () => {
           >
             Question
           </Typography>
-          <QuestionDetails
-            question={helpingQuestion}
-            courseId={course.id}
-            fromCurrentlyHelping
-          />
+          <Box
+            sx={{
+              backgroundColor: "#F2F3FA",
+              padding: "24px",
+              borderRadius: "24px",
+            }}
+          >
+            <QuestionDetails question={helpingQuestion} showGroup />
+          </Box>
+          <Box
+            marginTop="8px"
+            display={hasPassed(helpingQuestion) ? "none" : "flex"}
+          >
+            <CustomButton
+              variant="contained"
+              customColor={theme.palette.primary.main}
+              sx={{
+                marginTop: "4px",
+                paddingY: "10px",
+                paddingX: "24px",
+                borderRadius: "32px",
+                textTransform: "none",
+                width: "100%",
+              }}
+              onClick={async () => {
+                await partialUpdateQuestion(helpingQuestion.id, course.id, {
+                  state: QuestionState.RESOLVED,
+                });
+              }}
+            >
+              Mark as done
+            </CustomButton>
+          </Box>
         </Box>
       )}
       <CustomModal

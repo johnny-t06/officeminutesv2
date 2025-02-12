@@ -1,21 +1,16 @@
-import { QuestionDetails } from "@components/board/QuestionDetails";
+import { QuestionDetails } from "@components/QuestionDetails";
 import TaCard from "@components/tas/TaCard";
-import {
-  IdentifiableCourse,
-  IdentifiableQuestion,
-  IdentifiableUser,
-} from "@interfaces/type";
+import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import NotificationAddOutlinedIcon from "@mui/icons-material/NotificationAddOutlined";
 import { Box } from "@mui/material";
 
 interface StudentHelpingProps {
   currQuestion: IdentifiableQuestion;
-  course: IdentifiableCourse;
   ta: IdentifiableUser;
 }
 
 export const StudentHelping = (props: StudentHelpingProps) => {
-  const { currQuestion, course, ta } = props;
+  const { currQuestion, ta } = props;
 
   return (
     <Box
@@ -57,8 +52,8 @@ export const StudentHelping = (props: StudentHelpingProps) => {
       >
         Your TA
       </Box>
-      <Box sx={{ paddingLeft: "10px" }}>
-        <TaCard ta={ta!} />
+      <Box sx={{ paddingLeft: "8px" }}>
+        <TaCard ta={ta} />
       </Box>
 
       <Box
@@ -73,12 +68,15 @@ export const StudentHelping = (props: StudentHelpingProps) => {
       >
         Your Question
       </Box>
-      <QuestionDetails
-        question={currQuestion}
-        courseId={course.id}
-        fromStudentCurrentHelping
-      />
+      <Box
+        sx={{
+          backgroundColor: "#F2F3FA",
+          padding: "24px",
+          borderRadius: "24px",
+        }}
+      >
+        <QuestionDetails question={currQuestion} showGroup />
+      </Box>
     </Box>
   );
 };
-

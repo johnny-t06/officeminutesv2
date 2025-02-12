@@ -1,18 +1,14 @@
-import { QuestionDetails } from "@components/board/QuestionDetails";
-import {
-  IdentifiableCourse,
-  IdentifiableQuestion,
-} from "@interfaces/type";
-import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import { QuestionDetails } from "@components/QuestionDetails";
+import { IdentifiableQuestion } from "@interfaces/type";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { Box } from "@mui/material";
 
 interface StudentMissingProps {
   currQuestion: IdentifiableQuestion;
-  course: IdentifiableCourse;
 }
 
 export const StudentMissing = (props: StudentMissingProps) => {
-  const { currQuestion, course } = props;
+  const { currQuestion } = props;
 
   return (
     <Box
@@ -36,7 +32,9 @@ export const StudentMissing = (props: StudentMissingProps) => {
           width: "100vw",
         }}
       >
-        <ErrorOutlineOutlinedIcon style={{ fontSize: "20px", color: "#FF0000" }} />
+        <ErrorOutlineOutlinedIcon
+          style={{ fontSize: "20px", color: "#FF0000" }}
+        />
         <Box fontWeight={500} fontSize="14px">
           You were marked as missing. Notify your TA.
         </Box>
@@ -54,12 +52,15 @@ export const StudentMissing = (props: StudentMissingProps) => {
       >
         Your Question
       </Box>
-      <QuestionDetails
-        question={currQuestion}
-        courseId={course.id}
-        fromStudentCurrentHelping
-      />
+      <Box
+        sx={{
+          backgroundColor: "#F2F3FA",
+          padding: "24px",
+          borderRadius: "24px",
+        }}
+      >
+        <QuestionDetails question={currQuestion} showGroup />
+      </Box>
     </Box>
   );
 };
-

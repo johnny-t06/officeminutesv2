@@ -9,11 +9,12 @@ import { IdentifiableQuestion } from "@interfaces/type";
 
 export const useQuestionAccessCheck = (
   questionId: string,
-  callbackUrl: string
+  callbackUrl: string,
+  expired: boolean = false
 ) => {
   const router = useRouter();
   const user = useUserOrRedirect();
-  const { course } = useOfficeHour();
+  const { course, questions } = useOfficeHour();
   const [isUserTA, setIsUserTA] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [question, setQuestion] = useState<IdentifiableQuestion>();
@@ -25,11 +26,16 @@ export const useQuestionAccessCheck = (
 
     const fetchAndCheckQuestion = async () => {
       try {
-        const foundQuestion = await getQuestion(course.id, questionId);
-
+        let foundQuestion: IdentifiableQuestion | undefined;
+        if (expired) {
+          foundQuestion = await getQuestion(course.id, questionId);
+        } else {
+          foundQuestion = questions.find((q) => q.id === questionId);
+        }
         if (
           !foundQuestion ||
-          (!foundQuestion.questionPublic &&
+          (!course.tas.includes(user.id) &&
+            !foundQuestion.questionPublic &&
             !foundQuestion.group.includes(user.id))
         ) {
           throw new Error();
@@ -44,7 +50,7 @@ export const useQuestionAccessCheck = (
     };
 
     fetchAndCheckQuestion();
-  }, [user, course, questionId]);
+  }, [user, course, questionId, questions]);
 
   return { isUserTA, question, isLoading };
 };

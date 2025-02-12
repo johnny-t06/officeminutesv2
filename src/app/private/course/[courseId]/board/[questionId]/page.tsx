@@ -1,11 +1,17 @@
 "use client";
-import { QuestionDetails } from "@components/board/QuestionDetails";
 import Header from "@components/Header";
 import { ArrowBack } from "@mui/icons-material";
 import { useQuestionAccessCheck } from "@hooks/oh/useQuestionAccessCheck";
 import Link from "next/link";
-import { hasPassed } from "@utils/index";
-import { useRouter } from "next/navigation";
+import { QuestionDetails } from "@components/QuestionDetails";
+import React from "react";
+import {
+  joinQuestionGroup,
+  leaveQuestionGroup,
+} from "@services/client/question";
+import useApiThrottle from "@hooks/useApiThrottle";
+import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
+import { JoinLeaveGroupButton } from "@components/JoinLeaveGroupButton";
 
 interface PageProps {
   params: {
@@ -18,16 +24,26 @@ const Page = (props: PageProps) => {
   const {
     params: { courseId, questionId },
   } = props;
+  const user = useUserOrRedirect();
   const backUrl = `/private/course/${courseId}/board`;
-  const router = useRouter();
-  const { question, isLoading } = useQuestionAccessCheck(questionId, backUrl);
+  const { question, isUserTA, isLoading } = useQuestionAccessCheck(
+    questionId,
+    backUrl
+  );
 
-  if (!question || isLoading) {
-    return null;
-  }
+  const inGroup = question?.group?.includes(user!.id) ?? false;
 
-  if (hasPassed(question)) {
-    router.push(backUrl);
+  const onJoinGroup = async () => {
+    if (inGroup) {
+      await leaveQuestionGroup(question!, courseId, user!.id);
+    } else {
+      await joinQuestionGroup(question!, courseId, user!.id);
+    }
+  };
+
+  const { fn: throttledOnJoinGroup } = useApiThrottle({ fn: onJoinGroup });
+
+  if (!question || isLoading || !user) {
     return null;
   }
 
@@ -41,9 +57,17 @@ const Page = (props: PageProps) => {
         }
       />
       <QuestionDetails
-        courseId={courseId}
         question={question}
-        fromTAQueue={false}
+        showGroup
+        buttons={
+          !isUserTA && (
+            <JoinLeaveGroupButton
+              question={question}
+              inGroup={inGroup}
+              onJoinGroup={throttledOnJoinGroup}
+            />
+          )
+        }
       />
     </div>
   );
