@@ -20,10 +20,6 @@ const Page = () => {
   const [enrolledError, setEnrolledError] = React.useState(false);
   const [notFoundError, setNotFoundError] = React.useState(false);
 
-  if (!user) {
-    return null;
-  }
-
   const EnrolledButtons = [
     {
       text: "Ok",
@@ -120,6 +116,11 @@ const Page = () => {
           value={code}
           onChange={(event) => setCode(event.target.value)}
           autoComplete="off"
+          InputProps={{
+            style: {
+              minHeight: 54,
+            },
+          }}
         />
         <ul className="ps-5 text-[#545F70]">
           <li>
