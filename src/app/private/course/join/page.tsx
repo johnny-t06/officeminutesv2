@@ -80,6 +80,11 @@ const Page = () => {
     fetching ||
     enrolledError ||
     notFoundError;
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div>
       <Header
