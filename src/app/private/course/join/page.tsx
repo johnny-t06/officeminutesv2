@@ -123,7 +123,7 @@ const Page = () => {
           autoComplete="off"
           InputProps={{
             style: {
-              minHeight: 54,
+              height: 54,
             },
           }}
         />
