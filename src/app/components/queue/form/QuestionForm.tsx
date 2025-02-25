@@ -1,15 +1,16 @@
 import {
   Box,
   Button,
-  Checkbox,
   Drawer,
   FormControl,
-  FormControlLabel,
   FormLabel,
   IconButton,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
@@ -23,6 +24,8 @@ import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import theme from "theme";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import PublicIcon from "@mui/icons-material/Public";
 
 interface QuestionFormProps {
   // button to open the form
@@ -271,35 +274,99 @@ const QuestionForm = (props: QuestionFormProps) => {
                 <FileUploadOutlinedIcon />
                 <Typography noWrap>Upload image</Typography>
               </Button> */}
-              <FormControlLabel
-                sx={{ marginLeft: 2, marginTop: 0.5 }}
-                control={
-                  <Checkbox
-                    sx={{
-                      color: theme.palette.text.primary,
-                    }}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setNewQuestion({
-                        ...newQuestion,
-                        questionPublic: event.target.checked,
-                      })
-                    }
-                    checked={newQuestion.questionPublic}
-                  />
-                }
-                label={
-                  <Box sx={{ paddingLeft: 2.5, paddingTop: 1 }}>
-                    <Typography>Post to board</Typography>
-                    <Typography
-                      fontSize={14}
-                      color={theme.palette.text.secondary}
+              <FormControl>
+                <Select
+                  variant="standard"
+                  disableUnderline
+                  displayEmpty
+                  sx={{
+                    boxShadow: "none",
+                    ".MuiOutlinedInput-notchedOutline": { border: 0 },
+                    "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                      {
+                        border: 0,
+                      },
+                    "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                      {
+                        border: 0,
+                      },
+                  }}
+                  value={newQuestion.questionPublic ? 0 : 1}
+                  onChange={(event) => {
+                    const {
+                      target: { value },
+                    } = event;
+                    setNewQuestion({
+                      ...newQuestion,
+                      questionPublic: value === 0,
+                    });
+                  }}
+                  input={<OutlinedInput />}
+                  inputProps={{ "aria-label": "Without label" }}
+                >
+                  <MenuItem value={0}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 2,
+                        alignItems: "center",
+                      }}
                     >
-                      Posting to the board will allow a maximum of 4 other
-                      people to join your TA session.
-                    </Typography>
-                  </Box>
-                }
-              ></FormControlLabel>
+                      <PublicIcon sx={{ color: "#38608F" }} />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.4,
+                        }}
+                      >
+                        <Typography variant="body1">
+                          Public Question (Default)
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="textSecondary"
+                          sx={{ textWrap: "wrap", lineHeight: 1.4 }}
+                        >
+                          Everyone can view and join this question. You can join
+                          multiple public questions.
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value={1}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 2,
+                        alignItems: "center",
+                      }}
+                    >
+                      <LockOutlinedIcon sx={{ color: "#38608F" }} />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.4,
+                        }}
+                      >
+                        <Typography variant="body1">
+                          Private Question
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="textSecondary"
+                          sx={{ textWrap: "wrap", lineHeight: 1.4 }}
+                        >
+                          Only you and the TA can view this question
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </MenuItem>
+                </Select>
+              </FormControl>
             </FormControl>
           </Box>
 

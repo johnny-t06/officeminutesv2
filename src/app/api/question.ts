@@ -8,7 +8,7 @@ export const defaultQuestion = () => {
     id: "",
     title: "",
     description: "",
-    questionPublic: false,
+    questionPublic: true,
     state: QuestionState.PENDING,
     timestamp: Timestamp.now(),
     group: [],
