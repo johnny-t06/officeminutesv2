@@ -1,7 +1,7 @@
 "use client";
 
 import Header from "@components/Header";
-import { Button, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -110,10 +110,10 @@ const Page = () => {
           </Button>
         }
       />
-      <div className="mx-4 mt-12">
-        <div>
+      <Box className="mx-4 mt-12" sx={{ boxSizing: "none" }}>
+        <Box>
           Ask your TA or professor for the class code, then enter it here.
-        </div>
+        </Box>
         <TextField
           label="Class code"
           variant="outlined"
@@ -137,7 +137,7 @@ const Page = () => {
             <span className="underline text-[#38608F]">Piazza</span>
           </li>
         </ul>
-      </div>
+      </Box>
       <CustomModal
         title="Already enrolled"
         subtitle="You are already enrolled in this course!"
