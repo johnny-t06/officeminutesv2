@@ -80,9 +80,11 @@ const Page = () => {
     fetching ||
     enrolledError ||
     notFoundError;
+
   if (!user) {
     return null;
   }
+
   return (
     <div>
       <Header
@@ -119,7 +121,11 @@ const Page = () => {
           value={code}
           onChange={(event) => setCode(event.target.value)}
           autoComplete="off"
-          sx={{ boxSizing: "border-box" }}
+          InputProps={{
+            style: {
+              height: 54,
+            },
+          }}
         />
         <ul className="ps-5 text-[#545F70]">
           <li>
