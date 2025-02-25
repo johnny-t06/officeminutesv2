@@ -36,7 +36,7 @@ export const StudentHelping = (props: StudentHelpingProps) => {
       >
         <NotificationAddOutlinedIcon style={{ fontSize: "20px" }} />
         <Box fontWeight={500} fontSize="14px">
-          It's your turn
+          It's your turn. Please find your TA.
         </Box>
       </Box>
 
