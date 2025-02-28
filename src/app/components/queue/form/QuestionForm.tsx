@@ -116,18 +116,6 @@ const QuestionForm = (props: QuestionFormProps) => {
           courseId: course.id,
         });
       }
-      if (title === "Edit submission") {
-        await updateQuestion(
-          {
-            ...newQuestion,
-            title: trimmedTitle,
-            description: trimmedDescription,
-            tags: tagsArr,
-            group: [user.id],
-          },
-          course.id
-        );
-      }
       setOpenForm(false);
       resetForm();
     } else {
@@ -380,7 +368,7 @@ const QuestionForm = (props: QuestionFormProps) => {
               onClick={throttledOnSubmit}
               disabled={fetching}
             >
-              {title === "Join queue" ? "Join now" : "Edit submission"}
+              Join now
             </Button>
           </Box>
         </Box>
