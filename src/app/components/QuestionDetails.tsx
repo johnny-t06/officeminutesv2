@@ -2,7 +2,11 @@
 
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
-import { formatTimeDifference, trimUserName } from "@utils/index";
+import {
+  formatTimeDifference,
+  isTimestampEqual,
+  trimUserName,
+} from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -92,16 +96,18 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               wordBreak: "break-word",
             }}
           >
-            {question.description.split("\n").map((line, index, arr) => (
+            {question.description.map((line, index, arr) => (
               <React.Fragment key={index}>
-                {index === 0 ? (
-                  line
-                ) : (
-                  <>
-                    {line}
-                    <span style={{ color: "#8E8E93" }}> (message added)</span>
-                  </>
-                )}
+                <br />
+                {!isTimestampEqual(line.timestamp, question.timestamp) &&
+                  line.text !== "" && (
+                    <span style={{ color: "#8E8E93" }}>
+                      {" "}
+                      ({line.timestamp.toDate().toLocaleTimeString()})
+                    </span>
+                  )}
+                <br />
+                {line.text}
                 {index !== arr.length - 1 && <br />}
               </React.Fragment>
             ))}

@@ -38,8 +38,6 @@ export const addQuestion = async (question: AddQuestion, courseId: string) => {
   ).withConverter(questionConverter);
   const questionDoc = await addDoc(questionsColection, {
     ...question,
-    timestamp: serverTimestamp(),
-    helpedAt: serverTimestamp(),
   });
   return { id: questionDoc.id, ...question } as IdentifiableQuestion;
 };

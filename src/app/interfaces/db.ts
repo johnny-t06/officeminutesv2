@@ -42,6 +42,11 @@ export interface Course {
   isOpen: boolean;
 }
 
+export interface Description {
+  text: string;
+  timestamp: Timestamp;
+}
+
 export enum QuestionState {
   PENDING = 1,
   IN_PROGRESS,
@@ -51,7 +56,7 @@ export enum QuestionState {
 
 export interface Question {
   title: string;
-  description: string;
+  description: Description[];
   questionPublic: boolean;
   state: QuestionState;
   timestamp: Timestamp;

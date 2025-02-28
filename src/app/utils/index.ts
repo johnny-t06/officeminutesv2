@@ -232,3 +232,10 @@ export const getEmailTemplate = (type: string, email: string) => {
 export const getCourseTopicTags = (tags: Tags, tagKey: string): string[] => {
   return (tags[tagKey].options ?? []).map((option) => option.choice);
 };
+
+export const isTimestampEqual = (
+  timestamp1: Timestamp,
+  timestamp2: Timestamp
+) => {
+  return timestamp1.toMillis() === timestamp2.toMillis();
+};

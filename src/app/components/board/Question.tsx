@@ -5,7 +5,12 @@ import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Link, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
-import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
+import {
+  formatTimeDifference,
+  hasPassed,
+  isTimestampEqual,
+  trimUserName,
+} from "@utils/index";
 import React from "react";
 import theme from "theme";
 
@@ -108,16 +113,18 @@ const Question = (props: QuestionProps) => {
               wordBreak: "break-word",
             }}
           >
-            {question.description.split("\n").map((line, index, arr) => (
+            {question.description.map((line, index, arr) => (
               <React.Fragment key={index}>
-                {index === 0 ? (
-                  line
-                ) : (
-                  <>
-                    {line}
-                    <span style={{ color: "#8E8E93" }}> (message added)</span>
-                  </>
-                )}
+                <br />
+                {!isTimestampEqual(line.timestamp, question.timestamp) &&
+                  line.text !== "" && (
+                    <span style={{ color: "#8E8E93" }}>
+                      {" "}
+                      ({line.timestamp.toDate().toLocaleTimeString()})
+                    </span>
+                  )}
+                <br />
+                {line.text}
                 {index !== arr.length - 1 && <br />}
               </React.Fragment>
             ))}

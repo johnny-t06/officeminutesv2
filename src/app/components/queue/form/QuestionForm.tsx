@@ -14,18 +14,18 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { MultipleChoiceTags, SingleChoiceTags } from "./Tags";
-import { TagOption } from "@interfaces/db";
+import { TagOption, Description } from "@interfaces/db";
 import { createQuestion, defaultQuestion } from "api/question";
 import { IdentifiableQuestion } from "@interfaces/type";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import Header from "@components/Header";
-import { updateQuestion } from "@services/client/question";
 import { CustomModal } from "@components/CustomModal";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import theme from "theme";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import PublicIcon from "@mui/icons-material/Public";
+import { Timestamp } from "firebase/firestore";
 
 interface QuestionFormProps {
   // button to open the form
@@ -48,6 +48,7 @@ const QuestionForm = (props: QuestionFormProps) => {
 
   const [newQuestion, setNewQuestion] =
     React.useState<IdentifiableQuestion>(currentQuestion);
+  const [newDescription, setNewDescription] = React.useState<string>("");
 
   const defaultTags = () => {
     const curr_tags = currentQuestion.tags.map((t) => t.choice);
@@ -100,20 +101,29 @@ const QuestionForm = (props: QuestionFormProps) => {
       (k) => course.tags[k].required && questionTags[k].length === 0
     );
     const trimmedTitle = newQuestion.title.trim();
-    const trimmedDescription = newQuestion.description.trim();
+    const trimmedDescription = newDescription.trim() ?? "";
     if (
       trimmedTitle !== "" &&
       trimmedDescription !== "" &&
       tagsValidate.length === 0
     ) {
+      const now = Timestamp.now();
       if (title === "Join queue") {
+        const descriptionArray: Description[] = [
+          {
+            text: trimmedDescription,
+            timestamp: now,
+          },
+        ];
+
         await createQuestion({
           ...newQuestion,
           title: trimmedTitle,
-          description: trimmedDescription,
+          description: descriptionArray,
           tags: tagsArr,
           group: [user.id],
           courseId: course.id,
+          timestamp: now,
         });
       }
       setOpenForm(false);
@@ -200,12 +210,9 @@ const QuestionForm = (props: QuestionFormProps) => {
               focused
               multiline
               rows={4}
-              value={newQuestion.description}
+              value={newDescription}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setNewQuestion({
-                  ...newQuestion,
-                  description: event.target.value,
-                });
+                setNewDescription(event.target.value);
               }}
               error={errorFields.description}
               helperText={
