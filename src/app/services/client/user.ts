@@ -68,10 +68,10 @@ export const getUsers = async (
   });
   const userChunks = await Promise.all(userPromises);
   const fetchedUsers = userChunks.flat();
+  const userMap = new Map(fetchedUsers.map((user) => [user.id, user]));
   const sortedUsers = userIds
-    .map((id) => fetchedUsers.find((user) => user.id === id))
+    .map((id) => userMap.get(id))
     .filter((user) => user !== undefined) as IdentifiableUsers;
-
   return sortedUsers;
 };
 
