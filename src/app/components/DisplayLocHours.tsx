@@ -73,7 +73,7 @@ export const DisplayLocHours = (props: DisplayLocHoursProps) => {
         <Typography
           variant="h6"
           color={theme.palette.text.primary}
-          sx={{ fontWeight: "bold" }}
+          sx={{ fontWeight: "bold", marginBottom: "16px" }}
         >
           Location & Hours
         </Typography>

@@ -50,7 +50,7 @@ export const EnrolledCourses = () => {
               onClick={() => router.push("/private/course/join")}
             >
               <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
-                Join class
+                Join New Class
               </Typography>
             </Button>
           </Box>
@@ -65,7 +65,7 @@ export const EnrolledCourses = () => {
               onClick={() => router.push("/private/course/join")}
             >
               <Typography variant="subtitle2" color="#FFFFFF" fontWeight={600}>
-                Join class
+                Join New Class
               </Typography>
             </Button>
           </Box>

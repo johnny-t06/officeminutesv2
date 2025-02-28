@@ -28,8 +28,8 @@ const Page = (props: PageProps) => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const tasData = await getUsers(course.tas);
-        const studentData = await getUsers(course.students.slice(0, 10));
+        const tasData = await getUsers(course.tas.slice(0, 3));
+        const studentData = await getUsers(course.students.slice(0, 3));
         setTAs(tasData);
         setStudents(studentData);
       } catch (error) {
