@@ -104,9 +104,23 @@ const Question = (props: QuestionProps) => {
               color: "#43474E",
               textOverflow: "ellipsis",
               overflow: "hidden",
+              whiteSpace: "pre-line",
+              wordBreak: "break-word",
             }}
           >
-            {question.description}
+            {question.description.split("\n").map((line, index, arr) => (
+              <React.Fragment key={index}>
+                {index === 0 ? (
+                  line
+                ) : (
+                  <>
+                    {line}
+                    <span style={{ color: "#8E8E93" }}> (message added)</span>
+                  </>
+                )}
+                {index !== arr.length - 1 && <br />}
+              </React.Fragment>
+            ))}
           </Typography>
         </Box>
         <Box marginTop="32px">

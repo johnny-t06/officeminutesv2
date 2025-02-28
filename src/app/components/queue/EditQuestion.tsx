@@ -14,6 +14,7 @@ import { useLoading } from "@context/LoadingContext";
 import { QuestionState } from "@interfaces/db";
 import { StudentHelping } from "./StudentHelping";
 import { StudentMissing } from "./StudentMissing";
+import AddForm from "./form/AddForm";
 
 interface EditQuestionProps {
   queuePos: number;
@@ -76,7 +77,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
       fullWidth
       variant="outlined"
     >
-      Edit submission
+      Add to submission
     </Button>
   );
 
@@ -197,9 +198,8 @@ export const EditQuestion = (props: EditQuestionProps) => {
           </Box>
           {isAuthor && (
             <Box sx={{ flexGrow: 1 }}>
-              <QuestionForm
+              <AddForm
                 triggerButton={editButton}
-                title="Edit submission"
                 currentQuestion={currQuestion}
               />
             </Box>
