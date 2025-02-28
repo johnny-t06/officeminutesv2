@@ -67,7 +67,12 @@ export const getUsers = async (
       .map((doc) => ({ ...doc.data(), id: doc.id }));
   });
   const userChunks = await Promise.all(userPromises);
-  return userChunks.flat();
+  const fetchedUsers = userChunks.flat();
+  const userMap = new Map(fetchedUsers.map((user) => [user.id, user]));
+  const sortedUsers = userIds
+    .map((id) => userMap.get(id))
+    .filter((user) => user !== undefined) as IdentifiableUsers;
+  return sortedUsers;
 };
 
 export const updateUser = async (user: IdentifiableUser) => {

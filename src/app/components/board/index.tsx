@@ -1,10 +1,17 @@
 import { IdentifiableQuestions } from "@interfaces/type";
-import { Box, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import {
+  Box,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
 import Question from "./Question";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import { getCourseTopicTags, sortQuestionsChronologically } from "@utils/index";
+import theme from "theme";
 
 interface BoardProps {
   questions: IdentifiableQuestions;
@@ -151,6 +158,15 @@ const Board = (props: BoardProps) => {
           ))}
         </Stack>
       </ToggleButtonGroup>
+      <Box sx={{ marginBottom: "16px" }}>
+        <Typography
+          variant="subtitle2"
+          color={theme.palette.text.secondary}
+          fontWeight={600}
+        >
+          You can join multiple public questions and have a private question.
+        </Typography>
+      </Box>
       <_Board
         questions={getQuestionsByTopic(selectedTopics)}
         isUserTA={isUserTA}

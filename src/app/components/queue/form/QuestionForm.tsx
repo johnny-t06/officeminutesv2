@@ -360,7 +360,7 @@ const QuestionForm = (props: QuestionFormProps) => {
                           color="textSecondary"
                           sx={{ textWrap: "wrap", lineHeight: 1.4 }}
                         >
-                          Only you and the TA can view this question
+                          Only you and the TA can view this question.
                         </Typography>
                       </Box>
                     </Box>
