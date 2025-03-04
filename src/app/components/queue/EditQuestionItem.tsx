@@ -147,7 +147,7 @@ export const EditQuestionItem = (props: EditQuestionItemProps) => {
           aria-controls={`question-${question.id}-content`}
           id={`question-${question.id}-header`}
         >
-          <Typography sx={{ fontWeight: 500, fontSize: "16px" }}>
+          <Typography sx={{ fontSize: "16px", color: "#191C20" }}>
             {question.title}
           </Typography>
         </AccordionSummary>
