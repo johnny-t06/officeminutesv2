@@ -168,8 +168,8 @@ export const getQueuePosition = (
   const position = sortedActiveQuestions.findIndex(
     (q) => q.group[0] === user.id
   );
-  const groupPos = sortedPendingQuestions.findIndex((q) =>
-    q.group.includes(user.id)
+  const groupPos = sortedPendingQuestions.findIndex(
+    (q) => q.questionPublic && q.group.includes(user.id)
   );
 
   // queue position in PENDING queue
