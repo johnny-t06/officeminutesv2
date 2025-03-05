@@ -175,12 +175,12 @@ export const getQueuePosition = (
   // queue position in PENDING queue
 
   const pendingPos = sortedPendingQuestions.findIndex(
-    (q) => q.group[0] === user.id
+    (q) => !q.questionPublic && q.group[0] === user.id
   );
   return {
     queuePos: pendingPos,
     groupPos: groupPos,
-    currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
+    currQuestion: sortedActiveQuestions[pendingPos] ?? defaultQuestion(),
     groupQuestion: sortedPendingQuestions[groupPos] ?? defaultQuestion(),
   };
 };
