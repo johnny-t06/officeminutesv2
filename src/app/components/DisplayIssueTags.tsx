@@ -23,7 +23,7 @@ const TAG_KEY = "Tags";
 
 export const DisplayIssueTags = (props: DisplayIssueTagsProps) => {
   const { course } = useOfficeHour();
-  const topics = getCourseTopicTags(course.tags, TAG_KEY);
+  const topics = getCourseTopicTags(course.tags[TAG_KEY].options);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [currentTag, setCurrentTag] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -189,25 +189,29 @@ export const DisplayIssueTags = (props: DisplayIssueTagsProps) => {
                   borderRadius: "8px",
                   borderColor: "#73777F",
                   paddingLeft: "16px",
+                  paddingRight: topic === "Other" ? "16px" : "",
                   backgroundColor: "#F7F2FA",
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
+                  height: "36px",
                 }}
               >
                 <Typography color="#43474E" variant="subtitle2">
                   {topic}
                 </Typography>
-                <IconButton
-                  onClick={() => handleDeleteTag(topic)}
-                  disabled={isLoading || loadingTag === topic}
-                >
-                  {loadingTag === topic ? (
-                    <CircularProgress size={16} sx={{ color: "#43474E" }} />
-                  ) : (
-                    <CloseIcon fontSize="small" sx={{ color: "#43474E" }} />
-                  )}
-                </IconButton>
+                {topic !== "Other" && (
+                  <IconButton
+                    onClick={() => handleDeleteTag(topic)}
+                    disabled={isLoading || loadingTag === topic}
+                  >
+                    {loadingTag === topic ? (
+                      <CircularProgress size={16} sx={{ color: "#43474E" }} />
+                    ) : (
+                      <CloseIcon fontSize="small" sx={{ color: "#43474E" }} />
+                    )}
+                  </IconButton>
+                )}
               </Box>
             ))}
           </Box>
