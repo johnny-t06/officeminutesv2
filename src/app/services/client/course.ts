@@ -220,15 +220,10 @@ export const addCourseTag = async (courseID: String, tag: String) => {
     courseConverter
   );
 
-  const newTag = {
-    choice: tag,
-    color: "orange",
-    colorFill: false,
-    note: "",
-  };
-
   await updateDoc(courseDoc, {
-    "tags.Issue.options": arrayUnion(newTag),
+    "tags.Issue.options": arrayUnion({
+      choice: tag,
+    }),
   });
 };
 
@@ -237,14 +232,9 @@ export const deleteCourseTag = async (courseID: string, tagName: string) => {
     courseConverter
   );
 
-  const tagToRemove = {
-    choice: tagName,
-    color: "orange",
-    colorFill: false,
-    note: "",
-  };
-
   await updateDoc(courseDoc, {
-    "tags.Issue.options": arrayRemove(tagToRemove),
+    "tags.Issue.options": arrayRemove({
+      choice: tagName,
+    }),
   });
 };
