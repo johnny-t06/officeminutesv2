@@ -20,6 +20,7 @@ export interface Tags {
 
 export interface TagOption {
   choice: string;
+  note: string;
 }
 
 export interface Announcement {
