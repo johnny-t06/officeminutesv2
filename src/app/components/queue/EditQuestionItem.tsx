@@ -11,7 +11,7 @@ import {
   AccordionSummary,
 } from "@mui/material";
 import KeyboardReturnOutlinedIcon from "@mui/icons-material/KeyboardReturnOutlined";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import React from "react";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { getUsers } from "@services/client/user";
@@ -139,7 +139,7 @@ export const EditQuestionItem = (props: EditQuestionItemProps) => {
         }}
       >
         <AccordionSummary
-          expandIcon={<KeyboardArrowUpIcon sx={{ color: "#38608F" }} />}
+          expandIcon={<KeyboardArrowDownIcon sx={{ color: "#38608F" }} />}
           sx={{
             padding: 0,
             marginBottom: 0,
