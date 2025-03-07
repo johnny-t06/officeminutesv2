@@ -105,7 +105,9 @@ export const EditQuestionItem = (props: EditQuestionItemProps) => {
             onClick={() => leaveQueue(true)}
             aria-label={isPrivate ? "Leave queue" : "Leave group"}
           >
-            <KeyboardReturnOutlinedIcon style={{ fontSize: "14px" }} />
+            <KeyboardReturnOutlinedIcon
+              style={{ fontSize: "14px", marginRight: "8px" }}
+            />
             {isPrivate ? "Leave queue " : "Leave group"}
           </Button>
           <Button
@@ -156,14 +158,25 @@ export const EditQuestionItem = (props: EditQuestionItemProps) => {
           id={`question-${question.id}-content`}
           aria-labelledby={`question-${question.id}-header`}
         >
-          <Typography sx={{ fontSize: 14, color: "#43474E" }}>
-            {users.map(trimUserName).join(", ")}
-          </Typography>
-          <Typography
-            sx={{ fontSize: "14px", color: "#43474E", marginTop: "10px" }}
-          >
+          <Typography sx={{ fontSize: "14px", color: "#43474E" }}>
             {question.description}
           </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "10px",
+              maxWidth: 0.6,
+              flexWrap: "wrap",
+              marginLeft: "auto",
+            }}
+          >
+            <Typography
+              sx={{ fontSize: 14, color: "#43474E", textAlign: "right" }}
+            >
+              {users.map(trimUserName).join(", ")}
+            </Typography>
+          </Box>
         </AccordionDetails>
       </Accordion>
     </Container>
