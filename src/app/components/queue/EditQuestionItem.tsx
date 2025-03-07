@@ -172,9 +172,15 @@ export const EditQuestionItem = (props: EditQuestionItemProps) => {
             }}
           >
             <Typography
-              sx={{ fontSize: 14, color: "#43474E", textAlign: "right" }}
+              sx={{ fontSize: 12, color: "#545F70", textAlign: "right" }}
             >
-              {users.map(trimUserName).join(", ")}
+              {trimUserName(users[0])}
+              {users.length > 1 && (
+                <span>
+                  {" "}
+                  <strong>+ {users.length - 1}</strong> other(s)
+                </span>
+              )}
             </Typography>
           </Box>
         </AccordionDetails>
