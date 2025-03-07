@@ -8,8 +8,8 @@ import { getUsers } from "@services/client/user";
 import {
   formatTimeDifference,
   hasPassed,
-  isTimestampEqual,
   trimUserName,
+  isTimestampEqual,
 } from "@utils/index";
 import React from "react";
 import theme from "theme";
@@ -113,21 +113,25 @@ const Question = (props: QuestionProps) => {
               wordBreak: "break-word",
             }}
           >
-            {question.description.map((line, index, arr) => (
-              <React.Fragment key={index}>
-                <br />
-                {!isTimestampEqual(line.timestamp, question.timestamp) &&
-                  line.text !== "" && (
-                    <span style={{ color: "#8E8E93" }}>
-                      {" "}
-                      ({line.timestamp.toDate().toLocaleTimeString()})
-                    </span>
-                  )}
-                <br />
-                {line.text}
-                {index !== arr.length - 1 && <br />}
-              </React.Fragment>
-            ))}
+            {question.description[0].text}
+          </Typography>
+          <Typography
+            style={{
+              fontSize: "12px",
+              marginTop: "8px",
+              color: "#43474E",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "pre-line",
+              wordBreak: "break-word",
+              fontWeight: 400,
+            }}
+          >
+            <br />
+            <span>
+              <strong>+ {question.description.length - 1}</strong> additional
+              questions added by others
+            </span>
           </Typography>
         </Box>
         <Box marginTop="32px">

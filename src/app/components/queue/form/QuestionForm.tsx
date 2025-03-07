@@ -26,6 +26,7 @@ import theme from "theme";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import PublicIcon from "@mui/icons-material/Public";
 import { Timestamp } from "firebase/firestore";
+import { trimUserName, isTimestampEqual } from "@utils/index";
 
 interface QuestionFormProps {
   // button to open the form
@@ -113,6 +114,7 @@ const QuestionForm = (props: QuestionFormProps) => {
           {
             text: trimmedDescription,
             timestamp: now,
+            author: trimUserName(user),
           },
         ];
 

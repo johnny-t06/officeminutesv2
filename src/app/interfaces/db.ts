@@ -45,6 +45,7 @@ export interface Course {
 export interface Description {
   text: string;
   timestamp: Timestamp;
+  author: string;
 }
 
 export enum QuestionState {

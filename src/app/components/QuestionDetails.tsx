@@ -4,8 +4,8 @@ import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
 import {
   formatTimeDifference,
-  isTimestampEqual,
   trimUserName,
+  isTimestampEqual,
 } from "@utils/index";
 import React from "react";
 import theme from "theme";
@@ -98,16 +98,17 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
           >
             {question.description.map((line, index, arr) => (
               <React.Fragment key={index}>
+                {line.text}
                 <br />
-                {!isTimestampEqual(line.timestamp, question.timestamp) &&
-                  line.text !== "" && (
+                {!isTimestampEqual(line.timestamp, question.timestamp) && (
+                  <React.Fragment>
                     <span style={{ color: "#8E8E93" }}>
                       {" "}
-                      ({line.timestamp.toDate().toLocaleTimeString()})
+                      (added by {line.author})
                     </span>
-                  )}
-                <br />
-                {line.text}
+                    <br />
+                  </React.Fragment>
+                )}
                 {index !== arr.length - 1 && <br />}
               </React.Fragment>
             ))}

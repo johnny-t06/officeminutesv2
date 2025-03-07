@@ -1,5 +1,5 @@
 import Header from "@components/Header";
-import { IdentifiableQuestion } from "@interfaces/type";
+import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import {
   Box,
   Button,
@@ -15,15 +15,16 @@ import { updateQuestion } from "@services/client/question";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Description } from "@interfaces/db";
 import { Timestamp } from "firebase/firestore";
-import { isTimestampEqual } from "@utils/index";
+import { trimUserName, isTimestampEqual } from "@utils/index";
 
 interface AddFormProps {
   triggerButton: JSX.Element;
   currentQuestion: IdentifiableQuestion;
+  currentUser: IdentifiableUser;
 }
 
 const AddForm = (props: AddFormProps) => {
-  const { currentQuestion, triggerButton } = props;
+  const { currentQuestion, triggerButton, currentUser } = props;
 
   const { course } = useOfficeHour();
 
@@ -73,6 +74,7 @@ const AddForm = (props: AddFormProps) => {
     const addedDescription: Description = {
       text: trimmedDescription,
       timestamp: Timestamp.now(),
+      author: trimUserName(currentUser),
     };
 
     const combinedDescription = [...localDescription, addedDescription];
@@ -129,19 +131,20 @@ const AddForm = (props: AddFormProps) => {
                 {localDescription &&
                   localDescription.map((line, index, arr) => (
                     <React.Fragment key={index}>
+                      {line.text}
                       <br />
                       {!isTimestampEqual(
                         line.timestamp,
                         currentQuestion.timestamp
-                      ) &&
-                        line.text !== "" && (
+                      ) && (
+                        <React.Fragment>
                           <span style={{ color: "#8E8E93" }}>
                             {" "}
-                            ({line.timestamp.toDate().toLocaleTimeString()})
+                            (added by {line.author})
                           </span>
-                        )}
-                      <br />
-                      {line.text}
+                          <br />
+                        </React.Fragment>
+                      )}
                       {index !== arr.length - 1 && <br />}
                     </React.Fragment>
                   ))}

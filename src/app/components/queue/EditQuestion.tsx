@@ -6,7 +6,6 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import React from "react";
 import { CustomModal } from "@components/CustomModal";
 import { leaveQuestionGroup } from "@services/client/question";
-import QuestionForm from "./form/QuestionForm";
 import { useUserOrRedirect } from "@hooks/useUserOrRedirect";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { getUsers } from "@services/client/user";
@@ -201,6 +200,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
               <AddForm
                 triggerButton={editButton}
                 currentQuestion={currQuestion}
+                currentUser={user}
               />
             </Box>
           )}
