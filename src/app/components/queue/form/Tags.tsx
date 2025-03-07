@@ -159,19 +159,7 @@ export const SingleChoiceTags = (props: TagsProps) => {
                     }}
                   />
                 }
-                label={
-                  <>
-                    <Typography>{o.choice}</Typography>
-                    {o.note && (
-                      <Typography
-                        fontSize={14}
-                        color={theme.palette.text.secondary}
-                      >
-                        {o.note}
-                      </Typography>
-                    )}
-                  </>
-                }
+                label={<Typography>{o.choice}</Typography>}
                 sx={{
                   marginY: 2,
                 }}
