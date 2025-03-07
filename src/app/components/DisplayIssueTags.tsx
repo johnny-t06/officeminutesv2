@@ -19,7 +19,7 @@ import useApiThrottle from "@hooks/useApiThrottle";
 
 interface DisplayIssueTagsProps {}
 
-const TAG_KEY = "Issue";
+const TAG_KEY = "Tags";
 
 export const DisplayIssueTags = (props: DisplayIssueTagsProps) => {
   const { course } = useOfficeHour();

@@ -19,7 +19,7 @@ interface BoardProps {
 }
 
 const SELECT_ALL = "All";
-const TAG_KEY = "Issue";
+const TAG_KEY = "Tags";
 
 const _Board = (props: BoardProps) => {
   const { questions } = props;
