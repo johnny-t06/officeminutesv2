@@ -20,11 +20,10 @@ import { isTimestampEqual } from "@utils/index";
 interface AddFormProps {
   triggerButton: JSX.Element;
   currentQuestion: IdentifiableQuestion;
-  currentUser: IdentifiableUser;
 }
 
 const AddForm = (props: AddFormProps) => {
-  const { currentQuestion, triggerButton, currentUser } = props;
+  const { currentQuestion, triggerButton } = props;
 
   const { course } = useOfficeHour();
 

@@ -201,7 +201,6 @@ export const EditQuestion = (props: EditQuestionProps) => {
             <AddForm
               triggerButton={editButton}
               currentQuestion={currQuestion}
-              currentUser={user}
             />
           </Box>
         </Box>
