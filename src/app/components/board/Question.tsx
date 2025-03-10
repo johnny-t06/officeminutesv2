@@ -5,12 +5,7 @@ import { QuestionState } from "@interfaces/db";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Link, Typography } from "@mui/material";
 import { getUsers } from "@services/client/user";
-import {
-  formatTimeDifference,
-  hasPassed,
-  trimUserName,
-  isTimestampEqual,
-} from "@utils/index";
+import { formatTimeDifference, hasPassed, trimUserName } from "@utils/index";
 import React from "react";
 import theme from "theme";
 

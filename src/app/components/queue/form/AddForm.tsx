@@ -15,7 +15,7 @@ import { updateQuestion } from "@services/client/question";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Description } from "@interfaces/db";
 import { Timestamp } from "firebase/firestore";
-import { trimUserName, isTimestampEqual } from "@utils/index";
+import { isTimestampEqual } from "@utils/index";
 
 interface AddFormProps {
   triggerButton: JSX.Element;
