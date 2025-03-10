@@ -74,7 +74,6 @@ const AddForm = (props: AddFormProps) => {
     const addedDescription: Description = {
       text: trimmedDescription,
       timestamp: Timestamp.now(),
-      author: trimUserName(currentUser),
     };
 
     const combinedDescription = [...localDescription, addedDescription];
@@ -131,19 +130,16 @@ const AddForm = (props: AddFormProps) => {
                 {localDescription &&
                   localDescription.map((line, index, arr) => (
                     <React.Fragment key={index}>
+                      {index !== 0 && <br />}
                       {line.text}
-                      <br />
                       {!isTimestampEqual(
                         line.timestamp,
                         currentQuestion.timestamp
                       ) && (
-                        <React.Fragment>
-                          <span style={{ color: "#8E8E93" }}>
-                            {" "}
-                            (added by {line.author})
-                          </span>
-                          <br />
-                        </React.Fragment>
+                        <span style={{ color: "#8E8E93" }}>
+                          {" "}
+                          ({line.timestamp.toDate().toLocaleTimeString()})
+                        </span>
                       )}
                       {index !== arr.length - 1 && <br />}
                     </React.Fragment>

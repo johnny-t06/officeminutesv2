@@ -53,6 +53,22 @@ export const EditQuestion = (props: EditQuestionProps) => {
     await leaveQuestionGroup(groupQuestion, course.id, user.id);
   };
 
+  // not in queue, not join any question,
+  // and not have any IN_PROGRESS or MISSING question
+  if (queuePos === -1 && groupPos === -1 && currQuestion.title === "") {
+    return null;
+  }
+
+  const position =
+    queuePos === -1
+      ? groupPos
+      : groupPos === -1
+      ? queuePos
+      : Math.min(queuePos, groupPos);
+
+  const isAuthorPriv = user.id === currQuestion.group[0];
+  const isAuthorGroup = user.id === groupQuestion.group[0];
+
   const leaveQueueButtons = [
     {
       text: "Stay",
@@ -75,25 +91,11 @@ export const EditQuestion = (props: EditQuestionProps) => {
       }}
       fullWidth
       variant="outlined"
+      disabled={!isAuthorPriv || !isAuthorGroup}
     >
       Add to submission
     </Button>
   );
-
-  // not in queue, not join any question,
-  // and not have any IN_PROGRESS or MISSING question
-  if (queuePos === -1 && groupPos === -1 && currQuestion.title === "") {
-    return null;
-  }
-
-  const position =
-    queuePos === -1
-      ? groupPos
-      : groupPos === -1
-      ? queuePos
-      : Math.min(queuePos, groupPos);
-
-  const isAuthor = position === queuePos;
 
   if (currQuestion.state === QuestionState.IN_PROGRESS) {
     const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
@@ -110,7 +112,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
 
   return (
     <>
-      {isAuthor && (
+      {isAuthorPriv && (
         <CustomModal
           title="Leave queue?"
           subtitle="You'll lose your place in line and
@@ -188,22 +190,20 @@ export const EditQuestion = (props: EditQuestionProps) => {
               style={{ boxShadow: "none" }}
               fullWidth
               onClick={() =>
-                isAuthor ? setLeaveQueueModal(true) : leaveGroup()
+                isAuthorPriv ? setLeaveQueueModal(true) : leaveGroup()
               }
             >
               <KeyboardReturnOutlinedIcon style={{ fontSize: "14px" }} />
-              {isAuthor ? "Leave queue " : "Leave group"}
+              {isAuthorPriv ? "Leave queue " : "Leave group"}
             </Button>
           </Box>
-          {isAuthor && (
-            <Box sx={{ flexGrow: 1 }}>
-              <AddForm
-                triggerButton={editButton}
-                currentQuestion={currQuestion}
-                currentUser={user}
-              />
-            </Box>
-          )}
+          <Box sx={{ flexGrow: 1 }}>
+            <AddForm
+              triggerButton={editButton}
+              currentQuestion={currQuestion}
+              currentUser={user}
+            />
+          </Box>
         </Box>
       </Container>
     </>

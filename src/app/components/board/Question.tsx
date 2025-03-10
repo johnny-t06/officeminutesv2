@@ -130,7 +130,7 @@ const Question = (props: QuestionProps) => {
             <br />
             <span>
               <strong>+ {question.description.length - 1}</strong> additional
-              questions added by others
+              questions added
             </span>
           </Typography>
         </Box>

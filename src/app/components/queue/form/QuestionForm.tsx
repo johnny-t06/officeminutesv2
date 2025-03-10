@@ -114,7 +114,6 @@ const QuestionForm = (props: QuestionFormProps) => {
           {
             text: trimmedDescription,
             timestamp: now,
-            author: trimUserName(user),
           },
         ];
 
