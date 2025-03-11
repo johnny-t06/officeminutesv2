@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import theme from "theme";
 import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
 import { addCourseTag, deleteCourseTag } from "@services/client/course";
 import useApiThrottle from "@hooks/useApiThrottle";
 
@@ -171,7 +172,17 @@ export const DisplayIssueTags = (props: DisplayIssueTagsProps) => {
             onKeyDown={handleKeyPress}
             InputProps={{
               endAdornment:
-                isLoading || fetching ? <CircularProgress size={20} /> : null,
+                isLoading || fetching ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <IconButton
+                    onClick={() => throttledSubmitTag()}
+                    disabled={isLoading || fetching}
+                    size="small"
+                  >
+                    <AddIcon fontSize="small" sx={{ color: "#38608F" }} />
+                  </IconButton>
+                ),
             }}
           />
           <Box

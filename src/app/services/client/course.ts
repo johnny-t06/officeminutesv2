@@ -223,6 +223,7 @@ export const addCourseTag = async (courseID: String, tag: String) => {
   await updateDoc(courseDoc, {
     "tags.Tags.options": arrayUnion({
       choice: tag,
+      note: "",
     }),
   });
 };
@@ -235,6 +236,7 @@ export const deleteCourseTag = async (courseID: string, tagName: string) => {
   await updateDoc(courseDoc, {
     "tags.Tags.options": arrayRemove({
       choice: tagName,
+      note: "",
     }),
   });
 };
