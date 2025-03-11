@@ -79,9 +79,9 @@ export const DisplayIssueTags = (props: DisplayIssueTagsProps) => {
   });
 
   const handleKeyPress = useCallback(
-    (event: React.KeyboardEvent) => {
+    async (event: React.KeyboardEvent) => {
       if (event.key === "Enter" && !fetching) {
-        throttledSubmitTag();
+        await throttledSubmitTag();
       }
     },
     [throttledSubmitTag, fetching]

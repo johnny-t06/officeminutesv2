@@ -2,7 +2,11 @@
 
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
-import { formatTimeDifference, trimUserName } from "@utils/index";
+import {
+  formatTimeDifference,
+  getCourseTopicTags,
+  trimUserName,
+} from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -94,10 +98,10 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
           </Typography>
         </Box>
         <Box marginTop="32px">
-          <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
-            {question.tags.map((tag) => (
+          <Box display="flex" columnGap="8px" rowGap="8px" flexWrap="wrap">
+            {getCourseTopicTags(question.tags).map((tag) => (
               <Box
-                key={tag.choice}
+                key={tag}
                 border={1}
                 borderColor="#73777F"
                 borderRadius="10px"
@@ -106,7 +110,7 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                 color="#43474E"
               >
                 <Typography sx={{ fontWeight: 500, fontSize: 14 }}>
-                  {tag.choice}
+                  {tag}
                 </Typography>
               </Box>
             ))}
