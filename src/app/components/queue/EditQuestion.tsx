@@ -15,13 +15,22 @@ import { EditQuestionItem } from "./EditQuestionItem";
 
 interface EditQuestionProps {
   queuePos: number;
+  privPos: number;
   groupPos: number;
   currQuestion: IdentifiableQuestion;
+  privQuestion: IdentifiableQuestion;
   groupQuestion: IdentifiableQuestion;
 }
 
 export const EditQuestion = (props: EditQuestionProps) => {
-  const { queuePos, groupPos, currQuestion, groupQuestion } = props;
+  const {
+    queuePos,
+    privPos,
+    groupPos,
+    currQuestion,
+    privQuestion,
+    groupQuestion,
+  } = props;
   const { course } = useOfficeHour();
   const [tas, setTas] = React.useState<IdentifiableUsers>([]);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
@@ -64,7 +73,12 @@ export const EditQuestion = (props: EditQuestionProps) => {
 
   // not in queue, not join any question,
   // and not have any IN_PROGRESS or MISSING question
-  if (queuePos === -1 && groupPos === -1 && currQuestion.title === "") {
+  if (
+    queuePos === -1 &&
+    privPos === -1 &&
+    groupPos === -1 &&
+    currQuestion.title === ""
+  ) {
     return null;
   }
 
@@ -79,10 +93,10 @@ export const EditQuestion = (props: EditQuestionProps) => {
 
   const questionsToDisplay = [];
 
-  if (queuePos !== -1) {
+  if (privPos !== -1) {
     questionsToDisplay.push({
-      position: queuePos,
-      question: currQuestion,
+      position: privPos,
+      question: privQuestion,
       leaveQueue: () => setLeaveQueueModal(true),
     });
   }
@@ -98,17 +112,17 @@ export const EditQuestion = (props: EditQuestionProps) => {
   questionsToDisplay.sort((a, b) => a.position - b.position);
 
   return (
-    <React.Fragment>
-      {!currQuestion.questionPublic && (
+    <>
+      {queuePos !== -1 && (
         <CustomModal
           title="Leave queue?"
-          subtitle="You'll lose your place in line and won't receive assistance until you join again."
+          subtitle="You'll lose your place in line and
+                  won't receive assistance until you join again."
           buttons={leaveQueueButtons}
           open={leaveQueueModal}
           setOpen={setLeaveQueueModal}
         />
       )}
-
       {questionsToDisplay.map((item, index) => (
         <EditQuestionItem
           key={index}
@@ -117,6 +131,6 @@ export const EditQuestion = (props: EditQuestionProps) => {
           leaveQueue={item.leaveQueue}
         />
       ))}
-    </React.Fragment>
+    </>
   );
 };

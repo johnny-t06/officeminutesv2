@@ -165,22 +165,25 @@ export const getQueuePosition = (
   const sortedPendingQuestions = sortedActiveQuestions.filter(
     (q) => q.state === QuestionState.PENDING
   );
-  const position = sortedActiveQuestions.findIndex(
-    (q) => q.group[0] === user.id
+  const position = sortedActiveQuestions.findIndex((q) =>
+    q.group.includes(user.id)
+  );
+  const privPos = sortedPendingQuestions.findIndex(
+    (q) => !q.questionPublic && q.group.includes(user.id)
   );
   const groupPos = sortedPendingQuestions.findIndex(
     (q) => q.questionPublic && q.group.includes(user.id)
   );
-
-  // queue position in PENDING queue
-
   const pendingPos = sortedPendingQuestions.findIndex(
-    (q) => !q.questionPublic && q.group[0] === user.id
+    (q) => q.group[0] === user.id
   );
+
   return {
     queuePos: pendingPos,
+    privPos: privPos,
     groupPos: groupPos,
-    currQuestion: sortedActiveQuestions[pendingPos] ?? defaultQuestion(),
+    currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
+    privQuestion: sortedPendingQuestions[privPos] ?? defaultQuestion(),
     groupQuestion: sortedPendingQuestions[groupPos] ?? defaultQuestion(),
   };
 };
