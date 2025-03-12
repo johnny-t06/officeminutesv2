@@ -66,6 +66,8 @@ const CreateQuestion = () => {
         triggerButton={triggerButton}
         title="Join queue"
         currentQuestion={defaultQuestion()}
+        isPrivExist={privPos !== -1}
+        isGroupExist={groupPos !== -1}
       />
     </Box>
   );
