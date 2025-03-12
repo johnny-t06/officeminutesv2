@@ -70,7 +70,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
 
   if (currQuestion.state === QuestionState.IN_PROGRESS) {
     const ta = tas.find((myTa) => myTa.id === currQuestion.helpedBy);
-    return ta ? <StudentHelping currQuestion={currQuestion} ta={ta} /> : null;
+    return ta && <StudentHelping currQuestion={currQuestion} ta={ta} />;
   }
 
   if (currQuestion.state === QuestionState.MISSING) {
