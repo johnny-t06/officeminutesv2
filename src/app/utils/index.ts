@@ -223,6 +223,12 @@ export const getEmailTemplate = (type: string, email: string) => {
         subject: "You are marked as missing from the queue!",
         body: "Please let the TA know when you are back.",
       };
+    case "GROUP_MISSING":
+      return {
+        email,
+        subject: "Your group is marked as missing from the queue!",
+        body: "Please let the TA know.",
+      };
     default:
       return {
         email,
