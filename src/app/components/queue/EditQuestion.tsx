@@ -31,7 +31,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
     privQuestion,
     groupQuestion,
   } = props;
-  const { course } = useOfficeHour();
+  const { course, questions } = useOfficeHour();
   const [tas, setTas] = React.useState<IdentifiableUsers>([]);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
   const { setLoading } = useLoading();
@@ -53,7 +53,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
   }
 
   const leaveQueue = async () => {
-    await leaveQuestionGroup(currQuestion, course.id, user.id);
+    await leaveQuestionGroup(privQuestion, course.id, user.id);
     setLeaveQueueModal(false);
   };
   const leaveGroup = async () => {
@@ -87,8 +87,27 @@ export const EditQuestion = (props: EditQuestionProps) => {
     return ta && <StudentHelping currQuestion={currQuestion} ta={ta} />;
   }
 
-  if (currQuestion.state === QuestionState.MISSING) {
-    return <StudentMissing currQuestion={currQuestion} />;
+  const missingPrivQuestion = currQuestion.state === QuestionState.MISSING;
+  const missingGroupQuestion = questions.find((q) => {
+    return (
+      q.questionPublic &&
+      q.state === QuestionState.MISSING &&
+      q.group.includes(user.id)
+    );
+  });
+
+  if (missingPrivQuestion || missingGroupQuestion) {
+    const missingQuestion = missingPrivQuestion
+      ? currQuestion
+      : missingGroupQuestion!;
+
+    return (
+      <StudentMissing
+        currQuestion={missingQuestion}
+        courseId={course.id}
+        userId={user.id}
+      />
+    );
   }
 
   const questionsToDisplay = [];
