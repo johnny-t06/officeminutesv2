@@ -43,7 +43,7 @@ const QuestionForm = (props: QuestionFormProps) => {
   const [openForm, setOpenForm] = React.useState(false);
   const { course } = useOfficeHour();
   const user = useUserOrRedirect();
-  const TAG_ORDER = ["General", "Issue", "How do you feel about the topic"];
+  const TAG_ORDER = ["General", "Tags", "How do you feel about the topic"];
 
   if (!user) {
     return null;

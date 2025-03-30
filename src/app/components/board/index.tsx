@@ -19,7 +19,7 @@ interface BoardProps {
 }
 
 const SELECT_ALL = "All";
-const TAG_KEY = "Issue";
+const TAG_KEY = "Tags";
 
 const _Board = (props: BoardProps) => {
   const { questions } = props;
@@ -61,7 +61,10 @@ const _Board = (props: BoardProps) => {
 const Board = (props: BoardProps) => {
   const { questions, isUserTA } = props;
   const { course } = useOfficeHour();
-  const topics = [SELECT_ALL, ...getCourseTopicTags(course.tags, TAG_KEY)];
+  const topics = [
+    SELECT_ALL,
+    ...getCourseTopicTags(course.tags[TAG_KEY].options),
+  ];
 
   const [selectedTopics, setSelectedTopics] = React.useState([SELECT_ALL]);
 

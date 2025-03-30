@@ -1,5 +1,5 @@
 import { defaultQuestion } from "@api/question";
-import { Announcement, QuestionState, Tags } from "@interfaces/db";
+import { Announcement, QuestionState, TagOption, Tags } from "@interfaces/db";
 import {
   IdentifiableQuestion,
   IdentifiableQuestions,
@@ -243,6 +243,9 @@ export const getEmailTemplate = (type: string, email: string) => {
   }
 };
 
-export const getCourseTopicTags = (tags: Tags, tagKey: string): string[] => {
-  return (tags[tagKey].options ?? []).map((option) => option.choice);
+export const getCourseTopicTags = (tags: TagOption[]): string[] => {
+  const choices = (tags ?? []).map((option) => option.choice);
+  const nonOtherTags = choices.filter((choice) => choice !== "Other");
+  const otherTags = choices.filter((choice) => choice === "Other");
+  return [...nonOtherTags, ...otherTags];
 };

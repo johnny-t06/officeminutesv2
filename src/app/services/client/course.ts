@@ -80,7 +80,7 @@ export const partialUpdateCourse = async (
   return courseId;
 };
 
-/* 
+/*
 Can't populate createdAt field with serverTimestamp because announcments
 is a list. Optimistically rely on client (tas) time for now.
 */
@@ -213,4 +213,30 @@ export const deleteCourse = async (courseID: String) => {
   );
 
   await deleteDoc(courseDoc);
+};
+
+export const addCourseTag = async (courseID: String, tag: String) => {
+  const courseDoc = doc(db, `courses/${courseID}`).withConverter(
+    courseConverter
+  );
+
+  await updateDoc(courseDoc, {
+    "tags.Tags.options": arrayUnion({
+      choice: tag,
+      note: "",
+    }),
+  });
+};
+
+export const deleteCourseTag = async (courseID: string, tagName: string) => {
+  const courseDoc = doc(db, `courses/${courseID}`).withConverter(
+    courseConverter
+  );
+
+  await updateDoc(courseDoc, {
+    "tags.Tags.options": arrayRemove({
+      choice: tagName,
+      note: "",
+    }),
+  });
 };
