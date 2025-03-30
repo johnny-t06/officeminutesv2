@@ -156,6 +156,11 @@ export const timeSince = (timestamp: Timestamp | undefined) => {
   return `${formattedMinutes}:${formattedSeconds}`;
 };
 
+/*
+  currQuestion: First active question (pending/in progress/missing)
+  privQuestion: First pending private question
+  groupQuestion: First pending group question
+*/
 export const getQueuePosition = (
   questions: IdentifiableQuestions,
   user: IdentifiableUser

@@ -60,12 +60,13 @@ const CreateQuestion = () => {
       disabled={privPos !== -1 && groupPos !== -1}
     />
   );
+  const newQuestion = { ...defaultQuestion(), questionPublic: groupPos === -1 };
   return (
     <Box>
       <QuestionForm
         triggerButton={triggerButton}
         title="Join queue"
-        currentQuestion={defaultQuestion()}
+        currentQuestion={newQuestion}
         isPrivExist={privPos !== -1}
         isGroupExist={groupPos !== -1}
       />

@@ -86,7 +86,9 @@ export const StudentMissing = (props: StudentMissingProps) => {
               height: "40px",
             }}
             fullWidth
-            onClick={leaveQueue}
+            onClick={async () => {
+              await leaveQueue();
+            }}
             aria-label={
               currQuestion.questionPublic ? "Leave group" : "Leave queue"
             }

@@ -159,11 +159,22 @@ const QuestionForm = (props: QuestionFormProps) => {
       ? "Please select all tags"
       : "All required fields are not filled";
 
+  const SelectValues = () => {
+    if (isGroupExist && !isPrivExist) {
+      return "private";
+    } else if (isPrivExist && !isGroupExist) {
+      return "public";
+    } else if (!isGroupExist && !isPrivExist) {
+      return newQuestion.questionPublic ? "public" : "private";
+    } else {
+      return "";
+    }
+  };
   return (
     <Box>
       {trigger}
 
-      <Drawer open={openForm} anchor="bottom">
+      <Drawer open={openForm} anchor="bottom" disableEnforceFocus>
         <CustomModal
           title={"There was an error"}
           subtitle={subtitle}
@@ -294,21 +305,21 @@ const QuestionForm = (props: QuestionFormProps) => {
                         border: 0,
                       },
                   }}
-                  value={!isGroupExist ? 0 : 1}
+                  value={SelectValues()}
                   onChange={(event) => {
                     const {
                       target: { value },
                     } = event;
                     setNewQuestion({
                       ...newQuestion,
-                      questionPublic: value === 0,
+                      questionPublic: value === "public",
                     });
                   }}
                   input={<OutlinedInput />}
                   inputProps={{ "aria-label": "Without label" }}
                 >
                   {!isGroupExist && (
-                    <MenuItem value={0}>
+                    <MenuItem value={"public"}>
                       <Box
                         sx={{
                           display: "flex",
@@ -341,7 +352,7 @@ const QuestionForm = (props: QuestionFormProps) => {
                     </MenuItem>
                   )}
                   {!isPrivExist && (
-                    <MenuItem value={1}>
+                    <MenuItem value={"private"}>
                       <Box
                         sx={{
                           display: "flex",
