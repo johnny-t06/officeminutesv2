@@ -24,7 +24,6 @@ import useApiThrottle from "@hooks/useApiThrottle";
 import { QuestionDetails } from "@components/QuestionDetails";
 import { CustomButton } from "@components/buttons/CustomButton";
 import { partialUpdateQuestion } from "@services/client/question";
-import { useRouter } from "next/navigation";
 
 const Page = () => {
   const user = useUserOrRedirect();
@@ -91,10 +90,14 @@ const Page = () => {
   }
 
   const isUserTA = course.tas.includes(user.id);
-  const { queuePos, groupPos, currQuestion, groupQuestion } = getQueuePosition(
-    questions,
-    user
-  );
+  const {
+    queuePos,
+    privPos,
+    groupPos,
+    currQuestion,
+    privQuestion,
+    groupQuestion,
+  } = getQueuePosition(questions, user);
 
   const closeButtons = [
     {
@@ -168,8 +171,10 @@ const Page = () => {
               {!queueClosed && (
                 <EditQuestion
                   queuePos={queuePos}
+                  privPos={privPos}
                   groupPos={groupPos}
                   currQuestion={currQuestion}
+                  privQuestion={privQuestion}
                   groupQuestion={groupQuestion}
                 />
               )}
