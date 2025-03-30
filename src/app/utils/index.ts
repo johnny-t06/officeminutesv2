@@ -156,6 +156,11 @@ export const timeSince = (timestamp: Timestamp | undefined) => {
   return `${formattedMinutes}:${formattedSeconds}`;
 };
 
+/*
+  currQuestion: First active question (pending/in progress/missing)
+  privQuestion: First pending private question
+  groupQuestion: First pending group question
+*/
 export const getQueuePosition = (
   questions: IdentifiableQuestions,
   user: IdentifiableUser
@@ -165,22 +170,25 @@ export const getQueuePosition = (
   const sortedPendingQuestions = sortedActiveQuestions.filter(
     (q) => q.state === QuestionState.PENDING
   );
-  const position = sortedActiveQuestions.findIndex(
-    (q) => q.group[0] === user.id
-  );
-  const groupPos = sortedPendingQuestions.findIndex((q) =>
+  const position = sortedActiveQuestions.findIndex((q) =>
     q.group.includes(user.id)
   );
-
-  // queue position in PENDING queue
-
+  const privPos = sortedPendingQuestions.findIndex(
+    (q) => !q.questionPublic && q.group.includes(user.id)
+  );
+  const groupPos = sortedPendingQuestions.findIndex(
+    (q) => q.questionPublic && q.group.includes(user.id)
+  );
   const pendingPos = sortedPendingQuestions.findIndex(
     (q) => q.group[0] === user.id
   );
+
   return {
     queuePos: pendingPos,
+    privPos: privPos,
     groupPos: groupPos,
     currQuestion: sortedActiveQuestions[position] ?? defaultQuestion(),
+    privQuestion: sortedPendingQuestions[privPos] ?? defaultQuestion(),
     groupQuestion: sortedPendingQuestions[groupPos] ?? defaultQuestion(),
   };
 };
@@ -219,6 +227,12 @@ export const getEmailTemplate = (type: string, email: string) => {
         email,
         subject: "You are marked as missing from the queue!",
         body: "Please let the TA know when you are back.",
+      };
+    case "GROUP_MISSING":
+      return {
+        email,
+        subject: "Your group is marked as missing from the queue!",
+        body: "Please let the TA know.",
       };
     default:
       return {

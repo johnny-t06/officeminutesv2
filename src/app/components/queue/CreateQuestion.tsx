@@ -17,7 +17,7 @@ const CreateQuestion = () => {
   if (!user) {
     return null;
   }
-  const { queuePos } = getQueuePosition(questions, user);
+  const { privPos, groupPos } = getQueuePosition(questions, user);
   const [isModalVisible, setisModalVisible] = React.useState(false);
   const router = useRouter();
   const ModalButtons = [
@@ -57,15 +57,18 @@ const CreateQuestion = () => {
       text="Join queue"
       icon={<ArrowForwardOutlinedIcon />}
       onClick={() => {}}
-      disabled={queuePos !== -1}
+      disabled={privPos !== -1 && groupPos !== -1}
     />
   );
+  const newQuestion = { ...defaultQuestion(), questionPublic: groupPos === -1 };
   return (
     <Box>
       <QuestionForm
         triggerButton={triggerButton}
         title="Join queue"
-        currentQuestion={defaultQuestion()}
+        currentQuestion={newQuestion}
+        isPrivExist={privPos !== -1}
+        isGroupExist={groupPos !== -1}
       />
     </Box>
   );

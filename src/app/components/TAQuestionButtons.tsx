@@ -83,9 +83,15 @@ export const TAQuestionButtons = (props: TAQuestionButtonsProps) => {
   const onMissingRemove = async () => {
     if (question.state === QuestionState.PENDING) {
       await sendTopUserNotif();
-      await sendEmail(
-        getEmailTemplate("STUDENT_MISSING", groupUsers[0]?.email ?? "")
-      );
+      if (question.questionPublic) {
+        groupUsers.forEach(async (user) => {
+          await sendEmail(getEmailTemplate("GROUP_MISSING", user.email));
+        });
+      } else {
+        await sendEmail(
+          getEmailTemplate("STUDENT_MISSING", groupUsers[0]?.email ?? "")
+        );
+      }
       await partialUpdateQuestion(question.id, courseId, {
         state: QuestionState.MISSING,
       });
