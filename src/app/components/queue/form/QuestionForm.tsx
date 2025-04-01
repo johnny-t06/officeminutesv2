@@ -33,14 +33,17 @@ interface QuestionFormProps {
   title: string;
   // current state of question
   currentQuestion: IdentifiableQuestion;
+  isPrivExist: boolean;
+  isGroupExist: boolean;
 }
 
 const QuestionForm = (props: QuestionFormProps) => {
-  const { triggerButton, title, currentQuestion } = props;
+  const { triggerButton, title, currentQuestion, isPrivExist, isGroupExist } =
+    props;
   const [openForm, setOpenForm] = React.useState(false);
   const { course } = useOfficeHour();
   const user = useUserOrRedirect();
-  const TAG_ORDER = ["General", "Issue", "How do you feel about the topic"];
+  const TAG_ORDER = ["General", "Tags", "How do you feel about the topic"];
 
   if (!user) {
     return null;
@@ -154,11 +157,22 @@ const QuestionForm = (props: QuestionFormProps) => {
       ? "Please select all tags"
       : "All required fields are not filled";
 
+  const SelectValues = () => {
+    if (isGroupExist && !isPrivExist) {
+      return "private";
+    } else if (isPrivExist && !isGroupExist) {
+      return "public";
+    } else if (!isGroupExist && !isPrivExist) {
+      return newQuestion.questionPublic ? "public" : "private";
+    } else {
+      return "";
+    }
+  };
   return (
     <Box>
       {trigger}
 
-      <Drawer open={openForm} anchor="bottom">
+      <Drawer open={openForm} anchor="bottom" disableEnforceFocus>
         <CustomModal
           title={"There was an error"}
           subtitle={subtitle}
@@ -286,80 +300,84 @@ const QuestionForm = (props: QuestionFormProps) => {
                         border: 0,
                       },
                   }}
-                  value={newQuestion.questionPublic ? 0 : 1}
+                  value={SelectValues()}
                   onChange={(event) => {
                     const {
                       target: { value },
                     } = event;
                     setNewQuestion({
                       ...newQuestion,
-                      questionPublic: value === 0,
+                      questionPublic: value === "public",
                     });
                   }}
                   input={<OutlinedInput />}
                   inputProps={{ "aria-label": "Without label" }}
                 >
-                  <MenuItem value={0}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: 2,
-                        alignItems: "center",
-                      }}
-                    >
-                      <PublicIcon sx={{ color: "#38608F" }} />
+                  {!isGroupExist && (
+                    <MenuItem value={"public"}>
                       <Box
                         sx={{
                           display: "flex",
-                          flexDirection: "column",
-                          gap: 0.4,
+                          flexDirection: "row",
+                          gap: 2,
+                          alignItems: "center",
                         }}
                       >
-                        <Typography variant="body1">
-                          Public Question (Default)
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          color="textSecondary"
-                          sx={{ textWrap: "wrap", lineHeight: 1.4 }}
+                        <PublicIcon sx={{ color: "#38608F" }} />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 0.4,
+                          }}
                         >
-                          Everyone can view and join this question. You can join
-                          multiple public questions.
-                        </Typography>
+                          <Typography variant="body1">
+                            Public Question (Default)
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="textSecondary"
+                            sx={{ textWrap: "wrap", lineHeight: 1.4 }}
+                          >
+                            Everyone can view and join this question. You can
+                            join multiple public questions.
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  </MenuItem>
-                  <MenuItem value={1}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: 2,
-                        alignItems: "center",
-                      }}
-                    >
-                      <LockOutlinedIcon sx={{ color: "#38608F" }} />
+                    </MenuItem>
+                  )}
+                  {!isPrivExist && (
+                    <MenuItem value={"private"}>
                       <Box
                         sx={{
                           display: "flex",
-                          flexDirection: "column",
-                          gap: 0.4,
+                          flexDirection: "row",
+                          gap: 2,
+                          alignItems: "center",
                         }}
                       >
-                        <Typography variant="body1">
-                          Private Question
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          color="textSecondary"
-                          sx={{ textWrap: "wrap", lineHeight: 1.4 }}
+                        <LockOutlinedIcon sx={{ color: "#38608F" }} />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 0.4,
+                          }}
                         >
-                          Only you and the TA can view this question
-                        </Typography>
+                          <Typography variant="body1">
+                            Private Question
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="textSecondary"
+                            sx={{ textWrap: "wrap", lineHeight: 1.4 }}
+                          >
+                            Only you and the TA can view this question.
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  </MenuItem>
+                    </MenuItem>
+                  )}
                 </Select>
               </FormControl>
             </FormControl>

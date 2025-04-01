@@ -130,13 +130,13 @@ const Question = (props: QuestionProps) => {
           </Typography>
         </Box>
         <Box marginTop="32px">
-          <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
+          <Box display="flex" gap="8px" flexWrap="wrap">
             {tagsToRender.map((tag) => (
               <Box
                 key={tag.choice}
                 border={1}
                 borderColor="#73777F"
-                borderRadius="10px"
+                borderRadius="8px"
                 paddingY="4px"
                 paddingX="14px"
                 color="#43474E"

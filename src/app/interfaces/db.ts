@@ -21,8 +21,6 @@ export interface Tags {
 export interface TagOption {
   choice: string;
   note: string;
-  color: string;
-  colorFill: boolean;
 }
 
 export interface Announcement {

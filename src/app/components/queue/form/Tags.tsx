@@ -10,6 +10,7 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
+import { getCourseTopicTags } from "@utils/index";
 import React from "react";
 import theme from "theme";
 
@@ -62,13 +63,13 @@ export const MultipleChoiceTags = (props: TagsProps) => {
           {tagsKey}
         </FormLabel>
         <Box sx={{ marginTop: 1 }}>
-          {tags.options.map((o) => (
+          {getCourseTopicTags(tags.options).map((tag) => (
             <Checkbox
               style={{ padding: 4 }}
-              key={o.choice}
+              key={tag}
               onChange={handleChange}
-              checked={state[o.choice]}
-              name={o.choice}
+              checked={state[tag]}
+              name={tag}
               icon={
                 <Button
                   sx={{
@@ -81,7 +82,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                     textTransform: "none",
                   }}
                 >
-                  {o.choice}
+                  {tag}
                 </Button>
               }
               checkedIcon={
@@ -96,7 +97,7 @@ export const MultipleChoiceTags = (props: TagsProps) => {
                     textTransform: "none",
                   }}
                 >
-                  {o.choice}
+                  {tag}
                 </Button>
               }
             />
