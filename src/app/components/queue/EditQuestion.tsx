@@ -23,7 +23,14 @@ interface EditQuestionProps {
 }
 
 export const EditQuestion = (props: EditQuestionProps) => {
-  const { queuePos, privPos, groupPos, currQuestion, privQuestion, groupQuestion } = props;
+  const {
+    queuePos,
+    privPos,
+    groupPos,
+    currQuestion,
+    privQuestion,
+    groupQuestion,
+  } = props;
   const { course, questions } = useOfficeHour();
   const [tas, setTas] = React.useState<IdentifiableUsers>([]);
   const [leaveQueueModal, setLeaveQueueModal] = React.useState<boolean>(false);
@@ -60,7 +67,11 @@ export const EditQuestion = (props: EditQuestionProps) => {
   }
 
   const position =
-    queuePos === -1 ? groupPos : groupPos === -1 ? queuePos : Math.min(queuePos, groupPos);
+    queuePos === -1
+      ? groupPos
+      : groupPos === -1
+      ? queuePos
+      : Math.min(queuePos, groupPos);
 
   const isAuthorPriv = user.id === currQuestion.group[0];
   const isAuthorGroup = user.id === groupQuestion.group[0];
@@ -78,7 +89,12 @@ export const EditQuestion = (props: EditQuestionProps) => {
 
   // not in queue, not join any question,
   // and not have any IN_PROGRESS or MISSING question
-  if (queuePos === -1 && privPos === -1 && groupPos === -1 && currQuestion.title === "") {
+  if (
+    queuePos === -1 &&
+    privPos === -1 &&
+    groupPos === -1 &&
+    currQuestion.title === ""
+  ) {
     return null;
   }
 
@@ -89,13 +105,25 @@ export const EditQuestion = (props: EditQuestionProps) => {
 
   const missingPrivQuestion = currQuestion.state === QuestionState.MISSING;
   const missingGroupQuestion = questions.find((q) => {
-    return q.questionPublic && q.state === QuestionState.MISSING && q.group.includes(user.id);
+    return (
+      q.questionPublic &&
+      q.state === QuestionState.MISSING &&
+      q.group.includes(user.id)
+    );
   });
 
   if (missingPrivQuestion || missingGroupQuestion) {
-    const missingQuestion = missingPrivQuestion ? currQuestion : missingGroupQuestion!;
+    const missingQuestion = missingPrivQuestion
+      ? currQuestion
+      : missingGroupQuestion!;
 
-    return <StudentMissing currQuestion={missingQuestion} courseId={course.id} userId={user.id} />;
+    return (
+      <StudentMissing
+        currQuestion={missingQuestion}
+        courseId={course.id}
+        userId={user.id}
+      />
+    );
   }
 
   const questionsToDisplay = [];
