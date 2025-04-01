@@ -42,7 +42,6 @@ export interface Course {
 
 export interface Description {
   text: string;
-  timestamp: Timestamp;
 }
 
 export enum QuestionState {

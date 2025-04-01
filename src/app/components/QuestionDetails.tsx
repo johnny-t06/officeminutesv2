@@ -5,7 +5,6 @@ import { Avatar, Box, Typography } from "@mui/material";
 import {
   formatTimeDifference,
   trimUserName,
-  isTimestampEqual,
   getCourseTopicTags,
 } from "@utils/index";
 import React from "react";
@@ -40,8 +39,16 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
   return (
     <Box>
       <Box>
-        <Box height="48px" display="flex" flexDirection="row" gap="16px" alignItems="center">
-          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>{trimUserName(users[0])[0]}</Avatar>
+        <Box
+          height="48px"
+          display="flex"
+          flexDirection="row"
+          gap="16px"
+          alignItems="center"
+        >
+          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+            {trimUserName(users[0])[0]}
+          </Avatar>
           <Box>
             <Typography
               style={{
@@ -93,12 +100,6 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               <React.Fragment key={index}>
                 {index !== 0 && <br />}
                 {line.text}
-                {!isTimestampEqual(line.timestamp, question.timestamp) && (
-                  <span style={{ color: "#8E8E93" }}>
-                    {" "}
-                    ({line.timestamp.toDate().toLocaleTimeString()})
-                  </span>
-                )}
                 {index !== arr.length - 1 && <br />}
               </React.Fragment>
             ))}
@@ -116,15 +117,24 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
                 paddingX="14px"
                 color="#43474E"
               >
-                <Typography sx={{ fontWeight: 500, fontSize: 14 }}>{tag}</Typography>
+                <Typography sx={{ fontWeight: 500, fontSize: 14 }}>
+                  {tag}
+                </Typography>
               </Box>
             ))}
           </Box>
         </Box>
         {showGroup && (
-          <Box marginTop="12px" display={"flex"} flexDirection={"row"} alignItems="center">
+          <Box
+            marginTop="12px"
+            display={"flex"}
+            flexDirection={"row"}
+            alignItems="center"
+          >
             <PeopleAltIcon style={{ marginRight: 4 }} />
-            <Typography sx={{ fontSize: 14, color: theme.palette.text.secondary }}>
+            <Typography
+              sx={{ fontSize: 14, color: theme.palette.text.secondary }}
+            >
               {users.map(trimUserName).join(", ")}&nbsp;
               {users.length === 1 ? "is" : "are"} in this group.
             </Typography>

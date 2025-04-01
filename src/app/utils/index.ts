@@ -249,10 +249,3 @@ export const getCourseTopicTags = (tags: TagOption[]): string[] => {
   const otherTags = choices.filter((choice) => choice === "Other");
   return [...nonOtherTags, ...otherTags];
 };
-
-export const isTimestampEqual = (
-  timestamp1: Timestamp,
-  timestamp2: Timestamp
-) => {
-  return timestamp1.toMillis() === timestamp2.toMillis();
-};

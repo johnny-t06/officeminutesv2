@@ -115,7 +115,6 @@ const QuestionForm = (props: QuestionFormProps) => {
         const descriptionArray: Description[] = [
           {
             text: trimmedDescription,
-            timestamp: now,
           },
         ];
 

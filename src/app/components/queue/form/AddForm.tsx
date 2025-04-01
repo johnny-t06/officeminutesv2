@@ -15,7 +15,6 @@ import { updateQuestion } from "@services/client/question";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { Description } from "@interfaces/db";
 import { Timestamp } from "firebase/firestore";
-import { isTimestampEqual } from "@utils/index";
 
 interface AddFormProps {
   triggerButton: JSX.Element;
@@ -72,7 +71,6 @@ const AddForm = (props: AddFormProps) => {
 
     const addedDescription: Description = {
       text: trimmedDescription,
-      timestamp: Timestamp.now(),
     };
 
     const combinedDescription = [...localDescription, addedDescription];
@@ -131,15 +129,6 @@ const AddForm = (props: AddFormProps) => {
                     <React.Fragment key={index}>
                       {index !== 0 && <br />}
                       {line.text}
-                      {!isTimestampEqual(
-                        line.timestamp,
-                        currentQuestion.timestamp
-                      ) && (
-                        <span style={{ color: "#8E8E93" }}>
-                          {" "}
-                          ({line.timestamp.toDate().toLocaleTimeString()})
-                        </span>
-                      )}
                       {index !== arr.length - 1 && <br />}
                     </React.Fragment>
                   ))}
