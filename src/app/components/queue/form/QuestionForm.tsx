@@ -91,6 +91,7 @@ const QuestionForm = (props: QuestionFormProps) => {
 
   const resetForm = () => {
     setNewQuestion(defaultQuestion());
+    setNewDescription("");
     setQuestionTags(defaultTags());
     setErrorFields({ title: false, description: false, tags: false });
   };
