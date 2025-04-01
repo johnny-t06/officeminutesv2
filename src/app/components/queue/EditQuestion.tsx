@@ -66,15 +66,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
     return null;
   }
 
-  const position =
-    queuePos === -1
-      ? groupPos
-      : groupPos === -1
-      ? queuePos
-      : Math.min(queuePos, groupPos);
-
   const isAuthorPriv = user.id === currQuestion.group[0];
-  const isAuthorGroup = user.id === groupQuestion.group[0];
 
   const leaveQueueButtons = [
     {
