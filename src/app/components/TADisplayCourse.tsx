@@ -8,6 +8,7 @@ import { useOfficeHour } from "@hooks/oh/useOfficeHour";
 import { DisplayAnnouncements } from "./DisplayAnnouncements";
 import React from "react";
 import { DisplayLocHours } from "./DisplayLocHours";
+import { DisplayIssueTags } from "./DisplayIssueTags";
 
 interface TADisplayCourseProps {
   tas: IdentifiableUsers;
@@ -29,6 +30,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
       }}
     >
       <DisplayAnnouncements announcements={course.announcements} editable />
+      <DisplayIssueTags />
       <DisplayLocHours location={course.location} editable />
       <Box
         sx={{

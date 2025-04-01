@@ -1,4 +1,9 @@
-import { Question, QuestionState, TagOption } from "@interfaces/db";
+import {
+  Description,
+  Question,
+  QuestionState,
+  TagOption,
+} from "@interfaces/db";
 import { IdentifiableQuestion } from "@interfaces/type";
 import { addQuestion } from "@services/client/question";
 import { Timestamp } from "firebase/firestore";
@@ -7,7 +12,7 @@ export const defaultQuestion = () => {
   return {
     id: "",
     title: "",
-    description: "",
+    description: [],
     questionPublic: true,
     state: QuestionState.PENDING,
     timestamp: Timestamp.now(),
@@ -20,7 +25,7 @@ export const defaultQuestion = () => {
 
 interface CreateQuestionProps {
   title: string;
-  description: string;
+  description: Description[];
   questionPublic: boolean;
   timestamp: Timestamp;
   group: string[];

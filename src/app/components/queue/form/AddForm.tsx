@@ -1,5 +1,5 @@
 import Header from "@components/Header";
-import { IdentifiableQuestion } from "@interfaces/type";
+import { IdentifiableQuestion, IdentifiableUser } from "@interfaces/type";
 import {
   Box,
   Button,
@@ -13,6 +13,8 @@ import React from "react";
 import useApiThrottle from "@hooks/useApiThrottle";
 import { updateQuestion } from "@services/client/question";
 import { useOfficeHour } from "@hooks/oh/useOfficeHour";
+import { Description } from "@interfaces/db";
+import { Timestamp } from "firebase/firestore";
 
 interface AddFormProps {
   triggerButton: JSX.Element;
@@ -26,7 +28,9 @@ const AddForm = (props: AddFormProps) => {
 
   const [openForm, setOpenForm] = React.useState(false);
   const [newDescription, setNewDescription] = React.useState("");
-  const [localDescription, setLocalDescription] = React.useState("");
+  const [localDescription, setLocalDescription] = React.useState<Description[]>(
+    []
+  );
   const [error, setError] = React.useState(false);
 
   React.useEffect(() => {
@@ -35,38 +39,48 @@ const AddForm = (props: AddFormProps) => {
     }
   }, [currentQuestion.description, openForm]);
 
-  const trigger = React.cloneElement(triggerButton, {
-    onClick: () => {
-      setOpenForm(true);
-      if (typeof triggerButton.props.onClick === "function") {
-        triggerButton.props.onClick();
-      }
-    },
-  });
-
-  const onSubmitForm = async () => {
-    const trimmedDescription = newDescription.trim();
-
-    if (trimmedDescription !== "") {
-      const combinedDescription = currentQuestion.description
-        ? `${currentQuestion.description}\n${newDescription}`
-        : newDescription;
-
-      await updateQuestion(
-        { ...currentQuestion, description: combinedDescription },
-        course.id
-      );
-      setOpenForm(false);
-      resetForm();
-    } else {
-      setError(true);
+  const handleOpenForm = React.useCallback(() => {
+    setOpenForm(true);
+    if (typeof triggerButton.props.onClick === "function") {
+      triggerButton.props.onClick();
     }
-  };
+  }, [triggerButton.props.onClick]);
+
+  const trigger = React.useMemo(() => {
+    return React.cloneElement(triggerButton, {
+      onClick: handleOpenForm,
+    });
+  }, [triggerButton, handleOpenForm]);
 
   const resetForm = () => {
     setNewDescription("");
     setError(false);
   };
+
+  const handleCloseForm = React.useCallback(() => {
+    setOpenForm(false);
+    resetForm();
+  }, [resetForm]);
+
+  const onSubmitForm = React.useCallback(async () => {
+    const trimmedDescription = newDescription.trim();
+    if (trimmedDescription === "") {
+      setError(true);
+      return;
+    }
+
+    const addedDescription: Description = {
+      text: trimmedDescription,
+    };
+
+    const combinedDescription = [...localDescription, addedDescription];
+    await updateQuestion(
+      { ...currentQuestion, description: combinedDescription },
+      course.id
+    );
+    setOpenForm(false);
+    resetForm();
+  }, [newDescription, localDescription, currentQuestion, course.id]);
 
   const { fetching, fn: throttledOnSubmit } = useApiThrottle({
     fn: onSubmitForm,
@@ -79,13 +93,7 @@ const AddForm = (props: AddFormProps) => {
         <Box height="100vh" width="100vw" overflow="scroll">
           <Header
             leftIcon={
-              <IconButton
-                onClick={() => {
-                  setOpenForm(false);
-                  resetForm();
-                }}
-                title={"Add to submission"}
-              >
+              <IconButton onClick={handleCloseForm} title={"Add to submission"}>
                 <CloseIcon />
               </IconButton>
             }
@@ -117,19 +125,10 @@ const AddForm = (props: AddFormProps) => {
                 }}
               >
                 {localDescription &&
-                  localDescription.split("\n").map((line, index, arr) => (
+                  localDescription.map((line, index, arr) => (
                     <React.Fragment key={index}>
-                      {index === 0 ? (
-                        line
-                      ) : (
-                        <>
-                          {line}
-                          <span style={{ color: "#8E8E93" }}>
-                            {" "}
-                            (message added)
-                          </span>
-                        </>
-                      )}
+                      {index !== 0 && <br />}
+                      {line.text}
                       {index !== arr.length - 1 && <br />}
                     </React.Fragment>
                   ))}

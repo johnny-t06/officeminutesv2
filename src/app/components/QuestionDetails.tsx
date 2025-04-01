@@ -2,7 +2,11 @@
 
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { Avatar, Box, Typography } from "@mui/material";
-import { formatTimeDifference, trimUserName } from "@utils/index";
+import {
+  formatTimeDifference,
+  trimUserName,
+  getCourseTopicTags,
+} from "@utils/index";
 import React from "react";
 import theme from "theme";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -92,35 +96,29 @@ export const QuestionDetails = (props: QuestionDetailsProps) => {
               wordBreak: "break-word",
             }}
           >
-            {question.description.split("\n").map((line, index, arr) => (
+            {question.description.map((line, index, arr) => (
               <React.Fragment key={index}>
-                {index === 0 ? (
-                  line
-                ) : (
-                  <>
-                    {line}
-                    <span style={{ color: "#8E8E93" }}> (message added)</span>
-                  </>
-                )}
+                {index !== 0 && <br />}
+                {line.text}
                 {index !== arr.length - 1 && <br />}
               </React.Fragment>
             ))}
           </Typography>
         </Box>
         <Box marginTop="32px">
-          <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
-            {question.tags.map((tag) => (
+          <Box display="flex" columnGap="8px" rowGap="8px" flexWrap="wrap">
+            {getCourseTopicTags(question.tags).map((tag) => (
               <Box
-                key={tag.choice}
+                key={tag}
                 border={1}
                 borderColor="#73777F"
-                borderRadius="10px"
+                borderRadius="8px"
                 paddingY="4px"
                 paddingX="14px"
                 color="#43474E"
               >
                 <Typography sx={{ fontWeight: 500, fontSize: 14 }}>
-                  {tag.choice}
+                  {tag}
                 </Typography>
               </Box>
             ))}

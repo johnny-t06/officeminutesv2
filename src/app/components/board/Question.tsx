@@ -108,29 +108,35 @@ const Question = (props: QuestionProps) => {
               wordBreak: "break-word",
             }}
           >
-            {question.description.split("\n").map((line, index, arr) => (
-              <React.Fragment key={index}>
-                {index === 0 ? (
-                  line
-                ) : (
-                  <>
-                    {line}
-                    <span style={{ color: "#8E8E93" }}> (message added)</span>
-                  </>
-                )}
-                {index !== arr.length - 1 && <br />}
-              </React.Fragment>
-            ))}
+            {question.description[0].text}
+          </Typography>
+          <Typography
+            style={{
+              fontSize: "12px",
+              marginTop: "8px",
+              color: "#43474E",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "pre-line",
+              wordBreak: "break-word",
+              fontWeight: 400,
+            }}
+          >
+            <br />
+            <span>
+              <strong>+ {question.description.length - 1}</strong> additional
+              questions added
+            </span>
           </Typography>
         </Box>
         <Box marginTop="32px">
-          <Box display="flex" columnGap="16px" rowGap="8px" flexWrap="wrap">
+          <Box display="flex" gap="8px" flexWrap="wrap">
             {tagsToRender.map((tag) => (
               <Box
                 key={tag.choice}
                 border={1}
                 borderColor="#73777F"
-                borderRadius="10px"
+                borderRadius="8px"
                 paddingY="4px"
                 paddingX="14px"
                 color="#43474E"
