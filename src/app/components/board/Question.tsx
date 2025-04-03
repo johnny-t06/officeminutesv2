@@ -104,9 +104,29 @@ const Question = (props: QuestionProps) => {
               color: "#43474E",
               textOverflow: "ellipsis",
               overflow: "hidden",
+              whiteSpace: "pre-line",
+              wordBreak: "break-word",
             }}
           >
-            {question.description}
+            {question.description[0].text}
+          </Typography>
+          <Typography
+            style={{
+              fontSize: "12px",
+              marginTop: "8px",
+              color: "#43474E",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "pre-line",
+              wordBreak: "break-word",
+              fontWeight: 400,
+            }}
+          >
+            <br />
+            <span>
+              <strong>+ {question.description.length - 1}</strong> additional
+              questions added
+            </span>
           </Typography>
         </Box>
         <Box marginTop="32px">

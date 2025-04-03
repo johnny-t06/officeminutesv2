@@ -16,6 +16,7 @@ import React from "react";
 import { IdentifiableQuestion, IdentifiableUsers } from "@interfaces/type";
 import { getUsers } from "@services/client/user";
 import { trimUserName } from "@utils/index";
+import AddForm from "./form/AddForm";
 
 interface EditQuestionItemProps {
   position: number;
@@ -110,19 +111,24 @@ export const EditQuestionItem = (props: EditQuestionItemProps) => {
             />
             {isPrivate ? "Leave queue " : "Leave group"}
           </Button>
-          <Button
-            sx={{
-              fontWeight: 500,
-              fontSize: 12,
-              textTransform: "initial",
-              borderRadius: "100px",
-            }}
-            fullWidth
-            variant="outlined"
-            aria-label="Add to submission"
-          >
-            Add to submission
-          </Button>
+          <AddForm
+            triggerButton={
+              <Button
+                sx={{
+                  fontWeight: 500,
+                  fontSize: 12,
+                  textTransform: "initial",
+                  borderRadius: "100px",
+                }}
+                fullWidth
+                variant="outlined"
+                aria-label="Add to submission"
+              >
+                Add to submission
+              </Button>
+            }
+            currentQuestion={question}
+          />
         </Box>
       </Container>
       <Divider flexItem />
@@ -158,9 +164,18 @@ export const EditQuestionItem = (props: EditQuestionItemProps) => {
           id={`question-${question.id}-content`}
           aria-labelledby={`question-${question.id}-header`}
         >
-          <Typography sx={{ fontSize: "14px", color: "#43474E" }}>
-            {question.description}
-          </Typography>
+          {question.description.map((description, index) => (
+            <Typography
+              key={index}
+              sx={{
+                fontSize: "14px",
+                color: "#43474E",
+                marginTop: index !== 0 ? "8px" : "0px",
+              }}
+            >
+              {description.text}
+            </Typography>
+          ))}
           <Box
             sx={{
               display: "flex",

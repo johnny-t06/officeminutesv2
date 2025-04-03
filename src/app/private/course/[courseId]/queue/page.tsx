@@ -123,7 +123,10 @@ const Page = () => {
       position="relative"
       paddingBottom="112px"
     >
-      <Header leftIcon={<MenuButton isEdge />} title={course.name} />
+      <Header
+        leftIcon={<MenuButton isEdge />}
+        title={course.id.toUpperCase()}
+      />
       {!helpingQuestion ? (
         <>
           {isUserTA ? (

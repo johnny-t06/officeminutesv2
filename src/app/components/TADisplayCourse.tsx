@@ -76,7 +76,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
               <Typography variant="subtitle2">View All</Typography>
             </Button>
           </Box>
-          <Box height="256px" overflow="scroll">
+          <Box>
             <DisplayTas tas={students} />
           </Box>
         </Box>
@@ -113,7 +113,7 @@ const TADisplayCourse = (props: TADisplayCourseProps) => {
               <Typography variant="subtitle2">View All</Typography>
             </Button>
           </Box>
-          <Box maxHeight="256px" overflow="scroll">
+          <Box>
             <DisplayTas tas={tas} />
           </Box>
         </Box>

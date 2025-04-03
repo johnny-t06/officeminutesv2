@@ -60,6 +60,14 @@ export const EditQuestion = (props: EditQuestionProps) => {
     await leaveQuestionGroup(groupQuestion, course.id, user.id);
   };
 
+  // not in queue, not join any question,
+  // and not have any IN_PROGRESS or MISSING question
+  if (queuePos === -1 && groupPos === -1 && currQuestion.title === "") {
+    return null;
+  }
+
+  const isAuthorPriv = user.id === currQuestion.group[0];
+
   const leaveQueueButtons = [
     {
       text: "Stay",
@@ -132,7 +140,7 @@ export const EditQuestion = (props: EditQuestionProps) => {
 
   return (
     <>
-      {queuePos !== -1 && (
+      {isAuthorPriv && (
         <CustomModal
           title="Leave queue?"
           subtitle="You'll lose your place in line and
